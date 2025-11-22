@@ -32,6 +32,20 @@
   <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\UART_LOG_PM.c" value="SOURCE_C;CortexM3;;;;UART_LOG" />
   <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\UART_LOG_INT.c" value="SOURCE_C;CortexM3;;;;UART_LOG" />
   <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\UART_LOG_BOOT.c" value="SOURCE_C;CortexM3;;;;UART_LOG" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\timer1_clock.c" value="SOURCE_C;CortexM3;;;;timer1_clock" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\timer1_clock.h" value="HEADER;;;;;timer1_clock" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\Timer_1ms.c" value="SOURCE_C;CortexM3;;;;Timer_1ms" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\Timer_1ms.h" value="HEADER;;;;;Timer_1ms" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\Timer_1ms_PM.c" value="SOURCE_C;CortexM3;;;;Timer_1ms" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\isr_1ms.c" value="SOURCE_C;CortexM3;;;;isr_1ms" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\isr_1ms.h" value="HEADER;;;;;isr_1ms" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\timer2_clock.c" value="SOURCE_C;CortexM3;;;;timer2_clock" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\timer2_clock.h" value="HEADER;;;;;timer2_clock" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\Timer_2secs.c" value="SOURCE_C;CortexM3;;;;Timer_2secs" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\Timer_2secs.h" value="HEADER;;;;;Timer_2secs" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\Timer_2secs_PM.c" value="SOURCE_C;CortexM3;;;;Timer_2secs" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\isr_2secs.c" value="SOURCE_C;CortexM3;;;;isr_2secs" />
+  <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\isr_2secs.h" value="HEADER;;;;;isr_2secs" />
   <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\UART_LOG_IntClock.c" value="SOURCE_C;CortexM3;;;;UART_LOG_IntClock" />
   <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\UART_LOG_IntClock.h" value="HEADER;;;;;UART_LOG_IntClock" />
   <file name="D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\codegentemp\cm3gcc.ld" value="LINKER_SCRIPT;;;b98f980c-3bd1-4fc7-a887-c56a20a46fdd;;cy_boot" />

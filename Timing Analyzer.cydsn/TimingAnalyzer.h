@@ -102,20 +102,19 @@
   MODE_SYSTICK_PIN,     /**< \SYSTICK + Output pin config. */
   MODE_PIN              /**< \Output pin only (external measurement). */
 } ;
-typedef enum eMode AnalyzerMode_t;
+typedef enum eMode TA_Mode_t;
 
 /**
 * \Analyzer state enum
 *
 * Enum to hold different states that the analyzer could take
 */
- enum eState{
-  STATE_CONFIGURED,     /**< \Analyser in Configured state. */
+ typedef enum {
+  STATE_IDLE,           /**< \Analyser in Idle state. */
   STATE_RUNNING,        /**< \Analyser in Running state. */
   STATE_PAUSED,         /**< \Analyser in Paused state. */
   STATE_STOPPED         /**< \Analyser in Paused state. */
-} ;
-typedef enum eState AnalyzerState_t;
+} TA_State_t;
 
 typedef void (*PinFunc_t)(uint8_t state);  /* Function ptr to pins */ /* MISRA-C:2004 Rule 8.3 — explicit typedef */
 
@@ -125,11 +124,11 @@ typedef void (*PinFunc_t)(uint8_t state);  /* Function ptr to pins */ /* MISRA-C
 *
 * Main structure that holds everything about one analyzer instance.
 */
-struct sAnalyzer {
+typedef struct {
     /* Configuration Data */
     const char *name;               // String name for print/log
-    AnalyzerMode_t mode;            // Selected measurement mode (SysTick, DWT, etc.)
-    AnalyzerState_t state;          // Current analyzer state
+    TA_Mode_t mode;                 // Selected measurement mode (SysTick, DWT, etc.)
+    TA_State_t state;               // Current analyzer state
     boolean_t active;               // Flag ensuring the analyzer exists
 
     /* Measurement Data */
@@ -145,8 +144,7 @@ struct sAnalyzer {
     uint32_t accumulated_cycles;    // Total cycles across pauses
     
     PinFunc_t pin_control_func;     // Unified pin control function
-};
-typedef struct sAnalyzer TimingAnalyzer_t;
+} TA_t;
 
 // Wrapper to allow representing the file in Together as class
 #ifdef TOGETHER
@@ -175,66 +173,66 @@ public:
  * \param None
  * \return RC_SUCCESS when success and RC_ERROR_INVALID_STATE when Hardware not properly initilized      // ???
 */
-RC_t TimingAnalyzer_initialize(void);
+RC_t TA_initialize(void);
 
 /**
  * Func to initializes an analyzer struct with configuration and assign function pointers for pin control.
- * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
- * \param AnalyzerMode_t const mode     : [IN] type of the configuration mode we need to run the analyzer
- * \param PinFunc_t const pin_ctrl      : [IN] func pointer to control a GPIO pin
- * \param const char const *name        : [IN] name of the Analyzer
+ * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
+ * \param TA_Mode_t const mode      : [IN] type of the configuration mode we need to run the analyzer
+ * \param PinFunc_t const pin_ctrl  : [IN] func pointer to control a GPIO pin
+ * \param const char const *name    : [IN] name of the Analyzer
  * \return RC_SUCCESS when success, RC_ERROR_NULL when a pointer param is null
  *         RC_ERROR_BAD_PARAM when unexpected params are passed and 
  *         RC_ERROR_BUFFER_FULL when max analyzer count is reached
 */
-RC_t TimingAnalyzer_create(TimingAnalyzer_t *me, AnalyzerMode_t const mode, PinFunc_t const pin_ctrl, const char *name);
+RC_t TA_create(TA_t *const me, TA_Mode_t const mode, PinFunc_t const pin_ctrl, const char *name);
 
 /**
  * Func to start counting using SysTick or DWT and set pin HIGH if configured.
- * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
+ * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null, 
  *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or when Hardware not properly initilized and 
  *         RC_ERROR_BUSY when an analyzer is already in running state
 */
-RC_t TimingAnalyzer_start(TimingAnalyzer_t *me);
+RC_t TA_start(TA_t *const me);
 
 /**
  * Func to stop counting, calculate total time, and set pin LOW.
- * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
+ * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null and 
  *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or already stopped
 */
-RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me);
+RC_t TA_stop(TA_t *const me);
 
 /**
  * Func to stop counting temporarily and add elapsed time since start to total time.
- * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
+ * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null and 
  *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or not running
 */
-RC_t TimingAnalyzer_pause(TimingAnalyzer_t *me);
+RC_t TA_pause(TA_t *const me);
 
 /**
  * Func to resume measurement from paused state.
- * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
+ * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null, 
  *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or not paused
 */
-RC_t TimingAnalyzer_resume(TimingAnalyzer_t *me);
+RC_t TA_resume(TA_t *const me);
 
 /**
  * Func which returns elapsed time based on SysTick or DWT reading.
- * \param TimingAnalyzer_t const *me	: [IN] struct of Analyzer related parameters
+ * \param TA_t const *const me      : [IN] struct of Analyzer related parameters
  * \return RC_SUCCESS when success and RC_ERROR_NULL when the me pointer is null
 */
-RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t const *me);
+RC_t TA_printStatus(TA_t const *const me);
 
 /**
  * Func to print all the available Analysers
  * \param None
  * \return RC_SUCCESS when success and RC_ERROR_BUFFER_EMTPY when analyzer array is empty
 */
-RC_t TimingAnalyzer_printAll(void);
+RC_t TA_printAll(void);
 
 /**
  * Func Systick Handler - used to increment the milliseconds counter each millisecond

@@ -16,9 +16,9 @@
 void Pins_Init(void)
 {
     /* Set each pin to low */
-    RED_LED_Write(0U);
-    YELLOW_LED_Write(0U);
-    GREEN_LED_Write(0U);
+    RED_LED_Write(0U);      // Pin 1
+    YELLOW_LED_Write(0U);   // Pin 2
+    GREEN_LED_Write(0U);    // Pin 3
 }
 
 /* Wrappers for RED LED */

@@ -9,30 +9,44 @@
  *
  * ========================================
 */
+// Standard header files
 #include "project.h"
 #include "stdio.h"
+#include <math.h>
 #include "global.h"
+
+// Project specific header files
 #include "TimingAnalyzer.h"
 #include "Pins.h"
 
-volatile TimingAnalyzer_t analyzerMain;     // Creating obj inside main can not be used to refer an isr.   !!!
-volatile TimingAnalyzer_t analyzerIsrLow;   // (N3)
-volatile TimingAnalyzer_t analyzerIsrHigh;
+volatile TA_t analyzerDwt;     // Creating obj inside main can not be used to refer an isr. !!!
+volatile TA_t analyzerSystick;   // (N3)
+volatile TA_t analyzerPin;
+volatile TA_t analyzerMath;
+volatile TA_t analyzerIsr1msDWT;
+volatile TA_t analyzerIsr1msSYS;
+volatile TA_t analyzerIsr2secsDWT;
+volatile TA_t analyzerIsr2secsSYS;
 
-extern volatile uint32_t system_ms;     // ???
+extern volatile uint32_t system_ms;
+
+CY_ISR(ISR_1ms_handler);
+CY_ISR(ISR_2secs_handler);
+
+// Change this define to activate the different Snippets
+//#define CodeSnippetMain
+//#define CodeSnippetMath
+#define CodeSnippetIsr
+
 
 int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
-
-    /* Place your initialization/startup code here */
     
     RC_t res = RC_SUCCESS;
     
-    // MCU system init
-    
     // Initialize timing system
-    res = TimingAnalyzer_initialize();     
+    res = TA_initialize();     
     
     char strMessage[100];
     
@@ -42,70 +56,149 @@ int main(void)
     UART_LOG_PutString("\r\n\r\nTiming Analyzer\r\n");                                                // (N1)
     sprintf(strMessage, "CPU-Frequency: %luMHz\r\n", ((unsigned long)BCLK__BUS_CLK__HZ / 1000000));   // (N2)
     UART_LOG_PutString(strMessage); 
-    CyDelay(100);           // Wating for UART to complete
+    CyDelay(100);       // Wating for UART to complete  
     
-    res = TimingAnalyzer_create((TimingAnalyzer_t *)&analyzerMain, MODE_DWT_PIN, Pin_1_Control, "DWT Task");
-    res = TimingAnalyzer_create((TimingAnalyzer_t *)&analyzerIsrLow, MODE_SYSTICK_PIN, Pin_2_Control, "SYSTICK Task");
-    res = TimingAnalyzer_create((TimingAnalyzer_t *)&analyzerIsrHigh, MODE_PIN, Pin_3_Control, "PIN Task");
-
-    res = TimingAnalyzer_start((TimingAnalyzer_t *)&analyzerMain);
-    res = TimingAnalyzer_start((TimingAnalyzer_t *)&analyzerIsrLow);
-    res = TimingAnalyzer_start((TimingAnalyzer_t *)&analyzerIsrHigh);
+    #ifdef CodeSnippetIsr
+    //res = TA_create((TA_t *)&analyzerIsr1msDWT, MODE_DWT_PIN, Pin_3_Control, "ISR 1ms DWT Test");
+    res = TA_create((TA_t *)&analyzerIsr1msSYS, MODE_SYSTICK_PIN, Pin_3_Control, "ISR 1ms SYS Test");
+    //res = TA_create((TA_t *)&analyzerIsr2secsDWT, MODE_DWT_PIN, Pin_2_Control, "ISR 2secs DWT Test");
+    res = TA_create((TA_t *)&analyzerIsr2secsSYS, MODE_SYSTICK_PIN, Pin_2_Control, "ISR 2secs SYS Test");
+    
+    Timer_1ms_Start();                      // Start timer hardware
+    Timer_2secs_Start();
+    
+    // Initialize isr
+    isr_1ms_StartEx(ISR_1ms_handler);       // Register the ISR     //  ???
+    isr_2secs_StartEx(ISR_2secs_handler);
+    
+    #endif
+        
+    #ifdef CodeSnippetMain
+    // Code Main
+        
+    // Analyzer's creation
+    res = TA_create((TA_t *)&analyzerDwt, MODE_DWT_PIN, Pin_1_Control, "DWT Task");
+    res = TA_create((TA_t *)&analyzerSystick, MODE_SYSTICK_PIN, Pin_2_Control, "SYSTICK Task");
+    res = TA_create((TA_t *)&analyzerPin, MODE_PIN, Pin_3_Control, "PIN Task");
+    
+    res = TA_create((TA_t *)&analyzerMath, MODE_DWT_PIN, Pin_1_Control, "Math Task");
+    
+    res = TA_start((TA_t *)&analyzerDwt);
+    res = TA_start((TA_t *)&analyzerSystick);
+    res = TA_start((TA_t *)&analyzerPin);
     // Code region you want to measure
     // do something
     CyDelay(1000);
     
-    res = TimingAnalyzer_pause((TimingAnalyzer_t *)&analyzerMain);
+    res = TA_pause((TA_t *)&analyzerDwt);
     
     CyDelay(100);   // Should NOT be counted
     
-    res = TimingAnalyzer_resume((TimingAnalyzer_t *)&analyzerMain);
+    res = TA_resume((TA_t *)&analyzerDwt);
 
     CyDelay(1000);
+    
+    res = TA_stop((TA_t *)&analyzerDwt);
+    res = TA_stop((TA_t *)&analyzerSystick);
     //CyDelay(5000);
-    res = TimingAnalyzer_stop((TimingAnalyzer_t *)&analyzerMain);
-    res = TimingAnalyzer_stop((TimingAnalyzer_t *)&analyzerIsrLow);
-    CyDelay(5000);
-    res = TimingAnalyzer_stop((TimingAnalyzer_t *)&analyzerIsrHigh);
+    res = TA_stop((TA_t *)&analyzerPin);
     
     // Printing
-    res = TimingAnalyzer_printStatus((TimingAnalyzer_t *)&analyzerMain);
-    res = TimingAnalyzer_printStatus((TimingAnalyzer_t *)&analyzerIsrLow);
+    res = TA_printStatus((TA_t *)&analyzerDwt);
+    res = TA_printStatus((TA_t *)&analyzerSystick);
+    #endif
+    
+    #ifdef CodeSnippetMath
+    res = TA_start((TA_t *)&analyzerMath);
+    
+    int add = 1;
+    int mul = 2;
+    int div = 10000;
+    float addf = 1.2;
+    float mulf = 2.2;
+    float divf = 1000.2020;  
+    double root;
+    float sine = 1000;
+    float sinefunc = 1000;
+    
+    for (int i = 0; i <= 1000; i++)
+    {
+        //++add;
+        //mul = mul * mul;  
+        //div = div / 2;
+        //++addf;
+        //mulf = mulf * mulf; 
+        //divf = divf / 2.2;
+
+        //root = sqrt(1000);
+        //sine = sin(sine);
+        sinefunc = sinf(sinefunc);
+    }
+    //CyDelay(100);
+    res = TA_stop((TA_t *)&analyzerMath);
+    
+    // Printing
+    res = TA_printStatus((TA_t *)&analyzerMath);
+    #endif
     
     UART_LOG_PutString("\r\nPrinting All Analyzers\r\n"); 
-    res = TimingAnalyzer_printAll();
+    res = TA_printAll();
     
     // Info for debugging
-    if(res != RC_SUCCESS){
+    if(res != RC_SUCCESS)
+    {
         char strError[20];
         sprintf(strError, "Error: code %u\r\n", res);
         UART_LOG_PutString(strError);
     }
 }
 
-// MISRA Violation Rule 2.2 : No dead or unused code. (All lines have a clear function (no commented-out or dead code).)
-/* RC_t DWT_Enable(uint16_t value) {
-    RC_t res = RC_SUCCESS;
-    
-    // Enable debug and trace
-    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
 
-    if ((CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk) == 0)   return RC_ERROR_NOT_INITIALIZERD;
+#ifdef CodeSnippetIsr
+/**
+* @brief ISR running at 1 ms.
+*/
+CY_ISR(ISR_1ms_handler)
+{
+    // Starting time measurement
+    TA_start((TA_t *)&analyzerIsr1msDWT);
+    TA_start((TA_t *)&analyzerIsr1msSYS);
     
-    // Enable the cycle counter
-    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    // Clear interrupt flag
+    (void)Timer_1ms_ReadStatusRegister();
+    isr_1ms_ClearPending();
+    
+    // Work - do nothing
+    
+    // Stoping time measurement
+    TA_stop((TA_t *)&analyzerIsr1msDWT);
+    TA_stop((TA_t *)&analyzerIsr1msSYS);
+}
 
-    if ((DWT->CTRL & DWT_CTRL_CYCCNTENA_Msk) == 0)  return RC_ERROR_NOT_INITIALIZERD;
+/**
+* @brief ISR running at 2 secs.
+*/
+CY_ISR(ISR_2secs_handler)
+{
+    // Starting time measurement
+    TA_start((TA_t *)&analyzerIsr2secsDWT);
+    TA_start((TA_t *)&analyzerIsr2secsSYS);
     
-    // Reset the cycle counter
-    DWT->CYCCNT = 0; 
+    // Clear interrupt flag
+    (void)Timer_2secs_ReadStatusRegister();
+    isr_2secs_ClearPending();
     
-    if(!value){
-        return DWT->CYCCNT;
-    }
+    // Work
+    CyDelay(1000);
+
+    // Stoping time measurement
+    TA_stop((TA_t *)&analyzerIsr2secsDWT);
+    TA_stop((TA_t *)&analyzerIsr2secsSYS);
     
-    return res;
-} */
+    TA_printStatus((TA_t *)&analyzerIsr2secsDWT);
+    TA_printStatus((TA_t *)&analyzerIsr2secsSYS);
+}
+#endif
 
 /* NOTE
  * 
@@ -119,7 +212,10 @@ int main(void)
  * 3. Error: passing argument 1 of 'TimingAnalyzer_create' discards 'volatile' qualifier from 
  * pointer target type - make sure the implementation also uses volatile.
  *
- * 4.
+ * 4. ISR steps - 1. Add a Timer in TopDesign
+ *                2. Write the ISR (Interrupt Service Routine) and declare it
+ *                3. Connect the ISR to the Interrupt (in main loop)
+ *                4. Clear Interrupt Flag (inside ISR)
  *
  * > MISRA-C:2004 compliancy - ~85–90%
  */

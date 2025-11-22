@@ -21,13 +21,12 @@
 *
 * Enum to hold different hardware pins/LEDs used for external timing
 */
- enum ePin{
-    PIN_NONE = 0,       /**< \No pin selected. */
-    PIN_RED,            /**< \Pin red selected. */
-    PIN_YELLOW,         /**< \Pin yellow selected. */
-    PIN_GREEN           /**< \Pin green selected. */
-} ;
-typedef enum ePin AnalyzerPin_t;
+ enum {
+    PIN_NONE = 0,   /**< \No pin selected. */
+    PIN_RED,        /**< \Pin red selected. */
+    PIN_YELLOW,     /**< \Pin yellow selected. */
+    PIN_GREEN       /**< \Pin green selected. */
+} Pin_t;
     
 /* MISRA-C:2004 Rule 8.8 — external linkage explicitly declared */
 extern void Pins_Init(void);

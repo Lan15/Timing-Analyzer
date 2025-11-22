@@ -22,9 +22,8 @@
 /*****************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "project.h"
+#include "project.h"        // includes core_cm3.h   //  (N1)
 #include "TimingAnalyzer.h"
-//#include "core_cm3.h"       //  (N1)
 #include "Pins.h"
 #include "UART_LOG.h"
 
@@ -54,10 +53,9 @@
 /*****************************************************************************/
 /* Local variable definitions ('static')                                     */
 /*****************************************************************************/
-static TimingAnalyzer_t* g_analyzers[MAX_ANALYZERS];    // (N5)     // ???
-static uint8_t g_analyzerCount = 0U;                    //          // ???
-volatile uint32_t system_ms = 0UL;                      // Global millisecond counter
-
+static TA_t* g_analyzers[MAX_ANALYZERS];    //  (N5)
+static uint8_t g_analyzer_count = 0U;       //
+volatile uint32_t g_system_ms = 0UL;        // Global millisecond counter
 
 /*****************************************************************************/
 /* Local function prototypes ('static')                                      */
@@ -72,18 +70,19 @@ volatile uint32_t system_ms = 0UL;                      // Global millisecond co
  * \param None
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_initialize(void){
+RC_t TA_initialize(void)
+{
+    RC_t res = RC_SUCCESS;
     
-    // MISRA Rule 9.1 : Variables should be initialized before use. (All registers and constants are initialized before usage.)
     // Initialize SysTick timer (1 ms)
-    // MISRA Violation Rule 2.2 : No dead or unused code. (All lines have a clear function (no commented-out or dead code).)
-    CySysTickInit();									// Activate Systick counter                 // (N7)
+    CySysTickInit();									// Activate Systick counter     // (N7)
 	CySysTickSetCallback(0, SysTick_Handler);           // Set ISR for Systick
 	CySysTickSetReload(BCLK__BUS_CLK__HZ / 1000 - 1);   // Set 1ms cycle Time
 	CySysTickEnable();									// Enable the Callback of the systick
-
+    
+    // MISRA Violation Rule 2.2 : No dead or unused code. (All lines have a clear function (no commented-out or dead code).)
     /*SysTick->CTRL  = 0;                                 // Disable Systick
-    SysTick->LOAD  = (BCLK__BUS_CLK__KHZ-1); // SYSTICK_RELOAD_VALUE; // Counts from 23999 down to 0, 1 ms        // (N8)
+    SysTick->LOAD  = (BCLK__BUS_CLK__KHZ-1); // SYSTICK_RELOAD_VALUE; // Counts from 23999 down to 0, 1 ms      // (N8)
     SysTick->VAL   = SYSTICK_RESET_VALUE;               // Clear current value
     SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;        // Selects the CPU/Preprocessor clock (24 MHz) as the counter source
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;          // Enables the interrupt every 1 ms
@@ -94,12 +93,12 @@ RC_t TimingAnalyzer_initialize(void){
     // Cycle counter must be enabled
     if ((SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) == 0)  return RC_ERROR_INVALID_STATE; */
 
-    system_ms = 0;      // Reset the global time counter
+    g_system_ms = 0;      // Reset the global time counter
     
     // Enable DWT Cycle Counter                                                                 // (N2)
     CoreDebug->DEMCR    |= CoreDebug_DEMCR_TRCENA_Msk;     // Activate the trace unit
     DWT->CYCCNT          = DWT_RESET_VALUE;                // Resets the cycle counter          // (N3)
-    DWT->CTRL           |= DWT_CTRL_CYCCNTENA_Msk;         // Starts the DWT counter running    // (N4)    // ???
+    DWT->CTRL           |= DWT_CTRL_CYCCNTENA_Msk;         // Starts the DWT counter running    // (N4)
     
     // Check if hardware were initialized
     // Trace must be enabled
@@ -117,116 +116,106 @@ RC_t TimingAnalyzer_initialize(void){
     // Set the pins low initially
     void Pins_Init();
     
-    return RC_SUCCESS;
+    return res;
 }
 
 /**
  * Func to initializes an analyzer struct with configuration and assign function pointers for pin control.
- * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
- * \param AnalyzerMode_t mode   : [IN] type of the configuration mode we need to run the analyzer
- * \param AnalyzerPin_t pin     : [IN] GPIO pin incase of Output pin config use
+ * \param TA_t *me	            : [IN/OUT] structure of Analyzer related parameters
+ * \param TA_Mode_t mode        : [IN] type of the configuration mode we need to run the analyzer
+ * \param Pin_t pin             : [IN] GPIO pin incase of Output pin config use
  * \param const char name       : [IN] name of the Analyzer
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_create(TimingAnalyzer_t *me, AnalyzerMode_t const mode, PinFunc_t const pin_ctrl, const char* const name){ // ???
+RC_t TA_create(TA_t *const me, TA_Mode_t const mode, PinFunc_t const pin_ctrl, const char* const name)
+{
     RC_t res = RC_SUCCESS;
     
     // Validate the input
     if (me == NULL_PTR || name == NULL_PTR) return RC_ERROR_NULL ;
     
-    if ((mode == MODE_DWT_PIN || mode == MODE_SYSTICK_PIN ||  mode == MODE_PIN)
-    && (pin_ctrl == NULL_PTR)) return RC_ERROR_NULL;
+    if ((mode == MODE_DWT_PIN || mode == MODE_SYSTICK_PIN ||  mode == MODE_PIN) && (pin_ctrl == NULL_PTR))
+    {
+        return RC_ERROR_NULL;
+    }
     
-    if (strlen(name) == 0UL || mode > MAX_MODES) 
+    if (strlen(name) == 0UL || mode > MAX_MODES)
+    {
         return RC_ERROR_BAD_PARAM;
+    }
     
-    if ((mode == MODE_DWT || mode == MODE_SYSTICK) 
-    && (pin_ctrl == NULL_PTR)) return RC_ERROR_BAD_PARAM; 
+    if ((mode == MODE_DWT || mode == MODE_SYSTICK) && (pin_ctrl == NULL_PTR))
+    {
+        return RC_ERROR_BAD_PARAM;
+    }
     
-    if(g_analyzerCount >= MAX_ANALYZERS)
+    if(g_analyzer_count >= MAX_ANALYZERS)
     {
         res = RC_ERROR_BUFFER_FULL;
     }
     // Add to global analyzer list
     else
     {
-        g_analyzers[g_analyzerCount++] = me;
+        g_analyzers[g_analyzer_count++] = me;
     
         // Clear the entire struct first
-        memset(me, 0, sizeof(TimingAnalyzer_t));
+        memset(me, 0, sizeof(TA_t));
     
         // Storing the info
         me->mode    = mode;
-        me->state   = STATE_CONFIGURED;
+        me->state   = STATE_IDLE;
         me->name    = name;
         me->active  = TRUE;     // (N6)
     
         // Initialize the timing fields
+        // SysTick already initialized globally
+        me->start_tick = 0UL;
+        me->stop_tick  = 0UL;
         // DWT counter is already running globally
         me->start_cycles = 0UL;
         me->stop_cycles  = 0UL;
-        // SysTick already initialized globally in TimingAnalyzer_init()
-        me->start_tick = 0UL;
-        me->stop_tick  = 0UL;
-        
+ 
         me->elapsed_time_ms = 0.0F;
         me->elapsed_cycles  = 0UL;
     
         me->accumulated_time_ms = 0.0F;
         me->accumulated_cycles = 0UL;
         
-        // No internal timer used, only external pin toggling
         // Assign pin control function pointers
         me->pin_control_func = pin_ctrl;
-
-        /* // Configuring timing source based on mode
-        switch (mode)
-        {
-            case MODE_DWT:
-            case MODE_DWT_PIN:
-                // DWT counter is already running globally
-                me->start_cycles = 0UL;
-                me->stop_cycles  = 0UL;
-                break;
-
-            case MODE_SYSTICK:
-            case MODE_SYSTICK_PIN:
-                // SysTick already initialized globally in TimingAnalyzer_init()
-                me->start_tick = 0UL;
-                me->stop_tick  = 0UL;
-                break;
-        
-            case MODE_PIN:
-                break;
-
-            default:
-                // do nothing
-                break;
-        } */
     }
-    
-    // SysTick setup is done globally in TimingAnalyzer_init(), not here
-    
+
     return res;
 }
 
 /**
  * This func will allow us to start an Analyser
- * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ * \param TA_t *me	: [IN/OUT] structure of Analyzer related parameters
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_start(TimingAnalyzer_t *me){
+RC_t TA_start(TA_t *const me)
+{
     RC_t res = RC_SUCCESS;
     
     // Validate the input
-    if (me == NULL_PTR) return RC_ERROR_NULL ;
+    if (me == NULL_PTR)
+    {
+        return RC_ERROR_NULL;
+    }
     
     // Must be a valid, active analyzer
-    if (me->active == FALSE) return RC_ERROR_INVALID_STATE;
+    if (me->active == FALSE)
+    {
+        return RC_ERROR_INVALID_STATE;
+    }
     
     // Check state - If already running, invalid call
-    if (me->state == STATE_RUNNING) return RC_ERROR_BUSY;
+    if (me->state == STATE_RUNNING)
+    {
+        return RC_ERROR_BUSY;
+    }
     
+    // MISRA Violation Rule 2.2 : No dead or unused code. (All lines have a clear function (no commented-out or dead code).)
     // Cycle counter must be enabled
     //if ((SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) == 0)  return RC_ERROR_INVALID_STATE;
     
@@ -249,17 +238,20 @@ RC_t TimingAnalyzer_start(TimingAnalyzer_t *me){
         {
            me->pin_control_func(1U);   /* Turn ON pin */
         }
+        else
+        {
+            return RC_ERROR_NULL;
+        }
     }
     
     // Fetching the counter FIRST for precision
     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
     {
         // SysTick counts in ms
-        me->start_tick = system_ms;  // Start a cycle interval
+        me->start_tick = g_system_ms;  // Start a cycle interval
     }
     else if (me->mode == MODE_DWT || me->mode == MODE_DWT_PIN)
     {
-        // DWT cycle counter
         // DWT->CYCCNT = current CPU cycle count
         me->start_cycles = DWT->CYCCNT;  // Start a cycle interval
     }
@@ -276,17 +268,24 @@ RC_t TimingAnalyzer_start(TimingAnalyzer_t *me){
 
 /**
  * This func will allow us to start an Analyser
- * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ * \param TA_t *me	: [IN/OUT] structure of Analyzer related parameters
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me){
+RC_t TA_stop(TA_t *const me)
+{
     RC_t res = RC_SUCCESS;
     
     // Validate the input
-    if (me == NULL_PTR) return RC_ERROR_NULL ;
+    if (me == NULL_PTR)
+    {
+        return RC_ERROR_NULL;
+    }
     
     // Must be a valid, active analyzer
-    if (me->active == FALSE) return RC_ERROR_INVALID_STATE;
+    if (me->active == FALSE)
+    {
+        return RC_ERROR_INVALID_STATE;
+    }
     
     // Check state - Can only stop if running or paused
     if (me->state != STATE_RUNNING && me->state != STATE_PAUSED)
@@ -298,7 +297,7 @@ RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me){
     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
     {
         // SysTick counts in ms
-        me->stop_tick = system_ms;  // Stop the cycle interval
+        me->stop_tick = g_system_ms;  // Stop the cycle interval
         
         // Calculate the elapsed time in ms
         float32_t interval_ticks;
@@ -337,10 +336,6 @@ RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me){
         
         // Duration for the iteration in ms
         me->elapsed_time_ms = ((float32_t)(me->elapsed_cycles) / (BCLK__BUS_CLK__KHZ));
-        
-        /* char strMessageA[100];
-        sprintf(strMessageA, "elapsed_time_ms: %f\r\n", me->elapsed_time_ms);
-        UART_LOG_PutString(strMessageA); */
     
         me->accumulated_cycles = me->elapsed_cycles;
     }
@@ -356,6 +351,10 @@ RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me){
         {
             me->pin_control_func(0U); /* Turn OFF pin */
         }
+        else
+        {
+            return RC_ERROR_NULL;
+        }
     }
     
     // Update state
@@ -366,17 +365,24 @@ RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me){
 
 /**
  * This func will allow us to start an Analyser
- * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ * \param TA_t *me	: [IN/OUT] structure of Analyzer related parameters
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_pause(TimingAnalyzer_t *me){
+RC_t TA_pause(TA_t *const me)
+{
     RC_t res = RC_SUCCESS;
     
     // Validate the input
-    if (me == NULL_PTR) return RC_ERROR_NULL ;
+    if (me == NULL_PTR)
+    {
+        return RC_ERROR_NULL;
+    }
     
     // Must be a valid, active analyzer
-    if (me->active == FALSE) return RC_ERROR_INVALID_STATE;
+    if (me->active == FALSE)
+    {
+        return RC_ERROR_INVALID_STATE;
+    }
     
     // Check state - Can only pause when running
     if (me->state != STATE_RUNNING)
@@ -388,7 +394,7 @@ RC_t TimingAnalyzer_pause(TimingAnalyzer_t *me){
     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
     {
         // SysTick counts in ms
-        me->stop_tick = system_ms;  // Stop current cycle interval
+        me->stop_tick = g_system_ms;  // Stop current cycle interval
         
         // Calculate the elapsed time in ms
         float32_t interval_ticks;
@@ -436,6 +442,10 @@ RC_t TimingAnalyzer_pause(TimingAnalyzer_t *me){
         {
             me->pin_control_func(0U); /* Turn OFF pin */
         }
+        else
+        {
+            return RC_ERROR_NULL;
+        }
     }
     
     // Update state
@@ -446,17 +456,24 @@ RC_t TimingAnalyzer_pause(TimingAnalyzer_t *me){
 
 /**
  * This func will allow us to start an Analyser
- * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ * \param TA_t *me	: [IN/OUT] structure of Analyzer related parameters
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_resume(TimingAnalyzer_t *me){
+RC_t TA_resume(TA_t *const me)
+{
     RC_t res = RC_SUCCESS;
     
     // Validate the input
-    if (me == NULL_PTR) return RC_ERROR_NULL ;
+    if (me == NULL_PTR) 
+    {
+        return RC_ERROR_NULL ;
+    }
     
     // Must be a valid, active analyzer
-    if (me->active == FALSE) return RC_ERROR_INVALID_STATE;
+    if (me->active == FALSE) 
+    {
+        return RC_ERROR_INVALID_STATE;
+    }
     
     // Check state - Can only resume if paused
     if (me->state != STATE_PAUSED)
@@ -471,13 +488,17 @@ RC_t TimingAnalyzer_resume(TimingAnalyzer_t *me){
         {
            me->pin_control_func(1U);   /* Turn ON pin */
         }
+        else
+        {
+            return RC_ERROR_NULL;
+        }
     }
     
     // Fetching the counter FIRST for precision
     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
     {
        // SysTick counts in ms
-        me->start_tick = system_ms;  // Start new cycle interval
+        me->start_tick = g_system_ms;  // Start new cycle interval
     }
     else if (me->mode == MODE_DWT || me->mode == MODE_DWT_PIN)
     {
@@ -497,14 +518,18 @@ RC_t TimingAnalyzer_resume(TimingAnalyzer_t *me){
 
 /**
  * Func to print the status of an Analyser using UART
- * \param TimingAnalyzer_t *me	: [IN] structure of Analyzer related parameters
+ * \param TA_t *me	: [IN] structure of Analyzer related parameters
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t const *me){
+RC_t TA_printStatus(TA_t const *const me)
+{
     RC_t res = RC_SUCCESS;
     
     // Validate the input
-    if (me == NULL_PTR) return RC_ERROR_NULL ;
+    if (me == NULL_PTR) 
+    {
+        return RC_ERROR_NULL;
+    }
     
     // Buffer to assemble string
     char buffer[100]; 
@@ -513,8 +538,8 @@ RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t const *me){
     const char* strState = "UNKNOWN";
     switch(me->state)
     {
-        case STATE_CONFIGURED:
-            strState = "CONFIGURED"; 
+        case STATE_IDLE:
+            strState = "IDLE"; 
             break;
         case STATE_STOPPED: 
             strState = "STOPPED"; 
@@ -531,7 +556,7 @@ RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t const *me){
     if(me->mode == MODE_DWT || me->mode == MODE_DWT_PIN)
     {
         snprintf(buffer, sizeof(buffer),
-            "Name: %s | State: %s | Elapsed time: %.6fms | Cycles: %ul\r\n",
+            "Name: %s | State: %s | Elapsed time: %.6fms | Cycles: %u\r\n",
              me->name, strState, me->elapsed_time_ms, me->elapsed_cycles);
     }
     else if(me->mode == MODE_PIN)
@@ -555,21 +580,26 @@ RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t const *me){
 
 /**
  * Func to loop through all analyzers and print status of each
- * \param TimingAnalyzer_t *me	: [IN] structure of Analyzer related parameters
+ * \param TA_t *me	: [IN] structure of Analyzer related parameters
  * \return RC_SUCCESS when success
 */
-RC_t TimingAnalyzer_printAll(void){
+RC_t TA_printAll(void)
+{
     RC_t res = RC_SUCCESS;
     
     boolean_t any_active = FALSE;
     
-    for (uint8_t i = 0; i < g_analyzerCount; i++)
+    for (uint8_t i = 0; i < g_analyzer_count; i++)
     {
-        TimingAnalyzer_t *me = g_analyzers[i];
-        if (me != NULL_PTR && me->active) // again ???
+        TA_t *me = g_analyzers[i];
+        if ((me != NULL_PTR) && me->active)
         {
             any_active = TRUE;
-            TimingAnalyzer_printStatus(me);
+            TA_printStatus(me);
+        }
+        else
+        {
+            return RC_ERROR_NULL;
         }
     }
     
@@ -592,7 +622,7 @@ RC_t TimingAnalyzer_printAll(void){
 */
 void SysTick_Handler(void)
 {
-    system_ms++;
+    g_system_ms++;
 }
 
 /* NOTE
