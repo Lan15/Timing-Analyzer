@@ -231,7 +231,6 @@ typedef enum
 	RC_ERROR_INVALID_STATE  	= -23,                  			/**< \brief The operation can not be performed because of a FSM-state           */
     RC_ERROR_UNKNOWN        	= -24,                  			/**< \brief Unknown error.                                                      */
     RC_ERROR_NOT_IMPLEMENTED    = -25,                  			/**< \brief The requested functionality is not implemented.                     */
-    RC_ERROR_NOT_INITIALIZERD   = -26,                  			/**< \brief The requested functionality is not initialized  properly.           */
 }RC_t;
 
 /** \brief CPU Core number */

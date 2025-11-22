@@ -117,18 +117,7 @@ typedef enum eMode AnalyzerMode_t;
 } ;
 typedef enum eState AnalyzerState_t;
 
-/**
-* \Hardware pin/LED enum
-*
-* Enum to hold different hardware pins/LEDs used for external timing
-*/
- enum ePin{
-    PIN_NONE = 0,       /**< \No pin selected. */
-    PIN_RED,            /**< \Pin red selected. */
-    PIN_YELLOW,         /**< \Pin yellow selected. */
-    PIN_GREEN           /**< \Pin green selected. */
-} ;
-typedef enum ePin AnalyzerPin_t;
+typedef void (*PinFunc_t)(uint8_t state);  /* Function ptr to pins */ /* MISRA-C:2004 Rule 8.3 — explicit typedef */
 
 //####################### Structures
 /**
@@ -140,21 +129,22 @@ struct sAnalyzer {
     /* Configuration Data */
     const char *name;               // String name for print/log
     AnalyzerMode_t mode;            // Selected measurement mode (SysTick, DWT, etc.)
-    AnalyzerPin_t pin;              // Associated output pin (or PIN_NONE)
     AnalyzerState_t state;          // Current analyzer state
+    boolean_t active;               // Flag ensuring the analyzer exists
 
     /* Measurement Data */
     uint32_t start_tick;            // Start tick (for SysTick mode)
     uint32_t stop_tick;             // Stop tick (for SysTick mode)
     uint32_t start_cycles;          // Start cycle count (for DWT mode)
     uint32_t stop_cycles;           // Stop cycle count (for DWT mode)
-    float elapsed_time_ms;          // Elapsed time in milliseconds
+    float64_t elapsed_time_ms;      // Elapsed time in milliseconds
     uint32_t elapsed_cycles;        // Elapsed CPU cycles (for DWT mode)
     
     /* Pause/Resume Support */
-    double accumulated_time_ms;     // Total time across pauses
+    float64_t accumulated_time_ms;  // Total time across pauses
     uint32_t accumulated_cycles;    // Total cycles across pauses
-
+    
+    PinFunc_t pin_control_func;     // Unified pin control function
 };
 typedef struct sAnalyzer TimingAnalyzer_t;
 
@@ -183,66 +173,75 @@ public:
 /**
  * Func to initialize of the necessary peripherals like Set up SysTick timer (1 ms), enable DWT counter, and configure GPIO pins.
  * \param None
- * \return RC_SUCCESS when success and RC_ERROR_NOT_INITIALIZERD when Hardware not properly initilized      // ???
+ * \return RC_SUCCESS when success and RC_ERROR_INVALID_STATE when Hardware not properly initilized      // ???
 */
 RC_t TimingAnalyzer_initialize(void);
 
 /**
  * Func to initializes an analyzer struct with configuration and assign function pointers for pin control.
- * \param TimingAnalyzer_t *me	    : [IN/OUT] struct of Analyzer related parameters
- * \param AnalyzerMode_t mode       : [IN] type of the configuration mode we need to run the analyzer
- * \param AnalyzerPin_t pin         : [IN] GPIO pin incase of Output pin config use
- * \param const char name           : [IN] name of the Analyzer
- * \return RC_SUCCESS when success and RC_ERROR_NULL when the me pointer is null
+ * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
+ * \param AnalyzerMode_t const mode     : [IN] type of the configuration mode we need to run the analyzer
+ * \param PinFunc_t const pin_ctrl      : [IN] func pointer to control a GPIO pin
+ * \param const char const *name        : [IN] name of the Analyzer
+ * \return RC_SUCCESS when success, RC_ERROR_NULL when a pointer param is null
+ *         RC_ERROR_BAD_PARAM when unexpected params are passed and 
+ *         RC_ERROR_BUFFER_FULL when max analyzer count is reached
 */
-RC_t TimingAnalyzer_create(TimingAnalyzer_t *me, AnalyzerMode_t mode, AnalyzerPin_t pin, const char *name);
+RC_t TimingAnalyzer_create(TimingAnalyzer_t *me, AnalyzerMode_t const mode, PinFunc_t const pin_ctrl, const char *name);
 
 /**
  * Func to start counting using SysTick or DWT and set pin HIGH if configured.
- * \param TimingAnalyzer_t *me	    : [IN/OUT] struct of Analyzer related parameters
+ * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null, 
- *         RC_ERROR_INVALID_STATE when not respective state and 
- *         RC_ERROR_NOT_INITIALIZERD when Hardware not properly initilized
+ *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or when Hardware not properly initilized and 
+ *         RC_ERROR_BUSY when an analyzer is already in running state
 */
 RC_t TimingAnalyzer_start(TimingAnalyzer_t *me);
 
 /**
  * Func to stop counting, calculate total time, and set pin LOW.
- * \param TimingAnalyzer_t *me	    : [IN/OUT] struct of Analyzer related parameters
+ * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null and 
- *         RC_ERROR_INVALID_STATE when not respective state
+ *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or already stopped
 */
 RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me);
 
 /**
  * Func to stop counting temporarily and add elapsed time since start to total time.
- * \param TimingAnalyzer_t *me	    : [IN/OUT] struct of Analyzer related parameters
+ * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null and 
- *         RC_ERROR_INVALID_STATE when not respective state
+ *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or not running
 */
 RC_t TimingAnalyzer_pause(TimingAnalyzer_t *me);
 
 /**
  * Func to resume measurement from paused state.
- * \param TimingAnalyzer_t *me	    : [IN/OUT] struct of Analyzer related parameters
+ * \param TimingAnalyzer_t *me	        : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null, 
- *         RC_ERROR_INVALID_STATE when not respective state
+ *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or not paused
 */
 RC_t TimingAnalyzer_resume(TimingAnalyzer_t *me);
 
 /**
  * Func which returns elapsed time based on SysTick or DWT reading.
- * \param TimingAnalyzer_t *me	    : [IN] struct of Analyzer related parameters
- * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null
+ * \param TimingAnalyzer_t const *me	: [IN] struct of Analyzer related parameters
+ * \return RC_SUCCESS when success and RC_ERROR_NULL when the me pointer is null
 */
-RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t *me);
+RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t const *me);
 
 /**
  * Func to print all the available Analysers
  * \param None
- * \return RC_SUCCESS when success
+ * \return RC_SUCCESS when success and RC_ERROR_BUFFER_EMTPY when analyzer array is empty
 */
 RC_t TimingAnalyzer_printAll(void);
+
+/**
+ * Func Systick Handler - used to increment the milliseconds counter each millisecond
+ * \param None
+ * \return None
+*/
+void SysTick_Handler(void);
 
 /*****************************************************************************/
 /* Private stuff, only visible for Together, declared static in cpp - File   */
