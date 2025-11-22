@@ -1,0 +1,4062 @@
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"TimingAnalyzer.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.TimingAnalyzer_initialize,"ax",%progbits
+  20              		.align	2
+  21              		.global	TimingAnalyzer_initialize
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	TimingAnalyzer_initialize, %function
+  25              	TimingAnalyzer_initialize:
+  26              	.LFB64:
+  27              		.file 1 "TimingAnalyzer.c"
+   1:TimingAnalyzer.c **** /**
+   2:TimingAnalyzer.c **** * \file <CAnalyzer.c>
+   3:TimingAnalyzer.c **** * \author <AGILAN V S>
+   4:TimingAnalyzer.c **** * \date <22-10-2025>
+   5:TimingAnalyzer.c **** *
+   6:TimingAnalyzer.c **** * \brief <Symbolic File name>
+   7:TimingAnalyzer.c **** *
+   8:TimingAnalyzer.c **** * \copyright Copyright ©2016
+   9:TimingAnalyzer.c **** * Department of electrical engineering and information technology, Hochschule Darmstadt - Universit
+  10:TimingAnalyzer.c **** * Permission to use, copy, modify, and distribute this software and its documentation for education
+  11:TimingAnalyzer.c **** * (unless permitted by h_da) and official h_da projects, is hereby granted for enrolled students of
+  12:TimingAnalyzer.c **** * this paragraph and the following paragraph appear in all copies, modifications, and distributions
+  13:TimingAnalyzer.c **** * Contact Prof.Dr.-Ing. Peter Fromm, peter.fromm@h-da.de, Birkenweg 8 64295 Darmstadt - GERMANY for
+  14:TimingAnalyzer.c **** *
+  15:TimingAnalyzer.c **** * \warning This software is a PROTOTYPE version and is not designed or intended for use in producti
+  16:TimingAnalyzer.c **** * The user represents and warrants that it will NOT use or redistribute the Software for such purpo
+  17:TimingAnalyzer.c **** * This prototype is for research purposes only. This software is provided "AS IS," without a warran
+  18:TimingAnalyzer.c **** */
+  19:TimingAnalyzer.c **** 
+  20:TimingAnalyzer.c **** /*****************************************************************************/
+  21:TimingAnalyzer.c **** /* Include files                                                             */
+  22:TimingAnalyzer.c **** /*****************************************************************************/
+  23:TimingAnalyzer.c **** #include <stdio.h>
+  24:TimingAnalyzer.c **** #include <string.h>
+  25:TimingAnalyzer.c **** #include "project.h"
+  26:TimingAnalyzer.c **** #include "TimingAnalyzer.h"
+  27:TimingAnalyzer.c **** //#include "core_cm3.h"       //  (N1)
+  28:TimingAnalyzer.c **** #include "RED_LED.h"
+  29:TimingAnalyzer.c **** #include "YELLOW_LED.h"
+  30:TimingAnalyzer.c **** #include "GREEN_LED.h"
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 2
+
+
+  31:TimingAnalyzer.c **** #include "UART_LOG.h"
+  32:TimingAnalyzer.c **** 
+  33:TimingAnalyzer.c **** /*****************************************************************************/
+  34:TimingAnalyzer.c **** /* Local pre-processor symbols/macros ('#define')                            */
+  35:TimingAnalyzer.c **** /*****************************************************************************/
+  36:TimingAnalyzer.c **** #define MAX_ANALYZERS 10
+  37:TimingAnalyzer.c **** 
+  38:TimingAnalyzer.c **** /*****************************************************************************/
+  39:TimingAnalyzer.c **** /* Global variable definitions (declared in header file with 'extern')       */
+  40:TimingAnalyzer.c **** /*****************************************************************************/
+  41:TimingAnalyzer.c **** 
+  42:TimingAnalyzer.c **** /*****************************************************************************/
+  43:TimingAnalyzer.c **** /* Local type definitions ('typedef')                                        */
+  44:TimingAnalyzer.c **** /*****************************************************************************/
+  45:TimingAnalyzer.c **** 
+  46:TimingAnalyzer.c **** /*****************************************************************************/
+  47:TimingAnalyzer.c **** /* Local variable definitions ('static')                                     */
+  48:TimingAnalyzer.c **** /*****************************************************************************/
+  49:TimingAnalyzer.c **** static TimingAnalyzer_t* g_analyzers[MAX_ANALYZERS];    // (N5)     // ???
+  50:TimingAnalyzer.c **** static uint8_t g_analyzer_count = 0;
+  51:TimingAnalyzer.c **** 
+  52:TimingAnalyzer.c **** /*****************************************************************************/
+  53:TimingAnalyzer.c **** /* Local function prototypes ('static')                                      */
+  54:TimingAnalyzer.c **** /*****************************************************************************/
+  55:TimingAnalyzer.c **** 
+  56:TimingAnalyzer.c **** /*****************************************************************************/
+  57:TimingAnalyzer.c **** /* Function implementation - global ('extern') and local ('static')          */
+  58:TimingAnalyzer.c **** /*****************************************************************************/
+  59:TimingAnalyzer.c **** 
+  60:TimingAnalyzer.c **** /**
+  61:TimingAnalyzer.c ****  * Func to initialize of the necessary peripherals like Set up SysTick timer (1 ms), enable DWT cou
+  62:TimingAnalyzer.c ****  * \param None
+  63:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+  64:TimingAnalyzer.c **** */
+  65:TimingAnalyzer.c **** RC_t TimingAnalyzer_initialize(void){
+  28              		.loc 1 65 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  66:TimingAnalyzer.c ****     
+  67:TimingAnalyzer.c ****     // Initialize SysTick timer (1 ms)
+  68:TimingAnalyzer.c **** 
+  69:TimingAnalyzer.c **** 
+  70:TimingAnalyzer.c ****     // Enable DWT Cycle Counter                                                     (N2)
+  71:TimingAnalyzer.c ****     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Activate the trace unit
+  36              		.loc 1 71 0
+  37 0002 124B     		ldr	r3, .L6
+  38 0004 DA68     		ldr	r2, [r3, #12]
+  39 0006 42F08072 		orr	r2, r2, #16777216
+  40 000a DA60     		str	r2, [r3, #12]
+  72:TimingAnalyzer.c ****     DWT->CYCCNT = 0;                                // Resets the cycle counter     (N3)
+  41              		.loc 1 72 0
+  42 000c 104A     		ldr	r2, .L6+4
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 3
+
+
+  43 000e 0021     		movs	r1, #0
+  44 0010 5160     		str	r1, [r2, #4]
+  73:TimingAnalyzer.c ****     DWT->CTRL  |= DWT_CTRL_CYCCNTENA_Msk;           // Activate the counting        (N4)    // ???
+  45              		.loc 1 73 0
+  46 0012 1168     		ldr	r1, [r2]
+  47 0014 41F00101 		orr	r1, r1, #1
+  48 0018 1160     		str	r1, [r2]
+  74:TimingAnalyzer.c ****     
+  75:TimingAnalyzer.c ****     // Trace must be enabled
+  76:TimingAnalyzer.c ****     if ((CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk) == 0)   return RC_ERROR_NOT_INITIALIZERD;
+  49              		.loc 1 76 0
+  50 001a DB68     		ldr	r3, [r3, #12]
+  51 001c 13F0807F 		tst	r3, #16777216
+  52 0020 0ED0     		beq	.L3
+  77:TimingAnalyzer.c **** 
+  78:TimingAnalyzer.c ****     // Cycle counter must be enabled
+  79:TimingAnalyzer.c ****     if ((DWT->CTRL & DWT_CTRL_CYCCNTENA_Msk) == 0)  return RC_ERROR_NOT_INITIALIZERD;
+  53              		.loc 1 79 0
+  54 0022 1368     		ldr	r3, [r2]
+  55 0024 13F0010F 		tst	r3, #1
+  56 0028 0DD0     		beq	.L4
+  80:TimingAnalyzer.c **** 
+  81:TimingAnalyzer.c ****     // Set the pins low initially
+  82:TimingAnalyzer.c ****     RED_LED_Write(0);
+  57              		.loc 1 82 0
+  58 002a 0020     		movs	r0, #0
+  59 002c FFF7FEFF 		bl	RED_LED_Write
+  60              	.LVL0:
+  83:TimingAnalyzer.c ****     YELLOW_LED_Write(0);
+  61              		.loc 1 83 0
+  62 0030 0020     		movs	r0, #0
+  63 0032 FFF7FEFF 		bl	YELLOW_LED_Write
+  64              	.LVL1:
+  84:TimingAnalyzer.c ****     GREEN_LED_Write(0);
+  65              		.loc 1 84 0
+  66 0036 0020     		movs	r0, #0
+  67 0038 FFF7FEFF 		bl	GREEN_LED_Write
+  68              	.LVL2:
+  85:TimingAnalyzer.c ****     
+  86:TimingAnalyzer.c ****     return RC_SUCCESS;
+  69              		.loc 1 86 0
+  70 003c 0020     		movs	r0, #0
+  71 003e 08BD     		pop	{r3, pc}
+  72              	.L3:
+  76:TimingAnalyzer.c **** 
+  73              		.loc 1 76 0
+  74 0040 6FF01900 		mvn	r0, #25
+  75 0044 08BD     		pop	{r3, pc}
+  76              	.L4:
+  79:TimingAnalyzer.c **** 
+  77              		.loc 1 79 0
+  78 0046 6FF01900 		mvn	r0, #25
+  87:TimingAnalyzer.c **** }
+  79              		.loc 1 87 0
+  80 004a 08BD     		pop	{r3, pc}
+  81              	.L7:
+  82              		.align	2
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 4
+
+
+  83              	.L6:
+  84 004c F0ED00E0 		.word	-536810000
+  85 0050 001000E0 		.word	-536866816
+  86              		.cfi_endproc
+  87              	.LFE64:
+  88              		.size	TimingAnalyzer_initialize, .-TimingAnalyzer_initialize
+  89              		.section	.text.TimingAnalyzer_create,"ax",%progbits
+  90              		.align	2
+  91              		.global	TimingAnalyzer_create
+  92              		.thumb
+  93              		.thumb_func
+  94              		.type	TimingAnalyzer_create, %function
+  95              	TimingAnalyzer_create:
+  96              	.LFB65:
+  88:TimingAnalyzer.c **** 
+  89:TimingAnalyzer.c **** /**
+  90:TimingAnalyzer.c ****  * Func to initializes an analyzer struct with configuration and assign function pointers for pin c
+  91:TimingAnalyzer.c ****  * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+  92:TimingAnalyzer.c ****  * \param AnalyzerMode_t mode   : [IN] type of the configuration mode we need to run the analyzer
+  93:TimingAnalyzer.c ****  * \param AnalyzerPin_t pin     : [IN] GPIO pin incase of Output pin config use
+  94:TimingAnalyzer.c ****  * \param const char name       : [IN] name of the Analyzer
+  95:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+  96:TimingAnalyzer.c **** */
+  97:TimingAnalyzer.c **** RC_t TimingAnalyzer_create(TimingAnalyzer_t *me, AnalyzerMode_t mode, AnalyzerPin_t pin, const char
+  97              		.loc 1 97 0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              	.LVL3:
+  98:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+  99:TimingAnalyzer.c ****     
+ 100:TimingAnalyzer.c ****     // Validate the input
+ 101:TimingAnalyzer.c ****     if (me == NULL) return RC_ERROR_NULL ;      // ???
+ 102              		.loc 1 101 0
+ 103 0000 0028     		cmp	r0, #0
+ 104 0002 2FD0     		beq	.L15
+  97:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 105              		.loc 1 97 0
+ 106 0004 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 107              		.cfi_def_cfa_offset 24
+ 108              		.cfi_offset 3, -24
+ 109              		.cfi_offset 4, -20
+ 110              		.cfi_offset 5, -16
+ 111              		.cfi_offset 6, -12
+ 112              		.cfi_offset 7, -8
+ 113              		.cfi_offset 14, -4
+ 114 0006 0446     		mov	r4, r0
+ 102:TimingAnalyzer.c ****     
+ 103:TimingAnalyzer.c ****     // Add to global analyzer list
+ 104:TimingAnalyzer.c ****     if (g_analyzer_count < MAX_ANALYZERS)
+ 115              		.loc 1 104 0
+ 116 0008 1848     		ldr	r0, .L18
+ 117              	.LVL4:
+ 118 000a 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 119 000c 0928     		cmp	r0, #9
+ 120 000e 05D8     		bhi	.L10
+ 105:TimingAnalyzer.c ****     {
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 5
+
+
+ 106:TimingAnalyzer.c ****         g_analyzers[g_analyzer_count++] = me;
+ 121              		.loc 1 106 0
+ 122 0010 164D     		ldr	r5, .L18
+ 123 0012 461C     		adds	r6, r0, #1
+ 124 0014 2E70     		strb	r6, [r5]
+ 125 0016 05EB8000 		add	r0, r5, r0, lsl #2
+ 126 001a 4460     		str	r4, [r0, #4]
+ 127              	.L10:
+ 128 001c 1E46     		mov	r6, r3
+ 129 001e 1746     		mov	r7, r2
+ 130 0020 0D46     		mov	r5, r1
+ 107:TimingAnalyzer.c ****     }
+ 108:TimingAnalyzer.c ****     
+ 109:TimingAnalyzer.c ****     // Clear the entire struct first ---
+ 110:TimingAnalyzer.c ****     memset(me, 0, sizeof(TimingAnalyzer_t));
+ 131              		.loc 1 110 0
+ 132 0022 3022     		movs	r2, #48
+ 133              	.LVL5:
+ 134 0024 0021     		movs	r1, #0
+ 135              	.LVL6:
+ 136 0026 2046     		mov	r0, r4
+ 137 0028 FFF7FEFF 		bl	memset
+ 138              	.LVL7:
+ 111:TimingAnalyzer.c ****     
+ 112:TimingAnalyzer.c ****     // Storing the info
+ 113:TimingAnalyzer.c ****     me->mode  = mode;
+ 139              		.loc 1 113 0
+ 140 002c 2571     		strb	r5, [r4, #4]
+ 114:TimingAnalyzer.c ****     me->pin   = pin;
+ 141              		.loc 1 114 0
+ 142 002e 6771     		strb	r7, [r4, #5]
+ 115:TimingAnalyzer.c ****     me->state = STATE_CONFIGURED;
+ 143              		.loc 1 115 0
+ 144 0030 0023     		movs	r3, #0
+ 145 0032 A371     		strb	r3, [r4, #6]
+ 116:TimingAnalyzer.c ****     me->name  = name;   // Array + Strcpy or Pointer Assignment     // ???
+ 146              		.loc 1 116 0
+ 147 0034 2660     		str	r6, [r4]
+ 117:TimingAnalyzer.c ****     
+ 118:TimingAnalyzer.c ****     // Initialize the timing fields
+ 119:TimingAnalyzer.c ****     // Configuring timing source based on mode
+ 120:TimingAnalyzer.c ****     switch (mode)
+ 148              		.loc 1 120 0
+ 149 0036 032D     		cmp	r5, #3
+ 150 0038 0AD8     		bhi	.L11
+ 151 003a DFE805F0 		tbb	[pc, r5]
+ 152              	.L13:
+ 153 003e 02       		.byte	(.L12-.L13)/2
+ 154 003f 02       		.byte	(.L12-.L13)/2
+ 155 0040 06       		.byte	(.L14-.L13)/2
+ 156 0041 06       		.byte	(.L14-.L13)/2
+ 157              		.p2align 1
+ 158              	.L12:
+ 121:TimingAnalyzer.c ****     {
+ 122:TimingAnalyzer.c ****         case MODE_DWT:
+ 123:TimingAnalyzer.c ****         case MODE_DWT_PIN:
+ 124:TimingAnalyzer.c ****             // DWT counter is already running globally
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 6
+
+
+ 125:TimingAnalyzer.c ****             me->start_cycles = 0;
+ 159              		.loc 1 125 0
+ 160 0042 0023     		movs	r3, #0
+ 161 0044 2361     		str	r3, [r4, #16]
+ 126:TimingAnalyzer.c ****             me->stop_cycles  = 0;
+ 162              		.loc 1 126 0
+ 163 0046 6361     		str	r3, [r4, #20]
+ 127:TimingAnalyzer.c ****             break;
+ 164              		.loc 1 127 0
+ 165 0048 02E0     		b	.L11
+ 166              	.L14:
+ 128:TimingAnalyzer.c **** 
+ 129:TimingAnalyzer.c ****         case MODE_SYSTICK:
+ 130:TimingAnalyzer.c ****         case MODE_SYSTICK_PIN:
+ 131:TimingAnalyzer.c ****             // SysTick already initialized globally in TimingAnalyzer_init()
+ 132:TimingAnalyzer.c ****             me->start_tick = 0;
+ 167              		.loc 1 132 0
+ 168 004a 0023     		movs	r3, #0
+ 169 004c A360     		str	r3, [r4, #8]
+ 133:TimingAnalyzer.c ****             me->stop_tick  = 0;
+ 170              		.loc 1 133 0
+ 171 004e E360     		str	r3, [r4, #12]
+ 172              	.L11:
+ 134:TimingAnalyzer.c ****             break;
+ 135:TimingAnalyzer.c ****         
+ 136:TimingAnalyzer.c ****         case MODE_PIN:
+ 137:TimingAnalyzer.c ****             // No internal timer used, only external pin toggling
+ 138:TimingAnalyzer.c ****             break;
+ 139:TimingAnalyzer.c **** 
+ 140:TimingAnalyzer.c ****         default:
+ 141:TimingAnalyzer.c ****             // do nothing
+ 142:TimingAnalyzer.c ****             break;
+ 143:TimingAnalyzer.c ****     }
+ 144:TimingAnalyzer.c ****     
+ 145:TimingAnalyzer.c ****     me->elapsed_time_ms = 0.0;
+ 173              		.loc 1 145 0
+ 174 0050 0023     		movs	r3, #0
+ 175 0052 A361     		str	r3, [r4, #24]	@ float
+ 146:TimingAnalyzer.c ****     me->elapsed_cycles  = 0;
+ 176              		.loc 1 146 0
+ 177 0054 0020     		movs	r0, #0
+ 178 0056 E061     		str	r0, [r4, #28]
+ 147:TimingAnalyzer.c ****     
+ 148:TimingAnalyzer.c ****     me->accumulated_time_ms = 0.0;
+ 179              		.loc 1 148 0
+ 180 0058 0022     		movs	r2, #0
+ 181 005a 0023     		movs	r3, #0
+ 182 005c C4E90823 		strd	r2, [r4, #32]
+ 149:TimingAnalyzer.c ****     me->accumulated_cycles = 0;
+ 183              		.loc 1 149 0
+ 184 0060 A062     		str	r0, [r4, #40]
+ 150:TimingAnalyzer.c ****     
+ 151:TimingAnalyzer.c ****     // Pin
+ 152:TimingAnalyzer.c ****     
+ 153:TimingAnalyzer.c ****     // SysTick setup is done globally in TimingAnalyzer_init(), not here
+ 154:TimingAnalyzer.c ****     
+ 155:TimingAnalyzer.c ****     return res;
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 7
+
+
+ 185              		.loc 1 155 0
+ 186 0062 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 187              	.LVL8:
+ 188              	.L15:
+ 189              		.cfi_def_cfa_offset 0
+ 190              		.cfi_restore 3
+ 191              		.cfi_restore 4
+ 192              		.cfi_restore 5
+ 193              		.cfi_restore 6
+ 194              		.cfi_restore 7
+ 195              		.cfi_restore 14
+ 101:TimingAnalyzer.c ****     
+ 196              		.loc 1 101 0
+ 197 0064 6FF00100 		mvn	r0, #1
+ 198              	.LVL9:
+ 199 0068 7047     		bx	lr
+ 200              	.L19:
+ 201 006a 00BF     		.align	2
+ 202              	.L18:
+ 203 006c 00000000 		.word	.LANCHOR0
+ 204              		.cfi_endproc
+ 205              	.LFE65:
+ 206              		.size	TimingAnalyzer_create, .-TimingAnalyzer_create
+ 207              		.section	.text.TimingAnalyzer_start,"ax",%progbits
+ 208              		.align	2
+ 209              		.global	TimingAnalyzer_start
+ 210              		.thumb
+ 211              		.thumb_func
+ 212              		.type	TimingAnalyzer_start, %function
+ 213              	TimingAnalyzer_start:
+ 214              	.LFB66:
+ 156:TimingAnalyzer.c **** }
+ 157:TimingAnalyzer.c **** 
+ 158:TimingAnalyzer.c **** /**
+ 159:TimingAnalyzer.c ****  * This func will allow us to start an Analyser
+ 160:TimingAnalyzer.c ****  * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ 161:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+ 162:TimingAnalyzer.c **** */
+ 163:TimingAnalyzer.c **** RC_t TimingAnalyzer_start(TimingAnalyzer_t *me){
+ 215              		.loc 1 163 0
+ 216              		.cfi_startproc
+ 217              		@ args = 0, pretend = 0, frame = 0
+ 218              		@ frame_needed = 0, uses_anonymous_args = 0
+ 219              		@ link register save eliminated.
+ 220              	.LVL10:
+ 164:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 165:TimingAnalyzer.c ****     
+ 166:TimingAnalyzer.c ****     // Validate the input
+ 167:TimingAnalyzer.c ****     if (me == NULL) return RC_ERROR_NULL ;
+ 221              		.loc 1 167 0
+ 222 0000 0346     		mov	r3, r0
+ 223 0002 08B3     		cbz	r0, .L24
+ 168:TimingAnalyzer.c ****     
+ 169:TimingAnalyzer.c ****     // Check state
+ 170:TimingAnalyzer.c ****     if (me->state == STATE_RUNNING)
+ 224              		.loc 1 170 0
+ 225 0004 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 8
+
+
+ 226 0006 012A     		cmp	r2, #1
+ 227 0008 21D0     		beq	.L25
+ 171:TimingAnalyzer.c ****     {
+ 172:TimingAnalyzer.c ****         // Already running - do nothing
+ 173:TimingAnalyzer.c ****         return RC_ERROR_INVALID_STATE;
+ 174:TimingAnalyzer.c ****     }
+ 175:TimingAnalyzer.c ****     
+ 176:TimingAnalyzer.c ****     // Re-enable DWT for safety, incase reset by other causes
+ 177:TimingAnalyzer.c ****     if (!(DWT->CTRL & DWT_CTRL_CYCCNTENA_Msk))
+ 228              		.loc 1 177 0
+ 229 000a 144A     		ldr	r2, .L27
+ 230 000c 1268     		ldr	r2, [r2]
+ 231 000e 12F0010F 		tst	r2, #1
+ 232 0012 06D1     		bne	.L22
+ 178:TimingAnalyzer.c ****     {
+ 179:TimingAnalyzer.c ****         DWT->CYCCNT = 0;
+ 233              		.loc 1 179 0
+ 234 0014 114A     		ldr	r2, .L27
+ 235 0016 0021     		movs	r1, #0
+ 236 0018 5160     		str	r1, [r2, #4]
+ 180:TimingAnalyzer.c ****         DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+ 237              		.loc 1 180 0
+ 238 001a 1168     		ldr	r1, [r2]
+ 239 001c 41F00101 		orr	r1, r1, #1
+ 240 0020 1160     		str	r1, [r2]
+ 241              	.L22:
+ 181:TimingAnalyzer.c ****     }
+ 182:TimingAnalyzer.c ****     
+ 183:TimingAnalyzer.c ****     // Cycle counter must be enabled
+ 184:TimingAnalyzer.c ****     if ((DWT->CTRL & DWT_CTRL_CYCCNTENA_Msk) == 0)  return RC_ERROR_NOT_INITIALIZERD;
+ 242              		.loc 1 184 0
+ 243 0022 0E4A     		ldr	r2, .L27
+ 244 0024 1268     		ldr	r2, [r2]
+ 245 0026 12F0010F 		tst	r2, #1
+ 246 002a 13D0     		beq	.L26
+ 185:TimingAnalyzer.c ****     
+ 186:TimingAnalyzer.c ****     //
+ 187:TimingAnalyzer.c ****     
+ 188:TimingAnalyzer.c ****     // Fetching the counter FIRST for precision
+ 189:TimingAnalyzer.c ****     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
+ 247              		.loc 1 189 0
+ 248 002c 1979     		ldrb	r1, [r3, #4]	@ zero_extendqisi2
+ 249 002e 8A1E     		subs	r2, r1, #2
+ 250 0030 D2B2     		uxtb	r2, r2
+ 251 0032 012A     		cmp	r2, #1
+ 252 0034 04D9     		bls	.L23
+ 190:TimingAnalyzer.c ****     {
+ 191:TimingAnalyzer.c ****         // SysTick counts in ms
+ 192:TimingAnalyzer.c **** 
+ 193:TimingAnalyzer.c ****     }
+ 194:TimingAnalyzer.c ****     else if (me->mode == MODE_DWT || me->mode == MODE_DWT_PIN)
+ 253              		.loc 1 194 0
+ 254 0036 0129     		cmp	r1, #1
+ 255 0038 02D8     		bhi	.L23
+ 195:TimingAnalyzer.c ****     {
+ 196:TimingAnalyzer.c ****         // DWT cycle counter
+ 197:TimingAnalyzer.c ****         // DWT->CYCCNT = current CPU cycle count
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 9
+
+
+ 198:TimingAnalyzer.c ****         me->start_cycles = DWT->CYCCNT;  // Start a cycle interval
+ 256              		.loc 1 198 0
+ 257 003a 084A     		ldr	r2, .L27
+ 258 003c 5268     		ldr	r2, [r2, #4]
+ 259 003e 1A61     		str	r2, [r3, #16]
+ 260              	.L23:
+ 199:TimingAnalyzer.c ****     }
+ 200:TimingAnalyzer.c ****     else if (me->mode == MODE_PIN)
+ 201:TimingAnalyzer.c ****     {
+ 202:TimingAnalyzer.c **** 
+ 203:TimingAnalyzer.c ****     }
+ 204:TimingAnalyzer.c **** 
+ 205:TimingAnalyzer.c ****     // Update state
+ 206:TimingAnalyzer.c ****     me->state = STATE_RUNNING;
+ 261              		.loc 1 206 0
+ 262 0040 0122     		movs	r2, #1
+ 263 0042 9A71     		strb	r2, [r3, #6]
+ 207:TimingAnalyzer.c ****     
+ 208:TimingAnalyzer.c ****     return res;
+ 264              		.loc 1 208 0
+ 265 0044 0020     		movs	r0, #0
+ 266              	.LVL11:
+ 267 0046 7047     		bx	lr
+ 268              	.LVL12:
+ 269              	.L24:
+ 167:TimingAnalyzer.c ****     
+ 270              		.loc 1 167 0
+ 271 0048 6FF00100 		mvn	r0, #1
+ 272              	.LVL13:
+ 273 004c 7047     		bx	lr
+ 274              	.LVL14:
+ 275              	.L25:
+ 173:TimingAnalyzer.c ****     }
+ 276              		.loc 1 173 0
+ 277 004e 6FF01600 		mvn	r0, #22
+ 278              	.LVL15:
+ 279 0052 7047     		bx	lr
+ 280              	.LVL16:
+ 281              	.L26:
+ 184:TimingAnalyzer.c ****     
+ 282              		.loc 1 184 0
+ 283 0054 6FF01900 		mvn	r0, #25
+ 284              	.LVL17:
+ 209:TimingAnalyzer.c **** }
+ 285              		.loc 1 209 0
+ 286 0058 7047     		bx	lr
+ 287              	.L28:
+ 288 005a 00BF     		.align	2
+ 289              	.L27:
+ 290 005c 001000E0 		.word	-536866816
+ 291              		.cfi_endproc
+ 292              	.LFE66:
+ 293              		.size	TimingAnalyzer_start, .-TimingAnalyzer_start
+ 294              		.section	.text.TimingAnalyzer_stop,"ax",%progbits
+ 295              		.align	2
+ 296              		.global	TimingAnalyzer_stop
+ 297              		.thumb
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 10
+
+
+ 298              		.thumb_func
+ 299              		.type	TimingAnalyzer_stop, %function
+ 300              	TimingAnalyzer_stop:
+ 301              	.LFB67:
+ 210:TimingAnalyzer.c **** 
+ 211:TimingAnalyzer.c **** /**
+ 212:TimingAnalyzer.c ****  * This func will allow us to start an Analyser
+ 213:TimingAnalyzer.c ****  * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ 214:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+ 215:TimingAnalyzer.c **** */
+ 216:TimingAnalyzer.c **** RC_t TimingAnalyzer_stop(TimingAnalyzer_t *me){
+ 302              		.loc 1 216 0
+ 303              		.cfi_startproc
+ 304              		@ args = 0, pretend = 0, frame = 104
+ 305              		@ frame_needed = 0, uses_anonymous_args = 0
+ 306              	.LVL18:
+ 217:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 218:TimingAnalyzer.c ****     
+ 219:TimingAnalyzer.c ****     // Validate the input
+ 220:TimingAnalyzer.c ****     if (me == NULL) return RC_ERROR_NULL ;
+ 307              		.loc 1 220 0
+ 308 0000 40B3     		cbz	r0, .L32
+ 216:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 309              		.loc 1 216 0
+ 310 0002 10B5     		push	{r4, lr}
+ 311              		.cfi_def_cfa_offset 8
+ 312              		.cfi_offset 4, -8
+ 313              		.cfi_offset 14, -4
+ 314 0004 9AB0     		sub	sp, sp, #104
+ 315              		.cfi_def_cfa_offset 112
+ 316 0006 0446     		mov	r4, r0
+ 221:TimingAnalyzer.c ****     
+ 222:TimingAnalyzer.c ****     // Check state
+ 223:TimingAnalyzer.c ****     if (me->state != STATE_RUNNING && me->state != STATE_PAUSED)
+ 317              		.loc 1 223 0
+ 318 0008 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 319 000a 013B     		subs	r3, r3, #1
+ 320 000c DBB2     		uxtb	r3, r3
+ 321 000e 012B     		cmp	r3, #1
+ 322 0010 23D8     		bhi	.L33
+ 224:TimingAnalyzer.c ****     {
+ 225:TimingAnalyzer.c ****         // Neither running nor paused - do nothing
+ 226:TimingAnalyzer.c ****         return RC_ERROR_INVALID_STATE;
+ 227:TimingAnalyzer.c ****     }
+ 228:TimingAnalyzer.c ****     
+ 229:TimingAnalyzer.c ****     //
+ 230:TimingAnalyzer.c ****     
+ 231:TimingAnalyzer.c ****     // Fetching the counter FIRST for precision
+ 232:TimingAnalyzer.c ****     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
+ 323              		.loc 1 232 0
+ 324 0012 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+ 325 0014 931E     		subs	r3, r2, #2
+ 326 0016 DBB2     		uxtb	r3, r3
+ 327 0018 012B     		cmp	r3, #1
+ 328 001a 17D9     		bls	.L31
+ 233:TimingAnalyzer.c ****     {
+ 234:TimingAnalyzer.c ****         // SysTick counts in ms
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 11
+
+
+ 235:TimingAnalyzer.c ****         
+ 236:TimingAnalyzer.c ****         // Calculate the elapsed cycles
+ 237:TimingAnalyzer.c ****     }
+ 238:TimingAnalyzer.c ****     else if (me->mode == MODE_DWT || me->mode == MODE_DWT_PIN)
+ 329              		.loc 1 238 0
+ 330 001c 012A     		cmp	r2, #1
+ 331 001e 15D8     		bhi	.L31
+ 332              	.LBB2:
+ 239:TimingAnalyzer.c ****     {
+ 240:TimingAnalyzer.c ****         // DWT cycle counter
+ 241:TimingAnalyzer.c ****         // DWT->CYCCNT = current CPU cycle count
+ 242:TimingAnalyzer.c ****         me->stop_cycles = DWT->CYCCNT;  // Stop the cycle interval
+ 333              		.loc 1 242 0
+ 334 0020 104B     		ldr	r3, .L35
+ 335 0022 5B68     		ldr	r3, [r3, #4]
+ 336 0024 4361     		str	r3, [r0, #20]
+ 243:TimingAnalyzer.c ****         
+ 244:TimingAnalyzer.c ****         // Calculate the elapsed cycles
+ 245:TimingAnalyzer.c ****         uint32_t interval_cycles = me->stop_cycles - me->start_cycles;
+ 337              		.loc 1 245 0
+ 338 0026 0269     		ldr	r2, [r0, #16]
+ 339 0028 9B1A     		subs	r3, r3, r2
+ 340              	.LVL19:
+ 246:TimingAnalyzer.c ****     
+ 247:TimingAnalyzer.c ****         me->elapsed_cycles = interval_cycles + me->accumulated_cycles;
+ 341              		.loc 1 247 0
+ 342 002a 826A     		ldr	r2, [r0, #40]
+ 343 002c 1344     		add	r3, r3, r2
+ 344              	.LVL20:
+ 345 002e C361     		str	r3, [r0, #28]
+ 248:TimingAnalyzer.c ****         
+ 249:TimingAnalyzer.c ****         // Duration for the iteration in ms
+ 250:TimingAnalyzer.c ****         me->elapsed_time_ms = 1.0; //((me->elapsed_cycles) / (BCLK__BUS_CLK__KHZ) * 1000.0);
+ 346              		.loc 1 250 0
+ 347 0030 4FF07E53 		mov	r3, #1065353216
+ 348 0034 8361     		str	r3, [r0, #24]	@ float
+ 251:TimingAnalyzer.c ****         
+ 252:TimingAnalyzer.c ****         char strMessageA[100];
+ 253:TimingAnalyzer.c ****         sprintf(strMessageA, "elapsed_time_ms: %f\r\n", me->elapsed_time_ms);
+ 349              		.loc 1 253 0
+ 350 0036 0022     		movs	r2, #0
+ 351 0038 0B4B     		ldr	r3, .L35+4
+ 352 003a 0C49     		ldr	r1, .L35+8
+ 353 003c 01A8     		add	r0, sp, #4
+ 354              	.LVL21:
+ 355 003e FFF7FEFF 		bl	sprintf
+ 356              	.LVL22:
+ 254:TimingAnalyzer.c ****         UART_LOG_PutString(strMessageA); 
+ 357              		.loc 1 254 0
+ 358 0042 01A8     		add	r0, sp, #4
+ 359 0044 FFF7FEFF 		bl	UART_LOG_PutString
+ 360              	.LVL23:
+ 255:TimingAnalyzer.c ****     
+ 256:TimingAnalyzer.c ****         me->accumulated_cycles = me->elapsed_cycles;
+ 361              		.loc 1 256 0
+ 362 0048 E369     		ldr	r3, [r4, #28]
+ 363 004a A362     		str	r3, [r4, #40]
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 12
+
+
+ 364              	.L31:
+ 365              	.LBE2:
+ 257:TimingAnalyzer.c ****     }
+ 258:TimingAnalyzer.c ****     else if (me->mode == MODE_PIN)
+ 259:TimingAnalyzer.c ****     {
+ 260:TimingAnalyzer.c **** 
+ 261:TimingAnalyzer.c ****     }
+ 262:TimingAnalyzer.c ****     
+ 263:TimingAnalyzer.c ****     // Update state
+ 264:TimingAnalyzer.c ****     me->state = STATE_STOPPED;
+ 366              		.loc 1 264 0
+ 367 004c 0323     		movs	r3, #3
+ 368 004e A371     		strb	r3, [r4, #6]
+ 265:TimingAnalyzer.c ****     
+ 266:TimingAnalyzer.c ****     return res;
+ 369              		.loc 1 266 0
+ 370 0050 0020     		movs	r0, #0
+ 371 0052 04E0     		b	.L30
+ 372              	.LVL24:
+ 373              	.L32:
+ 374              		.cfi_def_cfa_offset 0
+ 375              		.cfi_restore 4
+ 376              		.cfi_restore 14
+ 220:TimingAnalyzer.c ****     
+ 377              		.loc 1 220 0
+ 378 0054 6FF00100 		mvn	r0, #1
+ 379              	.LVL25:
+ 267:TimingAnalyzer.c **** }
+ 380              		.loc 1 267 0
+ 381 0058 7047     		bx	lr
+ 382              	.LVL26:
+ 383              	.L33:
+ 384              		.cfi_def_cfa_offset 112
+ 385              		.cfi_offset 4, -8
+ 386              		.cfi_offset 14, -4
+ 226:TimingAnalyzer.c ****     }
+ 387              		.loc 1 226 0
+ 388 005a 6FF01600 		mvn	r0, #22
+ 389              	.LVL27:
+ 390              	.L30:
+ 391              		.loc 1 267 0
+ 392 005e 1AB0     		add	sp, sp, #104
+ 393              		.cfi_def_cfa_offset 8
+ 394              		@ sp needed
+ 395 0060 10BD     		pop	{r4, pc}
+ 396              	.LVL28:
+ 397              	.L36:
+ 398 0062 00BF     		.align	2
+ 399              	.L35:
+ 400 0064 001000E0 		.word	-536866816
+ 401 0068 0000F03F 		.word	1072693248
+ 402 006c 00000000 		.word	.LC0
+ 403              		.cfi_endproc
+ 404              	.LFE67:
+ 405              		.size	TimingAnalyzer_stop, .-TimingAnalyzer_stop
+ 406              		.section	.text.TimingAnalyzer_pause,"ax",%progbits
+ 407              		.align	2
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 13
+
+
+ 408              		.global	TimingAnalyzer_pause
+ 409              		.thumb
+ 410              		.thumb_func
+ 411              		.type	TimingAnalyzer_pause, %function
+ 412              	TimingAnalyzer_pause:
+ 413              	.LFB68:
+ 268:TimingAnalyzer.c **** 
+ 269:TimingAnalyzer.c **** /**
+ 270:TimingAnalyzer.c ****  * This func will allow us to start an Analyser
+ 271:TimingAnalyzer.c ****  * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ 272:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+ 273:TimingAnalyzer.c **** */
+ 274:TimingAnalyzer.c **** RC_t TimingAnalyzer_pause(TimingAnalyzer_t *me){
+ 414              		.loc 1 274 0
+ 415              		.cfi_startproc
+ 416              		@ args = 0, pretend = 0, frame = 0
+ 417              		@ frame_needed = 0, uses_anonymous_args = 0
+ 418              		@ link register save eliminated.
+ 419              	.LVL29:
+ 275:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 276:TimingAnalyzer.c ****     
+ 277:TimingAnalyzer.c ****     // Validate the input
+ 278:TimingAnalyzer.c ****     if (me == NULL) return RC_ERROR_NULL ;
+ 420              		.loc 1 278 0
+ 421 0000 0346     		mov	r3, r0
+ 422 0002 A8B1     		cbz	r0, .L40
+ 279:TimingAnalyzer.c ****     
+ 280:TimingAnalyzer.c ****     // Check state
+ 281:TimingAnalyzer.c ****     if (me->state != STATE_RUNNING)
+ 423              		.loc 1 281 0
+ 424 0004 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ 425 0006 012A     		cmp	r2, #1
+ 426 0008 15D1     		bne	.L41
+ 282:TimingAnalyzer.c ****     {
+ 283:TimingAnalyzer.c ****         // Already running - do nothing
+ 284:TimingAnalyzer.c ****         return RC_ERROR_INVALID_STATE;
+ 285:TimingAnalyzer.c ****     }
+ 286:TimingAnalyzer.c ****     
+ 287:TimingAnalyzer.c ****     //
+ 288:TimingAnalyzer.c ****     
+ 289:TimingAnalyzer.c ****     // Fetching the counter FIRST for precision
+ 290:TimingAnalyzer.c ****     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
+ 427              		.loc 1 290 0
+ 428 000a 0179     		ldrb	r1, [r0, #4]	@ zero_extendqisi2
+ 429 000c 8A1E     		subs	r2, r1, #2
+ 430 000e D2B2     		uxtb	r2, r2
+ 431 0010 012A     		cmp	r2, #1
+ 432 0012 09D9     		bls	.L39
+ 291:TimingAnalyzer.c ****     {
+ 292:TimingAnalyzer.c ****         // SysTick counts in ms
+ 293:TimingAnalyzer.c ****         
+ 294:TimingAnalyzer.c ****         // Calculate the elapsed cycles
+ 295:TimingAnalyzer.c ****     }
+ 296:TimingAnalyzer.c ****     else if (me->mode == MODE_DWT || me->mode == MODE_DWT_PIN)
+ 433              		.loc 1 296 0
+ 434 0014 0129     		cmp	r1, #1
+ 435 0016 07D8     		bhi	.L39
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 14
+
+
+ 436              	.LBB3:
+ 297:TimingAnalyzer.c ****     {
+ 298:TimingAnalyzer.c ****         // DWT cycle counter
+ 299:TimingAnalyzer.c ****         me->stop_cycles = DWT->CYCCNT;  // Stop current cycle interval
+ 437              		.loc 1 299 0
+ 438 0018 084A     		ldr	r2, .L42
+ 439 001a 5268     		ldr	r2, [r2, #4]
+ 440 001c 4261     		str	r2, [r0, #20]
+ 300:TimingAnalyzer.c ****         
+ 301:TimingAnalyzer.c ****         // Calculate the elapsed cycles
+ 302:TimingAnalyzer.c ****         uint32_t interval_cycles = me->stop_cycles - me->start_cycles;
+ 441              		.loc 1 302 0
+ 442 001e 0169     		ldr	r1, [r0, #16]
+ 443 0020 521A     		subs	r2, r2, r1
+ 444              	.LVL30:
+ 303:TimingAnalyzer.c ****     
+ 304:TimingAnalyzer.c ****         me->accumulated_cycles += interval_cycles;
+ 445              		.loc 1 304 0
+ 446 0022 816A     		ldr	r1, [r0, #40]
+ 447 0024 0A44     		add	r2, r2, r1
+ 448              	.LVL31:
+ 449 0026 8262     		str	r2, [r0, #40]
+ 450              	.LVL32:
+ 451              	.L39:
+ 452              	.LBE3:
+ 305:TimingAnalyzer.c ****     }
+ 306:TimingAnalyzer.c ****     else if (me->mode == MODE_PIN)
+ 307:TimingAnalyzer.c ****     {
+ 308:TimingAnalyzer.c **** 
+ 309:TimingAnalyzer.c ****     }
+ 310:TimingAnalyzer.c ****     
+ 311:TimingAnalyzer.c ****     // Update state
+ 312:TimingAnalyzer.c ****     me->state = STATE_PAUSED;
+ 453              		.loc 1 312 0
+ 454 0028 0222     		movs	r2, #2
+ 455 002a 9A71     		strb	r2, [r3, #6]
+ 313:TimingAnalyzer.c ****     
+ 314:TimingAnalyzer.c ****     return res;
+ 456              		.loc 1 314 0
+ 457 002c 0020     		movs	r0, #0
+ 458              	.LVL33:
+ 459 002e 7047     		bx	lr
+ 460              	.LVL34:
+ 461              	.L40:
+ 278:TimingAnalyzer.c ****     
+ 462              		.loc 1 278 0
+ 463 0030 6FF00100 		mvn	r0, #1
+ 464              	.LVL35:
+ 465 0034 7047     		bx	lr
+ 466              	.LVL36:
+ 467              	.L41:
+ 284:TimingAnalyzer.c ****     }
+ 468              		.loc 1 284 0
+ 469 0036 6FF01600 		mvn	r0, #22
+ 470              	.LVL37:
+ 315:TimingAnalyzer.c **** }
+ 471              		.loc 1 315 0
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 15
+
+
+ 472 003a 7047     		bx	lr
+ 473              	.L43:
+ 474              		.align	2
+ 475              	.L42:
+ 476 003c 001000E0 		.word	-536866816
+ 477              		.cfi_endproc
+ 478              	.LFE68:
+ 479              		.size	TimingAnalyzer_pause, .-TimingAnalyzer_pause
+ 480              		.section	.text.TimingAnalyzer_resume,"ax",%progbits
+ 481              		.align	2
+ 482              		.global	TimingAnalyzer_resume
+ 483              		.thumb
+ 484              		.thumb_func
+ 485              		.type	TimingAnalyzer_resume, %function
+ 486              	TimingAnalyzer_resume:
+ 487              	.LFB69:
+ 316:TimingAnalyzer.c **** 
+ 317:TimingAnalyzer.c **** /**
+ 318:TimingAnalyzer.c ****  * This func will allow us to start an Analyser
+ 319:TimingAnalyzer.c ****  * \param TimingAnalyzer_t *me	: [IN/OUT] structure of Analyzer related parameters
+ 320:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+ 321:TimingAnalyzer.c **** */
+ 322:TimingAnalyzer.c **** RC_t TimingAnalyzer_resume(TimingAnalyzer_t *me){
+ 488              		.loc 1 322 0
+ 489              		.cfi_startproc
+ 490              		@ args = 0, pretend = 0, frame = 0
+ 491              		@ frame_needed = 0, uses_anonymous_args = 0
+ 492              		@ link register save eliminated.
+ 493              	.LVL38:
+ 323:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 324:TimingAnalyzer.c ****     
+ 325:TimingAnalyzer.c ****     // Validate the input
+ 326:TimingAnalyzer.c ****     if (me == NULL) return RC_ERROR_NULL ;
+ 494              		.loc 1 326 0
+ 495 0000 0346     		mov	r3, r0
+ 496 0002 80B1     		cbz	r0, .L47
+ 327:TimingAnalyzer.c ****     
+ 328:TimingAnalyzer.c ****     // Check state
+ 329:TimingAnalyzer.c ****     if (me->state != STATE_PAUSED)
+ 497              		.loc 1 329 0
+ 498 0004 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ 499 0006 022A     		cmp	r2, #2
+ 500 0008 10D1     		bne	.L48
+ 330:TimingAnalyzer.c ****     {
+ 331:TimingAnalyzer.c ****         // Already paused - do nothing
+ 332:TimingAnalyzer.c ****         return RC_ERROR_INVALID_STATE;
+ 333:TimingAnalyzer.c ****     }
+ 334:TimingAnalyzer.c ****     
+ 335:TimingAnalyzer.c ****     //
+ 336:TimingAnalyzer.c ****     
+ 337:TimingAnalyzer.c ****     // Fetching the counter FIRST for precision
+ 338:TimingAnalyzer.c ****     if (me->mode == MODE_SYSTICK || me->mode == MODE_SYSTICK_PIN)
+ 501              		.loc 1 338 0
+ 502 000a 0179     		ldrb	r1, [r0, #4]	@ zero_extendqisi2
+ 503 000c 8A1E     		subs	r2, r1, #2
+ 504 000e D2B2     		uxtb	r2, r2
+ 505 0010 012A     		cmp	r2, #1
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 16
+
+
+ 506 0012 04D9     		bls	.L46
+ 339:TimingAnalyzer.c ****     {
+ 340:TimingAnalyzer.c ****         // SysTick counts in ms
+ 341:TimingAnalyzer.c ****         
+ 342:TimingAnalyzer.c ****         // Calculate the elapsed cycles
+ 343:TimingAnalyzer.c ****     }
+ 344:TimingAnalyzer.c ****     else if (me->mode == MODE_DWT || me->mode == MODE_DWT_PIN)
+ 507              		.loc 1 344 0
+ 508 0014 0129     		cmp	r1, #1
+ 509 0016 02D8     		bhi	.L46
+ 345:TimingAnalyzer.c ****     {
+ 346:TimingAnalyzer.c ****         // DWT cycle counter
+ 347:TimingAnalyzer.c ****         me->start_cycles = DWT->CYCCNT;  // Start new cycle interval
+ 510              		.loc 1 347 0
+ 511 0018 064A     		ldr	r2, .L49
+ 512 001a 5268     		ldr	r2, [r2, #4]
+ 513 001c 0261     		str	r2, [r0, #16]
+ 514              	.L46:
+ 348:TimingAnalyzer.c ****     }
+ 349:TimingAnalyzer.c ****     else if (me->mode == MODE_PIN)
+ 350:TimingAnalyzer.c ****     {
+ 351:TimingAnalyzer.c **** 
+ 352:TimingAnalyzer.c ****     }
+ 353:TimingAnalyzer.c ****     
+ 354:TimingAnalyzer.c ****     // Update state
+ 355:TimingAnalyzer.c ****     me->state = STATE_RUNNING;
+ 515              		.loc 1 355 0
+ 516 001e 0122     		movs	r2, #1
+ 517 0020 9A71     		strb	r2, [r3, #6]
+ 356:TimingAnalyzer.c ****     
+ 357:TimingAnalyzer.c ****     return res;
+ 518              		.loc 1 357 0
+ 519 0022 0020     		movs	r0, #0
+ 520              	.LVL39:
+ 521 0024 7047     		bx	lr
+ 522              	.LVL40:
+ 523              	.L47:
+ 326:TimingAnalyzer.c ****     
+ 524              		.loc 1 326 0
+ 525 0026 6FF00100 		mvn	r0, #1
+ 526              	.LVL41:
+ 527 002a 7047     		bx	lr
+ 528              	.LVL42:
+ 529              	.L48:
+ 332:TimingAnalyzer.c ****     }
+ 530              		.loc 1 332 0
+ 531 002c 6FF01600 		mvn	r0, #22
+ 532              	.LVL43:
+ 358:TimingAnalyzer.c **** }
+ 533              		.loc 1 358 0
+ 534 0030 7047     		bx	lr
+ 535              	.L50:
+ 536 0032 00BF     		.align	2
+ 537              	.L49:
+ 538 0034 001000E0 		.word	-536866816
+ 539              		.cfi_endproc
+ 540              	.LFE69:
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 17
+
+
+ 541              		.size	TimingAnalyzer_resume, .-TimingAnalyzer_resume
+ 542              		.global	__aeabi_f2d
+ 543              		.section	.text.TimingAnalyzer_printStatus,"ax",%progbits
+ 544              		.align	2
+ 545              		.global	TimingAnalyzer_printStatus
+ 546              		.thumb
+ 547              		.thumb_func
+ 548              		.type	TimingAnalyzer_printStatus, %function
+ 549              	TimingAnalyzer_printStatus:
+ 550              	.LFB70:
+ 359:TimingAnalyzer.c **** 
+ 360:TimingAnalyzer.c **** /**
+ 361:TimingAnalyzer.c ****  * Func to print the status of an Analyser using UART
+ 362:TimingAnalyzer.c ****  * \param TimingAnalyzer_t *me	: [IN] structure of Analyzer related parameters
+ 363:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+ 364:TimingAnalyzer.c **** */
+ 365:TimingAnalyzer.c **** RC_t TimingAnalyzer_printStatus(TimingAnalyzer_t *me){
+ 551              		.loc 1 365 0
+ 552              		.cfi_startproc
+ 553              		@ args = 0, pretend = 0, frame = 104
+ 554              		@ frame_needed = 0, uses_anonymous_args = 0
+ 555              	.LVL44:
+ 366:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 367:TimingAnalyzer.c ****     
+ 368:TimingAnalyzer.c ****     // Validate the input
+ 369:TimingAnalyzer.c ****     if (me == NULL) return RC_ERROR_NULL ;
+ 556              		.loc 1 369 0
+ 557 0000 30B3     		cbz	r0, .L59
+ 365:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 558              		.loc 1 365 0
+ 559 0002 30B5     		push	{r4, r5, lr}
+ 560              		.cfi_def_cfa_offset 12
+ 561              		.cfi_offset 4, -12
+ 562              		.cfi_offset 5, -8
+ 563              		.cfi_offset 14, -4
+ 564 0004 A1B0     		sub	sp, sp, #132
+ 565              		.cfi_def_cfa_offset 144
+ 566 0006 0346     		mov	r3, r0
+ 567              	.LVL45:
+ 370:TimingAnalyzer.c ****     
+ 371:TimingAnalyzer.c ****     // Buffer to assemble string
+ 372:TimingAnalyzer.c ****     char buffer[100]; 
+ 373:TimingAnalyzer.c **** 
+ 374:TimingAnalyzer.c ****     // Format state as string
+ 375:TimingAnalyzer.c ****     const char* strState = "UNKNOWN";
+ 376:TimingAnalyzer.c ****     switch(me->state)
+ 568              		.loc 1 376 0
+ 569 0008 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ 570 000a 032A     		cmp	r2, #3
+ 571 000c 03D8     		bhi	.L53
+ 572 000e DFE802F0 		tbb	[pc, r2]
+ 573              	.L55:
+ 574 0012 0A       		.byte	(.L60-.L55)/2
+ 575 0013 06       		.byte	(.L56-.L55)/2
+ 576 0014 08       		.byte	(.L57-.L55)/2
+ 577 0015 04       		.byte	(.L58-.L55)/2
+ 578              		.p2align 1
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 18
+
+
+ 579              	.L53:
+ 375:TimingAnalyzer.c ****     switch(me->state)
+ 580              		.loc 1 375 0
+ 581 0016 114C     		ldr	r4, .L63
+ 582 0018 06E0     		b	.L54
+ 583              	.L58:
+ 584              	.LVL46:
+ 377:TimingAnalyzer.c ****     {
+ 378:TimingAnalyzer.c ****         case STATE_CONFIGURED:
+ 379:TimingAnalyzer.c ****             strState = "CONFIGURED"; 
+ 380:TimingAnalyzer.c ****             break;
+ 381:TimingAnalyzer.c ****         case STATE_STOPPED: 
+ 382:TimingAnalyzer.c ****             strState = "STOPPED"; 
+ 585              		.loc 1 382 0
+ 586 001a 114C     		ldr	r4, .L63+4
+ 383:TimingAnalyzer.c ****             break;
+ 587              		.loc 1 383 0
+ 588 001c 04E0     		b	.L54
+ 589              	.LVL47:
+ 590              	.L56:
+ 384:TimingAnalyzer.c ****         case STATE_RUNNING: 
+ 385:TimingAnalyzer.c ****             strState = "RUNNING"; 
+ 591              		.loc 1 385 0
+ 592 001e 114C     		ldr	r4, .L63+8
+ 386:TimingAnalyzer.c ****             break;
+ 593              		.loc 1 386 0
+ 594 0020 02E0     		b	.L54
+ 595              	.LVL48:
+ 596              	.L57:
+ 387:TimingAnalyzer.c ****         case STATE_PAUSED:  
+ 388:TimingAnalyzer.c ****             strState = "PAUSED"; 
+ 597              		.loc 1 388 0
+ 598 0022 114C     		ldr	r4, .L63+12
+ 389:TimingAnalyzer.c ****             break;
+ 599              		.loc 1 389 0
+ 600 0024 00E0     		b	.L54
+ 601              	.LVL49:
+ 602              	.L60:
+ 379:TimingAnalyzer.c ****             break;
+ 603              		.loc 1 379 0
+ 604 0026 114C     		ldr	r4, .L63+16
+ 605              	.LVL50:
+ 606              	.L54:
+ 390:TimingAnalyzer.c ****     }
+ 391:TimingAnalyzer.c **** 
+ 392:TimingAnalyzer.c ****     // Assemble full status string
+ 393:TimingAnalyzer.c ****     snprintf(buffer, sizeof(buffer),
+ 394:TimingAnalyzer.c ****             "Name: %s | State: %s | Elapsed time: %.6fms | Cycles: %lu\r\n",
+ 395:TimingAnalyzer.c ****             me->name,
+ 396:TimingAnalyzer.c ****             strState,
+ 397:TimingAnalyzer.c ****             me->elapsed_time_ms,
+ 607              		.loc 1 397 0
+ 608 0028 9869     		ldr	r0, [r3, #24]	@ float
+ 609              	.LVL51:
+ 393:TimingAnalyzer.c ****             "Name: %s | State: %s | Elapsed time: %.6fms | Cycles: %lu\r\n",
+ 610              		.loc 1 393 0
+ 611 002a 1D68     		ldr	r5, [r3]
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 19
+
+
+ 612 002c DB69     		ldr	r3, [r3, #28]
+ 613              	.LVL52:
+ 614 002e 0493     		str	r3, [sp, #16]
+ 615 0030 FFF7FEFF 		bl	__aeabi_f2d
+ 616              	.LVL53:
+ 617 0034 CDE90201 		strd	r0, [sp, #8]
+ 618 0038 0094     		str	r4, [sp]
+ 619 003a 2B46     		mov	r3, r5
+ 620 003c 0C4A     		ldr	r2, .L63+20
+ 621 003e 6421     		movs	r1, #100
+ 622 0040 07A8     		add	r0, sp, #28
+ 623 0042 FFF7FEFF 		bl	snprintf
+ 624              	.LVL54:
+ 398:TimingAnalyzer.c ****             me->elapsed_cycles);
+ 399:TimingAnalyzer.c **** 
+ 400:TimingAnalyzer.c ****     // Send string to UART (only once)
+ 401:TimingAnalyzer.c ****     UART_LOG_PutString(buffer);
+ 625              		.loc 1 401 0
+ 626 0046 07A8     		add	r0, sp, #28
+ 627 0048 FFF7FEFF 		bl	UART_LOG_PutString
+ 628              	.LVL55:
+ 402:TimingAnalyzer.c ****     
+ 403:TimingAnalyzer.c ****     return res;
+ 629              		.loc 1 403 0
+ 630 004c 0020     		movs	r0, #0
+ 631 004e 02E0     		b	.L52
+ 632              	.LVL56:
+ 633              	.L59:
+ 634              		.cfi_def_cfa_offset 0
+ 635              		.cfi_restore 4
+ 636              		.cfi_restore 5
+ 637              		.cfi_restore 14
+ 369:TimingAnalyzer.c ****     
+ 638              		.loc 1 369 0
+ 639 0050 6FF00100 		mvn	r0, #1
+ 640              	.LVL57:
+ 641 0054 7047     		bx	lr
+ 642              	.LVL58:
+ 643              	.L52:
+ 644              		.cfi_def_cfa_offset 144
+ 645              		.cfi_offset 4, -12
+ 646              		.cfi_offset 5, -8
+ 647              		.cfi_offset 14, -4
+ 404:TimingAnalyzer.c **** }
+ 648              		.loc 1 404 0
+ 649 0056 21B0     		add	sp, sp, #132
+ 650              		.cfi_def_cfa_offset 12
+ 651              		@ sp needed
+ 652 0058 30BD     		pop	{r4, r5, pc}
+ 653              	.LVL59:
+ 654              	.L64:
+ 655 005a 00BF     		.align	2
+ 656              	.L63:
+ 657 005c 18000000 		.word	.LC1
+ 658 0060 2C000000 		.word	.LC3
+ 659 0064 34000000 		.word	.LC4
+ 660 0068 3C000000 		.word	.LC5
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 20
+
+
+ 661 006c 20000000 		.word	.LC2
+ 662 0070 44000000 		.word	.LC6
+ 663              		.cfi_endproc
+ 664              	.LFE70:
+ 665              		.size	TimingAnalyzer_printStatus, .-TimingAnalyzer_printStatus
+ 666              		.section	.text.TimingAnalyzer_printAll,"ax",%progbits
+ 667              		.align	2
+ 668              		.global	TimingAnalyzer_printAll
+ 669              		.thumb
+ 670              		.thumb_func
+ 671              		.type	TimingAnalyzer_printAll, %function
+ 672              	TimingAnalyzer_printAll:
+ 673              	.LFB71:
+ 405:TimingAnalyzer.c **** 
+ 406:TimingAnalyzer.c **** /**
+ 407:TimingAnalyzer.c ****  * Func to loop through all analyzers and print status of each
+ 408:TimingAnalyzer.c ****  * \param TimingAnalyzer_t *me	: [IN] structure of Analyzer related parameters
+ 409:TimingAnalyzer.c ****  * \return RC_SUCCESS when success
+ 410:TimingAnalyzer.c **** */
+ 411:TimingAnalyzer.c **** RC_t TimingAnalyzer_printAll(void){
+ 674              		.loc 1 411 0
+ 675              		.cfi_startproc
+ 676              		@ args = 0, pretend = 0, frame = 0
+ 677              		@ frame_needed = 0, uses_anonymous_args = 0
+ 678 0000 10B5     		push	{r4, lr}
+ 679              		.cfi_def_cfa_offset 8
+ 680              		.cfi_offset 4, -8
+ 681              		.cfi_offset 14, -4
+ 682              	.LVL60:
+ 412:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 413:TimingAnalyzer.c ****     
+ 414:TimingAnalyzer.c ****     if(g_analyzers[0] == 0 && g_analyzer_count == 0)
+ 683              		.loc 1 414 0
+ 684 0002 0D4B     		ldr	r3, .L71
+ 685 0004 5B68     		ldr	r3, [r3, #4]
+ 686 0006 2BB9     		cbnz	r3, .L66
+ 687              		.loc 1 414 0 is_stmt 0 discriminator 1
+ 688 0008 0B4B     		ldr	r3, .L71
+ 689 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 690 000c 13B9     		cbnz	r3, .L66
+ 415:TimingAnalyzer.c ****     {
+ 416:TimingAnalyzer.c ****         // Array is empty
+ 417:TimingAnalyzer.c ****         UART_LOG_PutString("\r\nInfo: No analyzer instance available to print.\r\n");
+ 691              		.loc 1 417 0 is_stmt 1
+ 692 000e 0B48     		ldr	r0, .L71+4
+ 693 0010 FFF7FEFF 		bl	UART_LOG_PutString
+ 694              	.LVL61:
+ 695              	.L66:
+ 411:TimingAnalyzer.c ****     RC_t res = RC_SUCCESS;
+ 696              		.loc 1 411 0 discriminator 1
+ 697 0014 0024     		movs	r4, #0
+ 698 0016 08E0     		b	.L67
+ 699              	.LVL62:
+ 700              	.L69:
+ 701              	.LBB4:
+ 702              	.LBB5:
+ 418:TimingAnalyzer.c ****     }
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 21
+
+
+ 419:TimingAnalyzer.c ****     
+ 420:TimingAnalyzer.c ****     for (uint8_t i = 0; i < g_analyzer_count; i++)
+ 421:TimingAnalyzer.c ****     {
+ 422:TimingAnalyzer.c ****         TimingAnalyzer_t *me = g_analyzers[i];
+ 703              		.loc 1 422 0
+ 704 0018 074B     		ldr	r3, .L71
+ 705 001a 03EB8403 		add	r3, r3, r4, lsl #2
+ 706 001e 5868     		ldr	r0, [r3, #4]
+ 707              	.LVL63:
+ 423:TimingAnalyzer.c ****         if (me != NULL) // again ???
+ 708              		.loc 1 423 0
+ 709 0020 08B1     		cbz	r0, .L68
+ 424:TimingAnalyzer.c ****         {
+ 425:TimingAnalyzer.c ****             TimingAnalyzer_printStatus(me);
+ 710              		.loc 1 425 0
+ 711 0022 FFF7FEFF 		bl	TimingAnalyzer_printStatus
+ 712              	.LVL64:
+ 713              	.L68:
+ 714              	.LBE5:
+ 420:TimingAnalyzer.c ****     {
+ 715              		.loc 1 420 0 discriminator 2
+ 716 0026 0134     		adds	r4, r4, #1
+ 717              	.LVL65:
+ 718 0028 E4B2     		uxtb	r4, r4
+ 719              	.LVL66:
+ 720              	.L67:
+ 420:TimingAnalyzer.c ****     {
+ 721              		.loc 1 420 0 is_stmt 0 discriminator 1
+ 722 002a 034B     		ldr	r3, .L71
+ 723 002c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 724 002e 9C42     		cmp	r4, r3
+ 725 0030 F2D3     		bcc	.L69
+ 726              	.LBE4:
+ 426:TimingAnalyzer.c ****         }
+ 427:TimingAnalyzer.c ****     }
+ 428:TimingAnalyzer.c ****     
+ 429:TimingAnalyzer.c ****     return res;
+ 430:TimingAnalyzer.c **** }
+ 727              		.loc 1 430 0 is_stmt 1
+ 728 0032 0020     		movs	r0, #0
+ 729 0034 10BD     		pop	{r4, pc}
+ 730              	.LVL67:
+ 731              	.L72:
+ 732 0036 00BF     		.align	2
+ 733              	.L71:
+ 734 0038 00000000 		.word	.LANCHOR0
+ 735 003c 80000000 		.word	.LC7
+ 736              		.cfi_endproc
+ 737              	.LFE71:
+ 738              		.size	TimingAnalyzer_printAll, .-TimingAnalyzer_printAll
+ 739              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 740              		.align	2
+ 741              	.LC0:
+ 742 0000 656C6170 		.ascii	"elapsed_time_ms: %f\015\012\000"
+ 742      7365645F 
+ 742      74696D65 
+ 742      5F6D733A 
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 22
+
+
+ 742      2025660D 
+ 743 0016 0000     		.space	2
+ 744              	.LC1:
+ 745 0018 554E4B4E 		.ascii	"UNKNOWN\000"
+ 745      4F574E00 
+ 746              	.LC2:
+ 747 0020 434F4E46 		.ascii	"CONFIGURED\000"
+ 747      49475552 
+ 747      454400
+ 748 002b 00       		.space	1
+ 749              	.LC3:
+ 750 002c 53544F50 		.ascii	"STOPPED\000"
+ 750      50454400 
+ 751              	.LC4:
+ 752 0034 52554E4E 		.ascii	"RUNNING\000"
+ 752      494E4700 
+ 753              	.LC5:
+ 754 003c 50415553 		.ascii	"PAUSED\000"
+ 754      454400
+ 755 0043 00       		.space	1
+ 756              	.LC6:
+ 757 0044 4E616D65 		.ascii	"Name: %s | State: %s | Elapsed time: %.6fms | Cycle"
+ 757      3A202573 
+ 757      207C2053 
+ 757      74617465 
+ 757      3A202573 
+ 758 0077 733A2025 		.ascii	"s: %lu\015\012\000"
+ 758      6C750D0A 
+ 758      00
+ 759              	.LC7:
+ 760 0080 0D0A496E 		.ascii	"\015\012Info: No analyzer instance available to pri"
+ 760      666F3A20 
+ 760      4E6F2061 
+ 760      6E616C79 
+ 760      7A657220 
+ 761 00ad 6E742E0D 		.ascii	"nt.\015\012\000"
+ 761      0A00
+ 762              		.bss
+ 763              		.align	2
+ 764              		.set	.LANCHOR0,. + 0
+ 765              		.type	g_analyzer_count, %object
+ 766              		.size	g_analyzer_count, 1
+ 767              	g_analyzer_count:
+ 768 0000 00       		.space	1
+ 769 0001 000000   		.space	3
+ 770              		.type	g_analyzers, %object
+ 771              		.size	g_analyzers, 40
+ 772              	g_analyzers:
+ 773 0004 00000000 		.space	40
+ 773      00000000 
+ 773      00000000 
+ 773      00000000 
+ 773      00000000 
+ 774              		.text
+ 775              	.Letext0:
+ 776              		.file 2 "c:\\h_da softwares & projects\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.1\\
+ 777              		.file 3 "c:\\h_da softwares & projects\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.1\\
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 23
+
+
+ 778              		.file 4 "Generated_Source\\PSoC5/core_cm3.h"
+ 779              		.file 5 ".\\source\\bsw/global.h"
+ 780              		.file 6 "TimingAnalyzer.h"
+ 781              		.file 7 "Generated_Source\\PSoC5/RED_LED.h"
+ 782              		.file 8 "Generated_Source\\PSoC5/YELLOW_LED.h"
+ 783              		.file 9 "Generated_Source\\PSoC5/GREEN_LED.h"
+ 784              		.file 10 "c:\\h_da softwares & projects\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.1\
+ 785              		.file 11 "Generated_Source\\PSoC5/UART_LOG.h"
+ 786              		.section	.debug_info,"",%progbits
+ 787              	.Ldebug_info0:
+ 788 0000 49080000 		.4byte	0x849
+ 789 0004 0400     		.2byte	0x4
+ 790 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 791 000a 04       		.byte	0x4
+ 792 000b 01       		.uleb128 0x1
+ 793 000c EB010000 		.4byte	.LASF128
+ 794 0010 0C       		.byte	0xc
+ 795 0011 7F010000 		.4byte	.LASF129
+ 796 0015 36060000 		.4byte	.LASF130
+ 797 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 798 001d 00000000 		.4byte	0
+ 799 0021 00000000 		.4byte	.Ldebug_line0
+ 800 0025 02       		.uleb128 0x2
+ 801 0026 01       		.byte	0x1
+ 802 0027 06       		.byte	0x6
+ 803 0028 C0060000 		.4byte	.LASF0
+ 804 002c 03       		.uleb128 0x3
+ 805 002d B6050000 		.4byte	.LASF4
+ 806 0031 02       		.byte	0x2
+ 807 0032 1D       		.byte	0x1d
+ 808 0033 37000000 		.4byte	0x37
+ 809 0037 02       		.uleb128 0x2
+ 810 0038 01       		.byte	0x1
+ 811 0039 08       		.byte	0x8
+ 812 003a CC040000 		.4byte	.LASF1
+ 813 003e 02       		.uleb128 0x2
+ 814 003f 02       		.byte	0x2
+ 815 0040 05       		.byte	0x5
+ 816 0041 20050000 		.4byte	.LASF2
+ 817 0045 02       		.uleb128 0x2
+ 818 0046 02       		.byte	0x2
+ 819 0047 07       		.byte	0x7
+ 820 0048 D7060000 		.4byte	.LASF3
+ 821 004c 03       		.uleb128 0x3
+ 822 004d B9000000 		.4byte	.LASF5
+ 823 0051 02       		.byte	0x2
+ 824 0052 3F       		.byte	0x3f
+ 825 0053 57000000 		.4byte	0x57
+ 826 0057 02       		.uleb128 0x2
+ 827 0058 04       		.byte	0x4
+ 828 0059 05       		.byte	0x5
+ 829 005a 2A050000 		.4byte	.LASF6
+ 830 005e 03       		.uleb128 0x3
+ 831 005f 6B060000 		.4byte	.LASF7
+ 832 0063 02       		.byte	0x2
+ 833 0064 41       		.byte	0x41
+ 834 0065 69000000 		.4byte	0x69
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 24
+
+
+ 835 0069 02       		.uleb128 0x2
+ 836 006a 04       		.byte	0x4
+ 837 006b 07       		.byte	0x7
+ 838 006c EB050000 		.4byte	.LASF8
+ 839 0070 02       		.uleb128 0x2
+ 840 0071 08       		.byte	0x8
+ 841 0072 05       		.byte	0x5
+ 842 0073 83030000 		.4byte	.LASF9
+ 843 0077 02       		.uleb128 0x2
+ 844 0078 08       		.byte	0x8
+ 845 0079 07       		.byte	0x7
+ 846 007a A0010000 		.4byte	.LASF10
+ 847 007e 04       		.uleb128 0x4
+ 848 007f 04       		.byte	0x4
+ 849 0080 05       		.byte	0x5
+ 850 0081 696E7400 		.ascii	"int\000"
+ 851 0085 02       		.uleb128 0x2
+ 852 0086 04       		.byte	0x4
+ 853 0087 07       		.byte	0x7
+ 854 0088 8A000000 		.4byte	.LASF11
+ 855 008c 02       		.uleb128 0x2
+ 856 008d 08       		.byte	0x8
+ 857 008e 04       		.byte	0x4
+ 858 008f 8C040000 		.4byte	.LASF12
+ 859 0093 02       		.uleb128 0x2
+ 860 0094 04       		.byte	0x4
+ 861 0095 07       		.byte	0x7
+ 862 0096 E2050000 		.4byte	.LASF13
+ 863 009a 02       		.uleb128 0x2
+ 864 009b 01       		.byte	0x1
+ 865 009c 08       		.byte	0x8
+ 866 009d CE020000 		.4byte	.LASF14
+ 867 00a1 05       		.uleb128 0x5
+ 868 00a2 04       		.byte	0x4
+ 869 00a3 A7000000 		.4byte	0xa7
+ 870 00a7 06       		.uleb128 0x6
+ 871 00a8 9A000000 		.4byte	0x9a
+ 872 00ac 03       		.uleb128 0x3
+ 873 00ad 17030000 		.4byte	.LASF15
+ 874 00b1 03       		.byte	0x3
+ 875 00b2 18       		.byte	0x18
+ 876 00b3 2C000000 		.4byte	0x2c
+ 877 00b7 03       		.uleb128 0x3
+ 878 00b8 18060000 		.4byte	.LASF16
+ 879 00bc 03       		.byte	0x3
+ 880 00bd 2C       		.byte	0x2c
+ 881 00be 4C000000 		.4byte	0x4c
+ 882 00c2 03       		.uleb128 0x3
+ 883 00c3 2E010000 		.4byte	.LASF17
+ 884 00c7 03       		.byte	0x3
+ 885 00c8 30       		.byte	0x30
+ 886 00c9 5E000000 		.4byte	0x5e
+ 887 00cd 02       		.uleb128 0x2
+ 888 00ce 04       		.byte	0x4
+ 889 00cf 04       		.byte	0x4
+ 890 00d0 55010000 		.4byte	.LASF18
+ 891 00d4 02       		.uleb128 0x2
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 25
+
+
+ 892 00d5 08       		.byte	0x8
+ 893 00d6 04       		.byte	0x4
+ 894 00d7 04070000 		.4byte	.LASF19
+ 895 00db 07       		.uleb128 0x7
+ 896 00dc C2000000 		.4byte	0xc2
+ 897 00e0 06       		.uleb128 0x6
+ 898 00e1 DB000000 		.4byte	0xdb
+ 899 00e5 08       		.uleb128 0x8
+ 900 00e6 C2000000 		.4byte	0xc2
+ 901 00ea F5000000 		.4byte	0xf5
+ 902 00ee 09       		.uleb128 0x9
+ 903 00ef 93000000 		.4byte	0x93
+ 904 00f3 00       		.byte	0
+ 905 00f4 00       		.byte	0
+ 906 00f5 0A       		.uleb128 0xa
+ 907 00f6 5C       		.byte	0x5c
+ 908 00f7 04       		.byte	0x4
+ 909 00f8 4F03     		.2byte	0x34f
+ 910 00fa 2A020000 		.4byte	0x22a
+ 911 00fe 0B       		.uleb128 0xb
+ 912 00ff 59070000 		.4byte	.LASF20
+ 913 0103 04       		.byte	0x4
+ 914 0104 5103     		.2byte	0x351
+ 915 0106 DB000000 		.4byte	0xdb
+ 916 010a 00       		.byte	0
+ 917 010b 0B       		.uleb128 0xb
+ 918 010c 3A030000 		.4byte	.LASF21
+ 919 0110 04       		.byte	0x4
+ 920 0111 5203     		.2byte	0x352
+ 921 0113 DB000000 		.4byte	0xdb
+ 922 0117 04       		.byte	0x4
+ 923 0118 0B       		.uleb128 0xb
+ 924 0119 83000000 		.4byte	.LASF22
+ 925 011d 04       		.byte	0x4
+ 926 011e 5303     		.2byte	0x353
+ 927 0120 DB000000 		.4byte	0xdb
+ 928 0124 08       		.byte	0x8
+ 929 0125 0B       		.uleb128 0xb
+ 930 0126 43070000 		.4byte	.LASF23
+ 931 012a 04       		.byte	0x4
+ 932 012b 5403     		.2byte	0x354
+ 933 012d DB000000 		.4byte	0xdb
+ 934 0131 0C       		.byte	0xc
+ 935 0132 0B       		.uleb128 0xb
+ 936 0133 83040000 		.4byte	.LASF24
+ 937 0137 04       		.byte	0x4
+ 938 0138 5503     		.2byte	0x355
+ 939 013a DB000000 		.4byte	0xdb
+ 940 013e 10       		.byte	0x10
+ 941 013f 0B       		.uleb128 0xb
+ 942 0140 C7020000 		.4byte	.LASF25
+ 943 0144 04       		.byte	0x4
+ 944 0145 5603     		.2byte	0x356
+ 945 0147 DB000000 		.4byte	0xdb
+ 946 014b 14       		.byte	0x14
+ 947 014c 0B       		.uleb128 0xb
+ 948 014d B2060000 		.4byte	.LASF26
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 26
+
+
+ 949 0151 04       		.byte	0x4
+ 950 0152 5703     		.2byte	0x357
+ 951 0154 DB000000 		.4byte	0xdb
+ 952 0158 18       		.byte	0x18
+ 953 0159 0B       		.uleb128 0xb
+ 954 015a 20060000 		.4byte	.LASF27
+ 955 015e 04       		.byte	0x4
+ 956 015f 5803     		.2byte	0x358
+ 957 0161 E0000000 		.4byte	0xe0
+ 958 0165 1C       		.byte	0x1c
+ 959 0166 0B       		.uleb128 0xb
+ 960 0167 11000000 		.4byte	.LASF28
+ 961 016b 04       		.byte	0x4
+ 962 016c 5903     		.2byte	0x359
+ 963 016e DB000000 		.4byte	0xdb
+ 964 0172 20       		.byte	0x20
+ 965 0173 0B       		.uleb128 0xb
+ 966 0174 C5030000 		.4byte	.LASF29
+ 967 0178 04       		.byte	0x4
+ 968 0179 5A03     		.2byte	0x35a
+ 969 017b DB000000 		.4byte	0xdb
+ 970 017f 24       		.byte	0x24
+ 971 0180 0B       		.uleb128 0xb
+ 972 0181 EF020000 		.4byte	.LASF30
+ 973 0185 04       		.byte	0x4
+ 974 0186 5B03     		.2byte	0x35b
+ 975 0188 DB000000 		.4byte	0xdb
+ 976 018c 28       		.byte	0x28
+ 977 018d 0B       		.uleb128 0xb
+ 978 018e 02050000 		.4byte	.LASF31
+ 979 0192 04       		.byte	0x4
+ 980 0193 5C03     		.2byte	0x35c
+ 981 0195 E5000000 		.4byte	0xe5
+ 982 0199 2C       		.byte	0x2c
+ 983 019a 0B       		.uleb128 0xb
+ 984 019b 17000000 		.4byte	.LASF32
+ 985 019f 04       		.byte	0x4
+ 986 01a0 5D03     		.2byte	0x35d
+ 987 01a2 DB000000 		.4byte	0xdb
+ 988 01a6 30       		.byte	0x30
+ 989 01a7 0B       		.uleb128 0xb
+ 990 01a8 CB030000 		.4byte	.LASF33
+ 991 01ac 04       		.byte	0x4
+ 992 01ad 5E03     		.2byte	0x35e
+ 993 01af DB000000 		.4byte	0xdb
+ 994 01b3 34       		.byte	0x34
+ 995 01b4 0B       		.uleb128 0xb
+ 996 01b5 F9020000 		.4byte	.LASF34
+ 997 01b9 04       		.byte	0x4
+ 998 01ba 5F03     		.2byte	0x35f
+ 999 01bc DB000000 		.4byte	0xdb
+ 1000 01c0 38       		.byte	0x38
+ 1001 01c1 0B       		.uleb128 0xb
+ 1002 01c2 0C050000 		.4byte	.LASF35
+ 1003 01c6 04       		.byte	0x4
+ 1004 01c7 6003     		.2byte	0x360
+ 1005 01c9 E5000000 		.4byte	0xe5
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 27
+
+
+ 1006 01cd 3C       		.byte	0x3c
+ 1007 01ce 0B       		.uleb128 0xb
+ 1008 01cf 1D000000 		.4byte	.LASF36
+ 1009 01d3 04       		.byte	0x4
+ 1010 01d4 6103     		.2byte	0x361
+ 1011 01d6 DB000000 		.4byte	0xdb
+ 1012 01da 40       		.byte	0x40
+ 1013 01db 0B       		.uleb128 0xb
+ 1014 01dc D1030000 		.4byte	.LASF37
+ 1015 01e0 04       		.byte	0x4
+ 1016 01e1 6203     		.2byte	0x362
+ 1017 01e3 DB000000 		.4byte	0xdb
+ 1018 01e7 44       		.byte	0x44
+ 1019 01e8 0B       		.uleb128 0xb
+ 1020 01e9 03030000 		.4byte	.LASF38
+ 1021 01ed 04       		.byte	0x4
+ 1022 01ee 6303     		.2byte	0x363
+ 1023 01f0 DB000000 		.4byte	0xdb
+ 1024 01f4 48       		.byte	0x48
+ 1025 01f5 0B       		.uleb128 0xb
+ 1026 01f6 16050000 		.4byte	.LASF39
+ 1027 01fa 04       		.byte	0x4
+ 1028 01fb 6403     		.2byte	0x364
+ 1029 01fd E5000000 		.4byte	0xe5
+ 1030 0201 4C       		.byte	0x4c
+ 1031 0202 0B       		.uleb128 0xb
+ 1032 0203 23000000 		.4byte	.LASF40
+ 1033 0207 04       		.byte	0x4
+ 1034 0208 6503     		.2byte	0x365
+ 1035 020a DB000000 		.4byte	0xdb
+ 1036 020e 50       		.byte	0x50
+ 1037 020f 0B       		.uleb128 0xb
+ 1038 0210 D7030000 		.4byte	.LASF41
+ 1039 0214 04       		.byte	0x4
+ 1040 0215 6603     		.2byte	0x366
+ 1041 0217 DB000000 		.4byte	0xdb
+ 1042 021b 54       		.byte	0x54
+ 1043 021c 0B       		.uleb128 0xb
+ 1044 021d 0D030000 		.4byte	.LASF42
+ 1045 0221 04       		.byte	0x4
+ 1046 0222 6703     		.2byte	0x367
+ 1047 0224 DB000000 		.4byte	0xdb
+ 1048 0228 58       		.byte	0x58
+ 1049 0229 00       		.byte	0
+ 1050 022a 0C       		.uleb128 0xc
+ 1051 022b BE020000 		.4byte	.LASF43
+ 1052 022f 04       		.byte	0x4
+ 1053 0230 6803     		.2byte	0x368
+ 1054 0232 F5000000 		.4byte	0xf5
+ 1055 0236 0A       		.uleb128 0xa
+ 1056 0237 10       		.byte	0x10
+ 1057 0238 04       		.byte	0x4
+ 1058 0239 DC04     		.2byte	0x4dc
+ 1059 023b 74020000 		.4byte	0x274
+ 1060 023f 0B       		.uleb128 0xb
+ 1061 0240 BA060000 		.4byte	.LASF44
+ 1062 0244 04       		.byte	0x4
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 28
+
+
+ 1063 0245 DE04     		.2byte	0x4de
+ 1064 0247 DB000000 		.4byte	0xdb
+ 1065 024b 00       		.byte	0
+ 1066 024c 0B       		.uleb128 0xb
+ 1067 024d 29070000 		.4byte	.LASF45
+ 1068 0251 04       		.byte	0x4
+ 1069 0252 DF04     		.2byte	0x4df
+ 1070 0254 DB000000 		.4byte	0xdb
+ 1071 0258 04       		.byte	0x4
+ 1072 0259 0B       		.uleb128 0xb
+ 1073 025a 2F070000 		.4byte	.LASF46
+ 1074 025e 04       		.byte	0x4
+ 1075 025f E004     		.2byte	0x4e0
+ 1076 0261 DB000000 		.4byte	0xdb
+ 1077 0265 08       		.byte	0x8
+ 1078 0266 0B       		.uleb128 0xb
+ 1079 0267 B3000000 		.4byte	.LASF47
+ 1080 026b 04       		.byte	0x4
+ 1081 026c E104     		.2byte	0x4e1
+ 1082 026e DB000000 		.4byte	0xdb
+ 1083 0272 0C       		.byte	0xc
+ 1084 0273 00       		.byte	0
+ 1085 0274 0C       		.uleb128 0xc
+ 1086 0275 5F040000 		.4byte	.LASF48
+ 1087 0279 04       		.byte	0x4
+ 1088 027a E204     		.2byte	0x4e2
+ 1089 027c 36020000 		.4byte	0x236
+ 1090 0280 0D       		.uleb128 0xd
+ 1091 0281 01       		.byte	0x1
+ 1092 0282 25000000 		.4byte	0x25
+ 1093 0286 05       		.byte	0x5
+ 1094 0287 CF       		.byte	0xcf
+ 1095 0288 2F030000 		.4byte	0x32f
+ 1096 028c 0E       		.uleb128 0xe
+ 1097 028d D3020000 		.4byte	.LASF49
+ 1098 0291 00       		.byte	0
+ 1099 0292 0F       		.uleb128 0xf
+ 1100 0293 37010000 		.4byte	.LASF50
+ 1101 0297 7F       		.sleb128 -1
+ 1102 0298 0F       		.uleb128 0xf
+ 1103 0299 C3000000 		.4byte	.LASF51
+ 1104 029d 7E       		.sleb128 -2
+ 1105 029e 0F       		.uleb128 0xf
+ 1106 029f 97000000 		.4byte	.LASF52
+ 1107 02a3 7D       		.sleb128 -3
+ 1108 02a4 0F       		.uleb128 0xf
+ 1109 02a5 39040000 		.4byte	.LASF53
+ 1110 02a9 7C       		.sleb128 -4
+ 1111 02aa 0F       		.uleb128 0xf
+ 1112 02ab 4A070000 		.4byte	.LASF54
+ 1113 02af 7B       		.sleb128 -5
+ 1114 02b0 0F       		.uleb128 0xf
+ 1115 02b1 25060000 		.4byte	.LASF55
+ 1116 02b5 7A       		.sleb128 -6
+ 1117 02b6 0F       		.uleb128 0xf
+ 1118 02b7 27040000 		.4byte	.LASF56
+ 1119 02bb 79       		.sleb128 -7
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 29
+
+
+ 1120 02bc 0F       		.uleb128 0xf
+ 1121 02bd 6E040000 		.4byte	.LASF57
+ 1122 02c1 78       		.sleb128 -8
+ 1123 02c2 0F       		.uleb128 0xf
+ 1124 02c3 76060000 		.4byte	.LASF58
+ 1125 02c7 77       		.sleb128 -9
+ 1126 02c8 0F       		.uleb128 0xf
+ 1127 02c9 BE040000 		.4byte	.LASF59
+ 1128 02cd 76       		.sleb128 -10
+ 1129 02ce 0F       		.uleb128 0xf
+ 1130 02cf D1000000 		.4byte	.LASF60
+ 1131 02d3 75       		.sleb128 -11
+ 1132 02d4 0F       		.uleb128 0xf
+ 1133 02d5 71010000 		.4byte	.LASF61
+ 1134 02d9 74       		.sleb128 -12
+ 1135 02da 0F       		.uleb128 0xf
+ 1136 02db 79020000 		.4byte	.LASF62
+ 1137 02df 73       		.sleb128 -13
+ 1138 02e0 0F       		.uleb128 0xf
+ 1139 02e1 AB040000 		.4byte	.LASF63
+ 1140 02e5 72       		.sleb128 -14
+ 1141 02e6 0F       		.uleb128 0xf
+ 1142 02e7 50000000 		.4byte	.LASF64
+ 1143 02eb 71       		.sleb128 -15
+ 1144 02ec 0F       		.uleb128 0xf
+ 1145 02ed A5050000 		.4byte	.LASF65
+ 1146 02f1 70       		.sleb128 -16
+ 1147 02f2 0F       		.uleb128 0xf
+ 1148 02f3 CE050000 		.4byte	.LASF66
+ 1149 02f7 6F       		.sleb128 -17
+ 1150 02f8 0F       		.uleb128 0xf
+ 1151 02f9 40010000 		.4byte	.LASF67
+ 1152 02fd 6E       		.sleb128 -18
+ 1153 02fe 0F       		.uleb128 0xf
+ 1154 02ff 29000000 		.4byte	.LASF68
+ 1155 0303 6D       		.sleb128 -19
+ 1156 0304 0F       		.uleb128 0xf
+ 1157 0305 DA040000 		.4byte	.LASF69
+ 1158 0309 6C       		.sleb128 -20
+ 1159 030a 0F       		.uleb128 0xf
+ 1160 030b 52030000 		.4byte	.LASF70
+ 1161 030f 6B       		.sleb128 -21
+ 1162 0310 0F       		.uleb128 0xf
+ 1163 0311 B3030000 		.4byte	.LASF71
+ 1164 0315 6A       		.sleb128 -22
+ 1165 0316 0F       		.uleb128 0xf
+ 1166 0317 E3000000 		.4byte	.LASF72
+ 1167 031b 69       		.sleb128 -23
+ 1168 031c 0F       		.uleb128 0xf
+ 1169 031d 8C060000 		.4byte	.LASF73
+ 1170 0321 68       		.sleb128 -24
+ 1171 0322 0F       		.uleb128 0xf
+ 1172 0323 67050000 		.4byte	.LASF74
+ 1173 0327 67       		.sleb128 -25
+ 1174 0328 0F       		.uleb128 0xf
+ 1175 0329 B7010000 		.4byte	.LASF75
+ 1176 032d 66       		.sleb128 -26
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 30
+
+
+ 1177 032e 00       		.byte	0
+ 1178 032f 03       		.uleb128 0x3
+ 1179 0330 13060000 		.4byte	.LASF76
+ 1180 0334 05       		.byte	0x5
+ 1181 0335 EB       		.byte	0xeb
+ 1182 0336 80020000 		.4byte	0x280
+ 1183 033a 10       		.uleb128 0x10
+ 1184 033b 9D060000 		.4byte	.LASF83
+ 1185 033f 01       		.byte	0x1
+ 1186 0340 37000000 		.4byte	0x37
+ 1187 0344 06       		.byte	0x6
+ 1188 0345 62       		.byte	0x62
+ 1189 0346 69030000 		.4byte	0x369
+ 1190 034a 0E       		.uleb128 0xe
+ 1191 034b 25010000 		.4byte	.LASF77
+ 1192 034f 00       		.byte	0
+ 1193 0350 0E       		.uleb128 0xe
+ 1194 0351 5A050000 		.4byte	.LASF78
+ 1195 0355 01       		.byte	0x1
+ 1196 0356 0E       		.uleb128 0xe
+ 1197 0357 18010000 		.4byte	.LASF79
+ 1198 035b 02       		.byte	0x2
+ 1199 035c 0E       		.uleb128 0xe
+ 1200 035d DE020000 		.4byte	.LASF80
+ 1201 0361 03       		.byte	0x3
+ 1202 0362 0E       		.uleb128 0xe
+ 1203 0363 00000000 		.4byte	.LASF81
+ 1204 0367 04       		.byte	0x4
+ 1205 0368 00       		.byte	0
+ 1206 0369 03       		.uleb128 0x3
+ 1207 036a 04060000 		.4byte	.LASF82
+ 1208 036e 06       		.byte	0x6
+ 1209 036f 69       		.byte	0x69
+ 1210 0370 3A030000 		.4byte	0x33a
+ 1211 0374 10       		.uleb128 0x10
+ 1212 0375 FD050000 		.4byte	.LASF84
+ 1213 0379 01       		.byte	0x1
+ 1214 037a 37000000 		.4byte	0x37
+ 1215 037e 06       		.byte	0x6
+ 1216 037f 70       		.byte	0x70
+ 1217 0380 9D030000 		.4byte	0x39d
+ 1218 0384 0E       		.uleb128 0xe
+ 1219 0385 AD020000 		.4byte	.LASF85
+ 1220 0389 00       		.byte	0
+ 1221 038a 0E       		.uleb128 0xe
+ 1222 038b A5000000 		.4byte	.LASF86
+ 1223 038f 01       		.byte	0x1
+ 1224 0390 0E       		.uleb128 0xe
+ 1225 0391 40050000 		.4byte	.LASF87
+ 1226 0395 02       		.byte	0x2
+ 1227 0396 0E       		.uleb128 0xe
+ 1228 0397 F0030000 		.4byte	.LASF88
+ 1229 039b 03       		.byte	0x3
+ 1230 039c 00       		.byte	0
+ 1231 039d 03       		.uleb128 0x3
+ 1232 039e 90010000 		.4byte	.LASF89
+ 1233 03a2 06       		.byte	0x6
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 31
+
+
+ 1234 03a3 76       		.byte	0x76
+ 1235 03a4 74030000 		.4byte	0x374
+ 1236 03a8 10       		.uleb128 0x10
+ 1237 03a9 49040000 		.4byte	.LASF90
+ 1238 03ad 01       		.byte	0x1
+ 1239 03ae 37000000 		.4byte	0x37
+ 1240 03b2 06       		.byte	0x6
+ 1241 03b3 7D       		.byte	0x7d
+ 1242 03b4 D1030000 		.4byte	0x3d1
+ 1243 03b8 0E       		.uleb128 0xe
+ 1244 03b9 A3060000 		.4byte	.LASF91
+ 1245 03bd 00       		.byte	0
+ 1246 03be 0E       		.uleb128 0xe
+ 1247 03bf 09000000 		.4byte	.LASF92
+ 1248 03c3 01       		.byte	0x1
+ 1249 03c4 0E       		.uleb128 0xe
+ 1250 03c5 A0040000 		.4byte	.LASF93
+ 1251 03c9 02       		.byte	0x2
+ 1252 03ca 0E       		.uleb128 0xe
+ 1253 03cb 64000000 		.4byte	.LASF94
+ 1254 03cf 03       		.byte	0x3
+ 1255 03d0 00       		.byte	0
+ 1256 03d1 03       		.uleb128 0x3
+ 1257 03d2 35070000 		.4byte	.LASF95
+ 1258 03d6 06       		.byte	0x6
+ 1259 03d7 83       		.byte	0x83
+ 1260 03d8 A8030000 		.4byte	0x3a8
+ 1261 03dc 11       		.uleb128 0x11
+ 1262 03dd E1010000 		.4byte	.LASF131
+ 1263 03e1 30       		.byte	0x30
+ 1264 03e2 06       		.byte	0x6
+ 1265 03e3 8B       		.byte	0x8b
+ 1266 03e4 79040000 		.4byte	0x479
+ 1267 03e8 12       		.uleb128 0x12
+ 1268 03e9 C0050000 		.4byte	.LASF96
+ 1269 03ed 06       		.byte	0x6
+ 1270 03ee 8D       		.byte	0x8d
+ 1271 03ef A1000000 		.4byte	0xa1
+ 1272 03f3 00       		.byte	0
+ 1273 03f4 12       		.uleb128 0x12
+ 1274 03f5 03010000 		.4byte	.LASF97
+ 1275 03f9 06       		.byte	0x6
+ 1276 03fa 8E       		.byte	0x8e
+ 1277 03fb 69030000 		.4byte	0x369
+ 1278 03ff 04       		.byte	0x4
+ 1279 0400 13       		.uleb128 0x13
+ 1280 0401 70696E00 		.ascii	"pin\000"
+ 1281 0405 06       		.byte	0x6
+ 1282 0406 8F       		.byte	0x8f
+ 1283 0407 D1030000 		.4byte	0x3d1
+ 1284 040b 05       		.byte	0x5
+ 1285 040c 12       		.uleb128 0x12
+ 1286 040d AC060000 		.4byte	.LASF98
+ 1287 0411 06       		.byte	0x6
+ 1288 0412 90       		.byte	0x90
+ 1289 0413 9D030000 		.4byte	0x39d
+ 1290 0417 06       		.byte	0x6
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 32
+
+
+ 1291 0418 12       		.uleb128 0x12
+ 1292 0419 CC060000 		.4byte	.LASF99
+ 1293 041d 06       		.byte	0x6
+ 1294 041e 93       		.byte	0x93
+ 1295 041f C2000000 		.4byte	0xc2
+ 1296 0423 08       		.byte	0x8
+ 1297 0424 12       		.uleb128 0x12
+ 1298 0425 1F070000 		.4byte	.LASF100
+ 1299 0429 06       		.byte	0x6
+ 1300 042a 94       		.byte	0x94
+ 1301 042b C2000000 		.4byte	0xc2
+ 1302 042f 0C       		.byte	0xc
+ 1303 0430 12       		.uleb128 0x12
+ 1304 0431 4D050000 		.4byte	.LASF101
+ 1305 0435 06       		.byte	0x6
+ 1306 0436 95       		.byte	0x95
+ 1307 0437 C2000000 		.4byte	0xc2
+ 1308 043b 10       		.byte	0x10
+ 1309 043c 12       		.uleb128 0x12
+ 1310 043d 8B020000 		.4byte	.LASF102
+ 1311 0441 06       		.byte	0x6
+ 1312 0442 96       		.byte	0x96
+ 1313 0443 C2000000 		.4byte	0xc2
+ 1314 0447 14       		.byte	0x14
+ 1315 0448 12       		.uleb128 0x12
+ 1316 0449 08010000 		.4byte	.LASF103
+ 1317 044d 06       		.byte	0x6
+ 1318 044e 97       		.byte	0x97
+ 1319 044f CD000000 		.4byte	0xcd
+ 1320 0453 18       		.byte	0x18
+ 1321 0454 12       		.uleb128 0x12
+ 1322 0455 A4030000 		.4byte	.LASF104
+ 1323 0459 06       		.byte	0x6
+ 1324 045a 98       		.byte	0x98
+ 1325 045b C2000000 		.4byte	0xc2
+ 1326 045f 1C       		.byte	0x1c
+ 1327 0460 12       		.uleb128 0x12
+ 1328 0461 0B070000 		.4byte	.LASF105
+ 1329 0465 06       		.byte	0x6
+ 1330 0466 9B       		.byte	0x9b
+ 1331 0467 D4000000 		.4byte	0xd4
+ 1332 046b 20       		.byte	0x20
+ 1333 046c 12       		.uleb128 0x12
+ 1334 046d 91030000 		.4byte	.LASF106
+ 1335 0471 06       		.byte	0x6
+ 1336 0472 9C       		.byte	0x9c
+ 1337 0473 C2000000 		.4byte	0xc2
+ 1338 0477 28       		.byte	0x28
+ 1339 0478 00       		.byte	0
+ 1340 0479 03       		.uleb128 0x3
+ 1341 047a 41030000 		.4byte	.LASF107
+ 1342 047e 06       		.byte	0x6
+ 1343 047f 9F       		.byte	0x9f
+ 1344 0480 DC030000 		.4byte	0x3dc
+ 1345 0484 14       		.uleb128 0x14
+ 1346 0485 EA060000 		.4byte	.LASF108
+ 1347 0489 01       		.byte	0x1
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 33
+
+
+ 1348 048a 41       		.byte	0x41
+ 1349 048b 2F030000 		.4byte	0x32f
+ 1350 048f 00000000 		.4byte	.LFB64
+ 1351 0493 54000000 		.4byte	.LFE64-.LFB64
+ 1352 0497 01       		.uleb128 0x1
+ 1353 0498 9C       		.byte	0x9c
+ 1354 0499 D3040000 		.4byte	0x4d3
+ 1355 049d 15       		.uleb128 0x15
+ 1356 049e 30000000 		.4byte	.LVL0
+ 1357 04a2 01080000 		.4byte	0x801
+ 1358 04a6 B0040000 		.4byte	0x4b0
+ 1359 04aa 16       		.uleb128 0x16
+ 1360 04ab 01       		.uleb128 0x1
+ 1361 04ac 50       		.byte	0x50
+ 1362 04ad 01       		.uleb128 0x1
+ 1363 04ae 30       		.byte	0x30
+ 1364 04af 00       		.byte	0
+ 1365 04b0 15       		.uleb128 0x15
+ 1366 04b1 36000000 		.4byte	.LVL1
+ 1367 04b5 0C080000 		.4byte	0x80c
+ 1368 04b9 C3040000 		.4byte	0x4c3
+ 1369 04bd 16       		.uleb128 0x16
+ 1370 04be 01       		.uleb128 0x1
+ 1371 04bf 50       		.byte	0x50
+ 1372 04c0 01       		.uleb128 0x1
+ 1373 04c1 30       		.byte	0x30
+ 1374 04c2 00       		.byte	0
+ 1375 04c3 17       		.uleb128 0x17
+ 1376 04c4 3C000000 		.4byte	.LVL2
+ 1377 04c8 17080000 		.4byte	0x817
+ 1378 04cc 16       		.uleb128 0x16
+ 1379 04cd 01       		.uleb128 0x1
+ 1380 04ce 50       		.byte	0x50
+ 1381 04cf 01       		.uleb128 0x1
+ 1382 04d0 30       		.byte	0x30
+ 1383 04d1 00       		.byte	0
+ 1384 04d2 00       		.byte	0
+ 1385 04d3 14       		.uleb128 0x14
+ 1386 04d4 5B010000 		.4byte	.LASF109
+ 1387 04d8 01       		.byte	0x1
+ 1388 04d9 61       		.byte	0x61
+ 1389 04da 2F030000 		.4byte	0x32f
+ 1390 04de 00000000 		.4byte	.LFB65
+ 1391 04e2 70000000 		.4byte	.LFE65-.LFB65
+ 1392 04e6 01       		.uleb128 0x1
+ 1393 04e7 9C       		.byte	0x9c
+ 1394 04e8 4F050000 		.4byte	0x54f
+ 1395 04ec 18       		.uleb128 0x18
+ 1396 04ed 6D6500   		.ascii	"me\000"
+ 1397 04f0 01       		.byte	0x1
+ 1398 04f1 61       		.byte	0x61
+ 1399 04f2 4F050000 		.4byte	0x54f
+ 1400 04f6 00000000 		.4byte	.LLST0
+ 1401 04fa 19       		.uleb128 0x19
+ 1402 04fb 03010000 		.4byte	.LASF97
+ 1403 04ff 01       		.byte	0x1
+ 1404 0500 61       		.byte	0x61
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 34
+
+
+ 1405 0501 69030000 		.4byte	0x369
+ 1406 0505 37000000 		.4byte	.LLST1
+ 1407 0509 18       		.uleb128 0x18
+ 1408 050a 70696E00 		.ascii	"pin\000"
+ 1409 050e 01       		.byte	0x1
+ 1410 050f 61       		.byte	0x61
+ 1411 0510 D1030000 		.4byte	0x3d1
+ 1412 0514 63000000 		.4byte	.LLST2
+ 1413 0518 19       		.uleb128 0x19
+ 1414 0519 C0050000 		.4byte	.LASF96
+ 1415 051d 01       		.byte	0x1
+ 1416 051e 61       		.byte	0x61
+ 1417 051f A1000000 		.4byte	0xa1
+ 1418 0523 8F000000 		.4byte	.LLST3
+ 1419 0527 1A       		.uleb128 0x1a
+ 1420 0528 72657300 		.ascii	"res\000"
+ 1421 052c 01       		.byte	0x1
+ 1422 052d 62       		.byte	0x62
+ 1423 052e 2F030000 		.4byte	0x32f
+ 1424 0532 00       		.byte	0
+ 1425 0533 17       		.uleb128 0x17
+ 1426 0534 2C000000 		.4byte	.LVL7
+ 1427 0538 22080000 		.4byte	0x822
+ 1428 053c 16       		.uleb128 0x16
+ 1429 053d 01       		.uleb128 0x1
+ 1430 053e 50       		.byte	0x50
+ 1431 053f 02       		.uleb128 0x2
+ 1432 0540 74       		.byte	0x74
+ 1433 0541 00       		.sleb128 0
+ 1434 0542 16       		.uleb128 0x16
+ 1435 0543 01       		.uleb128 0x1
+ 1436 0544 51       		.byte	0x51
+ 1437 0545 01       		.uleb128 0x1
+ 1438 0546 30       		.byte	0x30
+ 1439 0547 16       		.uleb128 0x16
+ 1440 0548 01       		.uleb128 0x1
+ 1441 0549 52       		.byte	0x52
+ 1442 054a 02       		.uleb128 0x2
+ 1443 054b 08       		.byte	0x8
+ 1444 054c 30       		.byte	0x30
+ 1445 054d 00       		.byte	0
+ 1446 054e 00       		.byte	0
+ 1447 054f 05       		.uleb128 0x5
+ 1448 0550 04       		.byte	0x4
+ 1449 0551 79040000 		.4byte	0x479
+ 1450 0555 14       		.uleb128 0x14
+ 1451 0556 ED040000 		.4byte	.LASF110
+ 1452 055a 01       		.byte	0x1
+ 1453 055b A3       		.byte	0xa3
+ 1454 055c 2F030000 		.4byte	0x32f
+ 1455 0560 00000000 		.4byte	.LFB66
+ 1456 0564 60000000 		.4byte	.LFE66-.LFB66
+ 1457 0568 01       		.uleb128 0x1
+ 1458 0569 9C       		.byte	0x9c
+ 1459 056a 89050000 		.4byte	0x589
+ 1460 056e 18       		.uleb128 0x18
+ 1461 056f 6D6500   		.ascii	"me\000"
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 35
+
+
+ 1462 0572 01       		.byte	0x1
+ 1463 0573 A3       		.byte	0xa3
+ 1464 0574 4F050000 		.4byte	0x54f
+ 1465 0578 B8000000 		.4byte	.LLST4
+ 1466 057c 1A       		.uleb128 0x1a
+ 1467 057d 72657300 		.ascii	"res\000"
+ 1468 0581 01       		.byte	0x1
+ 1469 0582 A4       		.byte	0xa4
+ 1470 0583 2F030000 		.4byte	0x32f
+ 1471 0587 00       		.byte	0
+ 1472 0588 00       		.byte	0
+ 1473 0589 14       		.uleb128 0x14
+ 1474 058a 3C000000 		.4byte	.LASF111
+ 1475 058e 01       		.byte	0x1
+ 1476 058f D8       		.byte	0xd8
+ 1477 0590 2F030000 		.4byte	0x32f
+ 1478 0594 00000000 		.4byte	.LFB67
+ 1479 0598 70000000 		.4byte	.LFE67-.LFB67
+ 1480 059c 01       		.uleb128 0x1
+ 1481 059d 9C       		.byte	0x9c
+ 1482 059e 14060000 		.4byte	0x614
+ 1483 05a2 18       		.uleb128 0x18
+ 1484 05a3 6D6500   		.ascii	"me\000"
+ 1485 05a6 01       		.byte	0x1
+ 1486 05a7 D8       		.byte	0xd8
+ 1487 05a8 4F050000 		.4byte	0x54f
+ 1488 05ac 18010000 		.4byte	.LLST5
+ 1489 05b0 1A       		.uleb128 0x1a
+ 1490 05b1 72657300 		.ascii	"res\000"
+ 1491 05b5 01       		.byte	0x1
+ 1492 05b6 D9       		.byte	0xd9
+ 1493 05b7 2F030000 		.4byte	0x32f
+ 1494 05bb 00       		.byte	0
+ 1495 05bc 1B       		.uleb128 0x1b
+ 1496 05bd 20000000 		.4byte	.LBB2
+ 1497 05c1 2C000000 		.4byte	.LBE2-.LBB2
+ 1498 05c5 1C       		.uleb128 0x1c
+ 1499 05c6 D1010000 		.4byte	.LASF112
+ 1500 05ca 01       		.byte	0x1
+ 1501 05cb F5       		.byte	0xf5
+ 1502 05cc C2000000 		.4byte	0xc2
+ 1503 05d0 73010000 		.4byte	.LLST6
+ 1504 05d4 1D       		.uleb128 0x1d
+ 1505 05d5 77030000 		.4byte	.LASF113
+ 1506 05d9 01       		.byte	0x1
+ 1507 05da FC       		.byte	0xfc
+ 1508 05db 14060000 		.4byte	0x614
+ 1509 05df 03       		.uleb128 0x3
+ 1510 05e0 91       		.byte	0x91
+ 1511 05e1 947F     		.sleb128 -108
+ 1512 05e3 15       		.uleb128 0x15
+ 1513 05e4 42000000 		.4byte	.LVL22
+ 1514 05e8 2B080000 		.4byte	0x82b
+ 1515 05ec 01060000 		.4byte	0x601
+ 1516 05f0 16       		.uleb128 0x16
+ 1517 05f1 01       		.uleb128 0x1
+ 1518 05f2 50       		.byte	0x50
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 36
+
+
+ 1519 05f3 03       		.uleb128 0x3
+ 1520 05f4 91       		.byte	0x91
+ 1521 05f5 947F     		.sleb128 -108
+ 1522 05f7 16       		.uleb128 0x16
+ 1523 05f8 01       		.uleb128 0x1
+ 1524 05f9 51       		.byte	0x51
+ 1525 05fa 05       		.uleb128 0x5
+ 1526 05fb 03       		.byte	0x3
+ 1527 05fc 00000000 		.4byte	.LC0
+ 1528 0600 00       		.byte	0
+ 1529 0601 17       		.uleb128 0x17
+ 1530 0602 48000000 		.4byte	.LVL23
+ 1531 0606 36080000 		.4byte	0x836
+ 1532 060a 16       		.uleb128 0x16
+ 1533 060b 01       		.uleb128 0x1
+ 1534 060c 50       		.byte	0x50
+ 1535 060d 03       		.uleb128 0x3
+ 1536 060e 91       		.byte	0x91
+ 1537 060f 947F     		.sleb128 -108
+ 1538 0611 00       		.byte	0
+ 1539 0612 00       		.byte	0
+ 1540 0613 00       		.byte	0
+ 1541 0614 08       		.uleb128 0x8
+ 1542 0615 9A000000 		.4byte	0x9a
+ 1543 0619 24060000 		.4byte	0x624
+ 1544 061d 09       		.uleb128 0x9
+ 1545 061e 93000000 		.4byte	0x93
+ 1546 0622 63       		.byte	0x63
+ 1547 0623 00       		.byte	0
+ 1548 0624 1E       		.uleb128 0x1e
+ 1549 0625 90050000 		.4byte	.LASF114
+ 1550 0629 01       		.byte	0x1
+ 1551 062a 1201     		.2byte	0x112
+ 1552 062c 2F030000 		.4byte	0x32f
+ 1553 0630 00000000 		.4byte	.LFB68
+ 1554 0634 40000000 		.4byte	.LFE68-.LFB68
+ 1555 0638 01       		.uleb128 0x1
+ 1556 0639 9C       		.byte	0x9c
+ 1557 063a 75060000 		.4byte	0x675
+ 1558 063e 1F       		.uleb128 0x1f
+ 1559 063f 6D6500   		.ascii	"me\000"
+ 1560 0642 01       		.byte	0x1
+ 1561 0643 1201     		.2byte	0x112
+ 1562 0645 4F050000 		.4byte	0x54f
+ 1563 0649 AA010000 		.4byte	.LLST7
+ 1564 064d 20       		.uleb128 0x20
+ 1565 064e 72657300 		.ascii	"res\000"
+ 1566 0652 01       		.byte	0x1
+ 1567 0653 1301     		.2byte	0x113
+ 1568 0655 2F030000 		.4byte	0x32f
+ 1569 0659 00       		.byte	0
+ 1570 065a 1B       		.uleb128 0x1b
+ 1571 065b 18000000 		.4byte	.LBB3
+ 1572 065f 10000000 		.4byte	.LBE3-.LBB3
+ 1573 0663 21       		.uleb128 0x21
+ 1574 0664 D1010000 		.4byte	.LASF112
+ 1575 0668 01       		.byte	0x1
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 37
+
+
+ 1576 0669 2E01     		.2byte	0x12e
+ 1577 066b C2000000 		.4byte	0xc2
+ 1578 066f F4010000 		.4byte	.LLST8
+ 1579 0673 00       		.byte	0
+ 1580 0674 00       		.byte	0
+ 1581 0675 1E       		.uleb128 0x1e
+ 1582 0676 97020000 		.4byte	.LASF115
+ 1583 067a 01       		.byte	0x1
+ 1584 067b 4201     		.2byte	0x142
+ 1585 067d 2F030000 		.4byte	0x32f
+ 1586 0681 00000000 		.4byte	.LFB69
+ 1587 0685 38000000 		.4byte	.LFE69-.LFB69
+ 1588 0689 01       		.uleb128 0x1
+ 1589 068a 9C       		.byte	0x9c
+ 1590 068b AC060000 		.4byte	0x6ac
+ 1591 068f 1F       		.uleb128 0x1f
+ 1592 0690 6D6500   		.ascii	"me\000"
+ 1593 0693 01       		.byte	0x1
+ 1594 0694 4201     		.2byte	0x142
+ 1595 0696 4F050000 		.4byte	0x54f
+ 1596 069a 19020000 		.4byte	.LLST9
+ 1597 069e 20       		.uleb128 0x20
+ 1598 069f 72657300 		.ascii	"res\000"
+ 1599 06a3 01       		.byte	0x1
+ 1600 06a4 4301     		.2byte	0x143
+ 1601 06a6 2F030000 		.4byte	0x32f
+ 1602 06aa 00       		.byte	0
+ 1603 06ab 00       		.byte	0
+ 1604 06ac 22       		.uleb128 0x22
+ 1605 06ad 1F030000 		.4byte	.LASF116
+ 1606 06b1 01       		.byte	0x1
+ 1607 06b2 6D01     		.2byte	0x16d
+ 1608 06b4 2F030000 		.4byte	0x32f
+ 1609 06b8 00000000 		.4byte	.LFB70
+ 1610 06bc 74000000 		.4byte	.LFE70-.LFB70
+ 1611 06c0 01       		.uleb128 0x1
+ 1612 06c1 9C       		.byte	0x9c
+ 1613 06c2 45070000 		.4byte	0x745
+ 1614 06c6 1F       		.uleb128 0x1f
+ 1615 06c7 6D6500   		.ascii	"me\000"
+ 1616 06ca 01       		.byte	0x1
+ 1617 06cb 6D01     		.2byte	0x16d
+ 1618 06cd 4F050000 		.4byte	0x54f
+ 1619 06d1 63020000 		.4byte	.LLST10
+ 1620 06d5 20       		.uleb128 0x20
+ 1621 06d6 72657300 		.ascii	"res\000"
+ 1622 06da 01       		.byte	0x1
+ 1623 06db 6E01     		.2byte	0x16e
+ 1624 06dd 2F030000 		.4byte	0x32f
+ 1625 06e1 00       		.byte	0
+ 1626 06e2 23       		.uleb128 0x23
+ 1627 06e3 6E000000 		.4byte	.LASF117
+ 1628 06e7 01       		.byte	0x1
+ 1629 06e8 7401     		.2byte	0x174
+ 1630 06ea 14060000 		.4byte	0x614
+ 1631 06ee 03       		.uleb128 0x3
+ 1632 06ef 91       		.byte	0x91
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 38
+
+
+ 1633 06f0 8C7F     		.sleb128 -116
+ 1634 06f2 21       		.uleb128 0x21
+ 1635 06f3 FA000000 		.4byte	.LASF118
+ 1636 06f7 01       		.byte	0x1
+ 1637 06f8 7701     		.2byte	0x177
+ 1638 06fa A1000000 		.4byte	0xa1
+ 1639 06fe A8020000 		.4byte	.LLST11
+ 1640 0702 15       		.uleb128 0x15
+ 1641 0703 46000000 		.4byte	.LVL54
+ 1642 0707 41080000 		.4byte	0x841
+ 1643 070b 33070000 		.4byte	0x733
+ 1644 070f 16       		.uleb128 0x16
+ 1645 0710 01       		.uleb128 0x1
+ 1646 0711 50       		.byte	0x50
+ 1647 0712 03       		.uleb128 0x3
+ 1648 0713 91       		.byte	0x91
+ 1649 0714 8C7F     		.sleb128 -116
+ 1650 0716 16       		.uleb128 0x16
+ 1651 0717 01       		.uleb128 0x1
+ 1652 0718 51       		.byte	0x51
+ 1653 0719 02       		.uleb128 0x2
+ 1654 071a 08       		.byte	0x8
+ 1655 071b 64       		.byte	0x64
+ 1656 071c 16       		.uleb128 0x16
+ 1657 071d 01       		.uleb128 0x1
+ 1658 071e 52       		.byte	0x52
+ 1659 071f 05       		.uleb128 0x5
+ 1660 0720 03       		.byte	0x3
+ 1661 0721 44000000 		.4byte	.LC6
+ 1662 0725 16       		.uleb128 0x16
+ 1663 0726 01       		.uleb128 0x1
+ 1664 0727 53       		.byte	0x53
+ 1665 0728 02       		.uleb128 0x2
+ 1666 0729 75       		.byte	0x75
+ 1667 072a 00       		.sleb128 0
+ 1668 072b 16       		.uleb128 0x16
+ 1669 072c 02       		.uleb128 0x2
+ 1670 072d 7D       		.byte	0x7d
+ 1671 072e 00       		.sleb128 0
+ 1672 072f 02       		.uleb128 0x2
+ 1673 0730 74       		.byte	0x74
+ 1674 0731 00       		.sleb128 0
+ 1675 0732 00       		.byte	0
+ 1676 0733 17       		.uleb128 0x17
+ 1677 0734 4C000000 		.4byte	.LVL55
+ 1678 0738 36080000 		.4byte	0x836
+ 1679 073c 16       		.uleb128 0x16
+ 1680 073d 01       		.uleb128 0x1
+ 1681 073e 50       		.byte	0x50
+ 1682 073f 03       		.uleb128 0x3
+ 1683 0740 91       		.byte	0x91
+ 1684 0741 8C7F     		.sleb128 -116
+ 1685 0743 00       		.byte	0
+ 1686 0744 00       		.byte	0
+ 1687 0745 1E       		.uleb128 0x1e
+ 1688 0746 0F040000 		.4byte	.LASF119
+ 1689 074a 01       		.byte	0x1
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 39
+
+
+ 1690 074b 9B01     		.2byte	0x19b
+ 1691 074d 2F030000 		.4byte	0x32f
+ 1692 0751 00000000 		.4byte	.LFB71
+ 1693 0755 40000000 		.4byte	.LFE71-.LFB71
+ 1694 0759 01       		.uleb128 0x1
+ 1695 075a 9C       		.byte	0x9c
+ 1696 075b BE070000 		.4byte	0x7be
+ 1697 075f 20       		.uleb128 0x20
+ 1698 0760 72657300 		.ascii	"res\000"
+ 1699 0764 01       		.byte	0x1
+ 1700 0765 9C01     		.2byte	0x19c
+ 1701 0767 2F030000 		.4byte	0x32f
+ 1702 076b 00       		.byte	0
+ 1703 076c 24       		.uleb128 0x24
+ 1704 076d 18000000 		.4byte	.LBB4
+ 1705 0771 1A000000 		.4byte	.LBE4-.LBB4
+ 1706 0775 AA070000 		.4byte	0x7aa
+ 1707 0779 25       		.uleb128 0x25
+ 1708 077a 6900     		.ascii	"i\000"
+ 1709 077c 01       		.byte	0x1
+ 1710 077d A401     		.2byte	0x1a4
+ 1711 077f AC000000 		.4byte	0xac
+ 1712 0783 16030000 		.4byte	.LLST12
+ 1713 0787 1B       		.uleb128 0x1b
+ 1714 0788 18000000 		.4byte	.LBB5
+ 1715 078c 0E000000 		.4byte	.LBE5-.LBB5
+ 1716 0790 25       		.uleb128 0x25
+ 1717 0791 6D6500   		.ascii	"me\000"
+ 1718 0794 01       		.byte	0x1
+ 1719 0795 A601     		.2byte	0x1a6
+ 1720 0797 4F050000 		.4byte	0x54f
+ 1721 079b 34030000 		.4byte	.LLST13
+ 1722 079f 26       		.uleb128 0x26
+ 1723 07a0 26000000 		.4byte	.LVL64
+ 1724 07a4 AC060000 		.4byte	0x6ac
+ 1725 07a8 00       		.byte	0
+ 1726 07a9 00       		.byte	0
+ 1727 07aa 17       		.uleb128 0x17
+ 1728 07ab 14000000 		.4byte	.LVL61
+ 1729 07af 36080000 		.4byte	0x836
+ 1730 07b3 16       		.uleb128 0x16
+ 1731 07b4 01       		.uleb128 0x1
+ 1732 07b5 50       		.byte	0x50
+ 1733 07b6 05       		.uleb128 0x5
+ 1734 07b7 03       		.byte	0x3
+ 1735 07b8 80000000 		.4byte	.LC7
+ 1736 07bc 00       		.byte	0
+ 1737 07bd 00       		.byte	0
+ 1738 07be 08       		.uleb128 0x8
+ 1739 07bf 4F050000 		.4byte	0x54f
+ 1740 07c3 CE070000 		.4byte	0x7ce
+ 1741 07c7 09       		.uleb128 0x9
+ 1742 07c8 93000000 		.4byte	0x93
+ 1743 07cc 09       		.byte	0x9
+ 1744 07cd 00       		.byte	0
+ 1745 07ce 1D       		.uleb128 0x1d
+ 1746 07cf DD030000 		.4byte	.LASF120
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 40
+
+
+ 1747 07d3 01       		.byte	0x1
+ 1748 07d4 31       		.byte	0x31
+ 1749 07d5 BE070000 		.4byte	0x7be
+ 1750 07d9 05       		.uleb128 0x5
+ 1751 07da 03       		.byte	0x3
+ 1752 07db 04000000 		.4byte	g_analyzers
+ 1753 07df 1D       		.uleb128 0x1d
+ 1754 07e0 FE030000 		.4byte	.LASF121
+ 1755 07e4 01       		.byte	0x1
+ 1756 07e5 32       		.byte	0x32
+ 1757 07e6 AC000000 		.4byte	0xac
+ 1758 07ea 05       		.uleb128 0x5
+ 1759 07eb 03       		.byte	0x3
+ 1760 07ec 00000000 		.4byte	g_analyzer_count
+ 1761 07f0 27       		.uleb128 0x27
+ 1762 07f1 33050000 		.4byte	.LASF132
+ 1763 07f5 04       		.byte	0x4
+ 1764 07f6 1207     		.2byte	0x712
+ 1765 07f8 FC070000 		.4byte	0x7fc
+ 1766 07fc 07       		.uleb128 0x7
+ 1767 07fd B7000000 		.4byte	0xb7
+ 1768 0801 28       		.uleb128 0x28
+ 1769 0802 75000000 		.4byte	.LASF122
+ 1770 0806 75000000 		.4byte	.LASF122
+ 1771 080a 07       		.byte	0x7
+ 1772 080b 26       		.byte	0x26
+ 1773 080c 28       		.uleb128 0x28
+ 1774 080d 4E040000 		.4byte	.LASF123
+ 1775 0811 4E040000 		.4byte	.LASF123
+ 1776 0815 08       		.byte	0x8
+ 1777 0816 26       		.byte	0x26
+ 1778 0817 28       		.uleb128 0x28
+ 1779 0818 80050000 		.4byte	.LASF124
+ 1780 081c 80050000 		.4byte	.LASF124
+ 1781 0820 09       		.byte	0x9
+ 1782 0821 26       		.byte	0x26
+ 1783 0822 29       		.uleb128 0x29
+ 1784 0823 E9030000 		.4byte	.LASF133
+ 1785 0827 E9030000 		.4byte	.LASF133
+ 1786 082b 28       		.uleb128 0x28
+ 1787 082c 98040000 		.4byte	.LASF125
+ 1788 0830 98040000 		.4byte	.LASF125
+ 1789 0834 0A       		.byte	0xa
+ 1790 0835 E7       		.byte	0xe7
+ 1791 0836 28       		.uleb128 0x28
+ 1792 0837 64030000 		.4byte	.LASF126
+ 1793 083b 64030000 		.4byte	.LASF126
+ 1794 083f 0B       		.byte	0xb
+ 1795 0840 8B       		.byte	0x8b
+ 1796 0841 28       		.uleb128 0x28
+ 1797 0842 C5050000 		.4byte	.LASF127
+ 1798 0846 C5050000 		.4byte	.LASF127
+ 1799 084a 0A       		.byte	0xa
+ 1800 084b FD       		.byte	0xfd
+ 1801 084c 00       		.byte	0
+ 1802              		.section	.debug_abbrev,"",%progbits
+ 1803              	.Ldebug_abbrev0:
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 41
+
+
+ 1804 0000 01       		.uleb128 0x1
+ 1805 0001 11       		.uleb128 0x11
+ 1806 0002 01       		.byte	0x1
+ 1807 0003 25       		.uleb128 0x25
+ 1808 0004 0E       		.uleb128 0xe
+ 1809 0005 13       		.uleb128 0x13
+ 1810 0006 0B       		.uleb128 0xb
+ 1811 0007 03       		.uleb128 0x3
+ 1812 0008 0E       		.uleb128 0xe
+ 1813 0009 1B       		.uleb128 0x1b
+ 1814 000a 0E       		.uleb128 0xe
+ 1815 000b 55       		.uleb128 0x55
+ 1816 000c 17       		.uleb128 0x17
+ 1817 000d 11       		.uleb128 0x11
+ 1818 000e 01       		.uleb128 0x1
+ 1819 000f 10       		.uleb128 0x10
+ 1820 0010 17       		.uleb128 0x17
+ 1821 0011 00       		.byte	0
+ 1822 0012 00       		.byte	0
+ 1823 0013 02       		.uleb128 0x2
+ 1824 0014 24       		.uleb128 0x24
+ 1825 0015 00       		.byte	0
+ 1826 0016 0B       		.uleb128 0xb
+ 1827 0017 0B       		.uleb128 0xb
+ 1828 0018 3E       		.uleb128 0x3e
+ 1829 0019 0B       		.uleb128 0xb
+ 1830 001a 03       		.uleb128 0x3
+ 1831 001b 0E       		.uleb128 0xe
+ 1832 001c 00       		.byte	0
+ 1833 001d 00       		.byte	0
+ 1834 001e 03       		.uleb128 0x3
+ 1835 001f 16       		.uleb128 0x16
+ 1836 0020 00       		.byte	0
+ 1837 0021 03       		.uleb128 0x3
+ 1838 0022 0E       		.uleb128 0xe
+ 1839 0023 3A       		.uleb128 0x3a
+ 1840 0024 0B       		.uleb128 0xb
+ 1841 0025 3B       		.uleb128 0x3b
+ 1842 0026 0B       		.uleb128 0xb
+ 1843 0027 49       		.uleb128 0x49
+ 1844 0028 13       		.uleb128 0x13
+ 1845 0029 00       		.byte	0
+ 1846 002a 00       		.byte	0
+ 1847 002b 04       		.uleb128 0x4
+ 1848 002c 24       		.uleb128 0x24
+ 1849 002d 00       		.byte	0
+ 1850 002e 0B       		.uleb128 0xb
+ 1851 002f 0B       		.uleb128 0xb
+ 1852 0030 3E       		.uleb128 0x3e
+ 1853 0031 0B       		.uleb128 0xb
+ 1854 0032 03       		.uleb128 0x3
+ 1855 0033 08       		.uleb128 0x8
+ 1856 0034 00       		.byte	0
+ 1857 0035 00       		.byte	0
+ 1858 0036 05       		.uleb128 0x5
+ 1859 0037 0F       		.uleb128 0xf
+ 1860 0038 00       		.byte	0
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 42
+
+
+ 1861 0039 0B       		.uleb128 0xb
+ 1862 003a 0B       		.uleb128 0xb
+ 1863 003b 49       		.uleb128 0x49
+ 1864 003c 13       		.uleb128 0x13
+ 1865 003d 00       		.byte	0
+ 1866 003e 00       		.byte	0
+ 1867 003f 06       		.uleb128 0x6
+ 1868 0040 26       		.uleb128 0x26
+ 1869 0041 00       		.byte	0
+ 1870 0042 49       		.uleb128 0x49
+ 1871 0043 13       		.uleb128 0x13
+ 1872 0044 00       		.byte	0
+ 1873 0045 00       		.byte	0
+ 1874 0046 07       		.uleb128 0x7
+ 1875 0047 35       		.uleb128 0x35
+ 1876 0048 00       		.byte	0
+ 1877 0049 49       		.uleb128 0x49
+ 1878 004a 13       		.uleb128 0x13
+ 1879 004b 00       		.byte	0
+ 1880 004c 00       		.byte	0
+ 1881 004d 08       		.uleb128 0x8
+ 1882 004e 01       		.uleb128 0x1
+ 1883 004f 01       		.byte	0x1
+ 1884 0050 49       		.uleb128 0x49
+ 1885 0051 13       		.uleb128 0x13
+ 1886 0052 01       		.uleb128 0x1
+ 1887 0053 13       		.uleb128 0x13
+ 1888 0054 00       		.byte	0
+ 1889 0055 00       		.byte	0
+ 1890 0056 09       		.uleb128 0x9
+ 1891 0057 21       		.uleb128 0x21
+ 1892 0058 00       		.byte	0
+ 1893 0059 49       		.uleb128 0x49
+ 1894 005a 13       		.uleb128 0x13
+ 1895 005b 2F       		.uleb128 0x2f
+ 1896 005c 0B       		.uleb128 0xb
+ 1897 005d 00       		.byte	0
+ 1898 005e 00       		.byte	0
+ 1899 005f 0A       		.uleb128 0xa
+ 1900 0060 13       		.uleb128 0x13
+ 1901 0061 01       		.byte	0x1
+ 1902 0062 0B       		.uleb128 0xb
+ 1903 0063 0B       		.uleb128 0xb
+ 1904 0064 3A       		.uleb128 0x3a
+ 1905 0065 0B       		.uleb128 0xb
+ 1906 0066 3B       		.uleb128 0x3b
+ 1907 0067 05       		.uleb128 0x5
+ 1908 0068 01       		.uleb128 0x1
+ 1909 0069 13       		.uleb128 0x13
+ 1910 006a 00       		.byte	0
+ 1911 006b 00       		.byte	0
+ 1912 006c 0B       		.uleb128 0xb
+ 1913 006d 0D       		.uleb128 0xd
+ 1914 006e 00       		.byte	0
+ 1915 006f 03       		.uleb128 0x3
+ 1916 0070 0E       		.uleb128 0xe
+ 1917 0071 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 43
+
+
+ 1918 0072 0B       		.uleb128 0xb
+ 1919 0073 3B       		.uleb128 0x3b
+ 1920 0074 05       		.uleb128 0x5
+ 1921 0075 49       		.uleb128 0x49
+ 1922 0076 13       		.uleb128 0x13
+ 1923 0077 38       		.uleb128 0x38
+ 1924 0078 0B       		.uleb128 0xb
+ 1925 0079 00       		.byte	0
+ 1926 007a 00       		.byte	0
+ 1927 007b 0C       		.uleb128 0xc
+ 1928 007c 16       		.uleb128 0x16
+ 1929 007d 00       		.byte	0
+ 1930 007e 03       		.uleb128 0x3
+ 1931 007f 0E       		.uleb128 0xe
+ 1932 0080 3A       		.uleb128 0x3a
+ 1933 0081 0B       		.uleb128 0xb
+ 1934 0082 3B       		.uleb128 0x3b
+ 1935 0083 05       		.uleb128 0x5
+ 1936 0084 49       		.uleb128 0x49
+ 1937 0085 13       		.uleb128 0x13
+ 1938 0086 00       		.byte	0
+ 1939 0087 00       		.byte	0
+ 1940 0088 0D       		.uleb128 0xd
+ 1941 0089 04       		.uleb128 0x4
+ 1942 008a 01       		.byte	0x1
+ 1943 008b 0B       		.uleb128 0xb
+ 1944 008c 0B       		.uleb128 0xb
+ 1945 008d 49       		.uleb128 0x49
+ 1946 008e 13       		.uleb128 0x13
+ 1947 008f 3A       		.uleb128 0x3a
+ 1948 0090 0B       		.uleb128 0xb
+ 1949 0091 3B       		.uleb128 0x3b
+ 1950 0092 0B       		.uleb128 0xb
+ 1951 0093 01       		.uleb128 0x1
+ 1952 0094 13       		.uleb128 0x13
+ 1953 0095 00       		.byte	0
+ 1954 0096 00       		.byte	0
+ 1955 0097 0E       		.uleb128 0xe
+ 1956 0098 28       		.uleb128 0x28
+ 1957 0099 00       		.byte	0
+ 1958 009a 03       		.uleb128 0x3
+ 1959 009b 0E       		.uleb128 0xe
+ 1960 009c 1C       		.uleb128 0x1c
+ 1961 009d 0B       		.uleb128 0xb
+ 1962 009e 00       		.byte	0
+ 1963 009f 00       		.byte	0
+ 1964 00a0 0F       		.uleb128 0xf
+ 1965 00a1 28       		.uleb128 0x28
+ 1966 00a2 00       		.byte	0
+ 1967 00a3 03       		.uleb128 0x3
+ 1968 00a4 0E       		.uleb128 0xe
+ 1969 00a5 1C       		.uleb128 0x1c
+ 1970 00a6 0D       		.uleb128 0xd
+ 1971 00a7 00       		.byte	0
+ 1972 00a8 00       		.byte	0
+ 1973 00a9 10       		.uleb128 0x10
+ 1974 00aa 04       		.uleb128 0x4
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 44
+
+
+ 1975 00ab 01       		.byte	0x1
+ 1976 00ac 03       		.uleb128 0x3
+ 1977 00ad 0E       		.uleb128 0xe
+ 1978 00ae 0B       		.uleb128 0xb
+ 1979 00af 0B       		.uleb128 0xb
+ 1980 00b0 49       		.uleb128 0x49
+ 1981 00b1 13       		.uleb128 0x13
+ 1982 00b2 3A       		.uleb128 0x3a
+ 1983 00b3 0B       		.uleb128 0xb
+ 1984 00b4 3B       		.uleb128 0x3b
+ 1985 00b5 0B       		.uleb128 0xb
+ 1986 00b6 01       		.uleb128 0x1
+ 1987 00b7 13       		.uleb128 0x13
+ 1988 00b8 00       		.byte	0
+ 1989 00b9 00       		.byte	0
+ 1990 00ba 11       		.uleb128 0x11
+ 1991 00bb 13       		.uleb128 0x13
+ 1992 00bc 01       		.byte	0x1
+ 1993 00bd 03       		.uleb128 0x3
+ 1994 00be 0E       		.uleb128 0xe
+ 1995 00bf 0B       		.uleb128 0xb
+ 1996 00c0 0B       		.uleb128 0xb
+ 1997 00c1 3A       		.uleb128 0x3a
+ 1998 00c2 0B       		.uleb128 0xb
+ 1999 00c3 3B       		.uleb128 0x3b
+ 2000 00c4 0B       		.uleb128 0xb
+ 2001 00c5 01       		.uleb128 0x1
+ 2002 00c6 13       		.uleb128 0x13
+ 2003 00c7 00       		.byte	0
+ 2004 00c8 00       		.byte	0
+ 2005 00c9 12       		.uleb128 0x12
+ 2006 00ca 0D       		.uleb128 0xd
+ 2007 00cb 00       		.byte	0
+ 2008 00cc 03       		.uleb128 0x3
+ 2009 00cd 0E       		.uleb128 0xe
+ 2010 00ce 3A       		.uleb128 0x3a
+ 2011 00cf 0B       		.uleb128 0xb
+ 2012 00d0 3B       		.uleb128 0x3b
+ 2013 00d1 0B       		.uleb128 0xb
+ 2014 00d2 49       		.uleb128 0x49
+ 2015 00d3 13       		.uleb128 0x13
+ 2016 00d4 38       		.uleb128 0x38
+ 2017 00d5 0B       		.uleb128 0xb
+ 2018 00d6 00       		.byte	0
+ 2019 00d7 00       		.byte	0
+ 2020 00d8 13       		.uleb128 0x13
+ 2021 00d9 0D       		.uleb128 0xd
+ 2022 00da 00       		.byte	0
+ 2023 00db 03       		.uleb128 0x3
+ 2024 00dc 08       		.uleb128 0x8
+ 2025 00dd 3A       		.uleb128 0x3a
+ 2026 00de 0B       		.uleb128 0xb
+ 2027 00df 3B       		.uleb128 0x3b
+ 2028 00e0 0B       		.uleb128 0xb
+ 2029 00e1 49       		.uleb128 0x49
+ 2030 00e2 13       		.uleb128 0x13
+ 2031 00e3 38       		.uleb128 0x38
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 45
+
+
+ 2032 00e4 0B       		.uleb128 0xb
+ 2033 00e5 00       		.byte	0
+ 2034 00e6 00       		.byte	0
+ 2035 00e7 14       		.uleb128 0x14
+ 2036 00e8 2E       		.uleb128 0x2e
+ 2037 00e9 01       		.byte	0x1
+ 2038 00ea 3F       		.uleb128 0x3f
+ 2039 00eb 19       		.uleb128 0x19
+ 2040 00ec 03       		.uleb128 0x3
+ 2041 00ed 0E       		.uleb128 0xe
+ 2042 00ee 3A       		.uleb128 0x3a
+ 2043 00ef 0B       		.uleb128 0xb
+ 2044 00f0 3B       		.uleb128 0x3b
+ 2045 00f1 0B       		.uleb128 0xb
+ 2046 00f2 27       		.uleb128 0x27
+ 2047 00f3 19       		.uleb128 0x19
+ 2048 00f4 49       		.uleb128 0x49
+ 2049 00f5 13       		.uleb128 0x13
+ 2050 00f6 11       		.uleb128 0x11
+ 2051 00f7 01       		.uleb128 0x1
+ 2052 00f8 12       		.uleb128 0x12
+ 2053 00f9 06       		.uleb128 0x6
+ 2054 00fa 40       		.uleb128 0x40
+ 2055 00fb 18       		.uleb128 0x18
+ 2056 00fc 9742     		.uleb128 0x2117
+ 2057 00fe 19       		.uleb128 0x19
+ 2058 00ff 01       		.uleb128 0x1
+ 2059 0100 13       		.uleb128 0x13
+ 2060 0101 00       		.byte	0
+ 2061 0102 00       		.byte	0
+ 2062 0103 15       		.uleb128 0x15
+ 2063 0104 898201   		.uleb128 0x4109
+ 2064 0107 01       		.byte	0x1
+ 2065 0108 11       		.uleb128 0x11
+ 2066 0109 01       		.uleb128 0x1
+ 2067 010a 31       		.uleb128 0x31
+ 2068 010b 13       		.uleb128 0x13
+ 2069 010c 01       		.uleb128 0x1
+ 2070 010d 13       		.uleb128 0x13
+ 2071 010e 00       		.byte	0
+ 2072 010f 00       		.byte	0
+ 2073 0110 16       		.uleb128 0x16
+ 2074 0111 8A8201   		.uleb128 0x410a
+ 2075 0114 00       		.byte	0
+ 2076 0115 02       		.uleb128 0x2
+ 2077 0116 18       		.uleb128 0x18
+ 2078 0117 9142     		.uleb128 0x2111
+ 2079 0119 18       		.uleb128 0x18
+ 2080 011a 00       		.byte	0
+ 2081 011b 00       		.byte	0
+ 2082 011c 17       		.uleb128 0x17
+ 2083 011d 898201   		.uleb128 0x4109
+ 2084 0120 01       		.byte	0x1
+ 2085 0121 11       		.uleb128 0x11
+ 2086 0122 01       		.uleb128 0x1
+ 2087 0123 31       		.uleb128 0x31
+ 2088 0124 13       		.uleb128 0x13
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 46
+
+
+ 2089 0125 00       		.byte	0
+ 2090 0126 00       		.byte	0
+ 2091 0127 18       		.uleb128 0x18
+ 2092 0128 05       		.uleb128 0x5
+ 2093 0129 00       		.byte	0
+ 2094 012a 03       		.uleb128 0x3
+ 2095 012b 08       		.uleb128 0x8
+ 2096 012c 3A       		.uleb128 0x3a
+ 2097 012d 0B       		.uleb128 0xb
+ 2098 012e 3B       		.uleb128 0x3b
+ 2099 012f 0B       		.uleb128 0xb
+ 2100 0130 49       		.uleb128 0x49
+ 2101 0131 13       		.uleb128 0x13
+ 2102 0132 02       		.uleb128 0x2
+ 2103 0133 17       		.uleb128 0x17
+ 2104 0134 00       		.byte	0
+ 2105 0135 00       		.byte	0
+ 2106 0136 19       		.uleb128 0x19
+ 2107 0137 05       		.uleb128 0x5
+ 2108 0138 00       		.byte	0
+ 2109 0139 03       		.uleb128 0x3
+ 2110 013a 0E       		.uleb128 0xe
+ 2111 013b 3A       		.uleb128 0x3a
+ 2112 013c 0B       		.uleb128 0xb
+ 2113 013d 3B       		.uleb128 0x3b
+ 2114 013e 0B       		.uleb128 0xb
+ 2115 013f 49       		.uleb128 0x49
+ 2116 0140 13       		.uleb128 0x13
+ 2117 0141 02       		.uleb128 0x2
+ 2118 0142 17       		.uleb128 0x17
+ 2119 0143 00       		.byte	0
+ 2120 0144 00       		.byte	0
+ 2121 0145 1A       		.uleb128 0x1a
+ 2122 0146 34       		.uleb128 0x34
+ 2123 0147 00       		.byte	0
+ 2124 0148 03       		.uleb128 0x3
+ 2125 0149 08       		.uleb128 0x8
+ 2126 014a 3A       		.uleb128 0x3a
+ 2127 014b 0B       		.uleb128 0xb
+ 2128 014c 3B       		.uleb128 0x3b
+ 2129 014d 0B       		.uleb128 0xb
+ 2130 014e 49       		.uleb128 0x49
+ 2131 014f 13       		.uleb128 0x13
+ 2132 0150 1C       		.uleb128 0x1c
+ 2133 0151 0B       		.uleb128 0xb
+ 2134 0152 00       		.byte	0
+ 2135 0153 00       		.byte	0
+ 2136 0154 1B       		.uleb128 0x1b
+ 2137 0155 0B       		.uleb128 0xb
+ 2138 0156 01       		.byte	0x1
+ 2139 0157 11       		.uleb128 0x11
+ 2140 0158 01       		.uleb128 0x1
+ 2141 0159 12       		.uleb128 0x12
+ 2142 015a 06       		.uleb128 0x6
+ 2143 015b 00       		.byte	0
+ 2144 015c 00       		.byte	0
+ 2145 015d 1C       		.uleb128 0x1c
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 47
+
+
+ 2146 015e 34       		.uleb128 0x34
+ 2147 015f 00       		.byte	0
+ 2148 0160 03       		.uleb128 0x3
+ 2149 0161 0E       		.uleb128 0xe
+ 2150 0162 3A       		.uleb128 0x3a
+ 2151 0163 0B       		.uleb128 0xb
+ 2152 0164 3B       		.uleb128 0x3b
+ 2153 0165 0B       		.uleb128 0xb
+ 2154 0166 49       		.uleb128 0x49
+ 2155 0167 13       		.uleb128 0x13
+ 2156 0168 02       		.uleb128 0x2
+ 2157 0169 17       		.uleb128 0x17
+ 2158 016a 00       		.byte	0
+ 2159 016b 00       		.byte	0
+ 2160 016c 1D       		.uleb128 0x1d
+ 2161 016d 34       		.uleb128 0x34
+ 2162 016e 00       		.byte	0
+ 2163 016f 03       		.uleb128 0x3
+ 2164 0170 0E       		.uleb128 0xe
+ 2165 0171 3A       		.uleb128 0x3a
+ 2166 0172 0B       		.uleb128 0xb
+ 2167 0173 3B       		.uleb128 0x3b
+ 2168 0174 0B       		.uleb128 0xb
+ 2169 0175 49       		.uleb128 0x49
+ 2170 0176 13       		.uleb128 0x13
+ 2171 0177 02       		.uleb128 0x2
+ 2172 0178 18       		.uleb128 0x18
+ 2173 0179 00       		.byte	0
+ 2174 017a 00       		.byte	0
+ 2175 017b 1E       		.uleb128 0x1e
+ 2176 017c 2E       		.uleb128 0x2e
+ 2177 017d 01       		.byte	0x1
+ 2178 017e 3F       		.uleb128 0x3f
+ 2179 017f 19       		.uleb128 0x19
+ 2180 0180 03       		.uleb128 0x3
+ 2181 0181 0E       		.uleb128 0xe
+ 2182 0182 3A       		.uleb128 0x3a
+ 2183 0183 0B       		.uleb128 0xb
+ 2184 0184 3B       		.uleb128 0x3b
+ 2185 0185 05       		.uleb128 0x5
+ 2186 0186 27       		.uleb128 0x27
+ 2187 0187 19       		.uleb128 0x19
+ 2188 0188 49       		.uleb128 0x49
+ 2189 0189 13       		.uleb128 0x13
+ 2190 018a 11       		.uleb128 0x11
+ 2191 018b 01       		.uleb128 0x1
+ 2192 018c 12       		.uleb128 0x12
+ 2193 018d 06       		.uleb128 0x6
+ 2194 018e 40       		.uleb128 0x40
+ 2195 018f 18       		.uleb128 0x18
+ 2196 0190 9742     		.uleb128 0x2117
+ 2197 0192 19       		.uleb128 0x19
+ 2198 0193 01       		.uleb128 0x1
+ 2199 0194 13       		.uleb128 0x13
+ 2200 0195 00       		.byte	0
+ 2201 0196 00       		.byte	0
+ 2202 0197 1F       		.uleb128 0x1f
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 48
+
+
+ 2203 0198 05       		.uleb128 0x5
+ 2204 0199 00       		.byte	0
+ 2205 019a 03       		.uleb128 0x3
+ 2206 019b 08       		.uleb128 0x8
+ 2207 019c 3A       		.uleb128 0x3a
+ 2208 019d 0B       		.uleb128 0xb
+ 2209 019e 3B       		.uleb128 0x3b
+ 2210 019f 05       		.uleb128 0x5
+ 2211 01a0 49       		.uleb128 0x49
+ 2212 01a1 13       		.uleb128 0x13
+ 2213 01a2 02       		.uleb128 0x2
+ 2214 01a3 17       		.uleb128 0x17
+ 2215 01a4 00       		.byte	0
+ 2216 01a5 00       		.byte	0
+ 2217 01a6 20       		.uleb128 0x20
+ 2218 01a7 34       		.uleb128 0x34
+ 2219 01a8 00       		.byte	0
+ 2220 01a9 03       		.uleb128 0x3
+ 2221 01aa 08       		.uleb128 0x8
+ 2222 01ab 3A       		.uleb128 0x3a
+ 2223 01ac 0B       		.uleb128 0xb
+ 2224 01ad 3B       		.uleb128 0x3b
+ 2225 01ae 05       		.uleb128 0x5
+ 2226 01af 49       		.uleb128 0x49
+ 2227 01b0 13       		.uleb128 0x13
+ 2228 01b1 1C       		.uleb128 0x1c
+ 2229 01b2 0B       		.uleb128 0xb
+ 2230 01b3 00       		.byte	0
+ 2231 01b4 00       		.byte	0
+ 2232 01b5 21       		.uleb128 0x21
+ 2233 01b6 34       		.uleb128 0x34
+ 2234 01b7 00       		.byte	0
+ 2235 01b8 03       		.uleb128 0x3
+ 2236 01b9 0E       		.uleb128 0xe
+ 2237 01ba 3A       		.uleb128 0x3a
+ 2238 01bb 0B       		.uleb128 0xb
+ 2239 01bc 3B       		.uleb128 0x3b
+ 2240 01bd 05       		.uleb128 0x5
+ 2241 01be 49       		.uleb128 0x49
+ 2242 01bf 13       		.uleb128 0x13
+ 2243 01c0 02       		.uleb128 0x2
+ 2244 01c1 17       		.uleb128 0x17
+ 2245 01c2 00       		.byte	0
+ 2246 01c3 00       		.byte	0
+ 2247 01c4 22       		.uleb128 0x22
+ 2248 01c5 2E       		.uleb128 0x2e
+ 2249 01c6 01       		.byte	0x1
+ 2250 01c7 3F       		.uleb128 0x3f
+ 2251 01c8 19       		.uleb128 0x19
+ 2252 01c9 03       		.uleb128 0x3
+ 2253 01ca 0E       		.uleb128 0xe
+ 2254 01cb 3A       		.uleb128 0x3a
+ 2255 01cc 0B       		.uleb128 0xb
+ 2256 01cd 3B       		.uleb128 0x3b
+ 2257 01ce 05       		.uleb128 0x5
+ 2258 01cf 27       		.uleb128 0x27
+ 2259 01d0 19       		.uleb128 0x19
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 49
+
+
+ 2260 01d1 49       		.uleb128 0x49
+ 2261 01d2 13       		.uleb128 0x13
+ 2262 01d3 11       		.uleb128 0x11
+ 2263 01d4 01       		.uleb128 0x1
+ 2264 01d5 12       		.uleb128 0x12
+ 2265 01d6 06       		.uleb128 0x6
+ 2266 01d7 40       		.uleb128 0x40
+ 2267 01d8 18       		.uleb128 0x18
+ 2268 01d9 9642     		.uleb128 0x2116
+ 2269 01db 19       		.uleb128 0x19
+ 2270 01dc 01       		.uleb128 0x1
+ 2271 01dd 13       		.uleb128 0x13
+ 2272 01de 00       		.byte	0
+ 2273 01df 00       		.byte	0
+ 2274 01e0 23       		.uleb128 0x23
+ 2275 01e1 34       		.uleb128 0x34
+ 2276 01e2 00       		.byte	0
+ 2277 01e3 03       		.uleb128 0x3
+ 2278 01e4 0E       		.uleb128 0xe
+ 2279 01e5 3A       		.uleb128 0x3a
+ 2280 01e6 0B       		.uleb128 0xb
+ 2281 01e7 3B       		.uleb128 0x3b
+ 2282 01e8 05       		.uleb128 0x5
+ 2283 01e9 49       		.uleb128 0x49
+ 2284 01ea 13       		.uleb128 0x13
+ 2285 01eb 02       		.uleb128 0x2
+ 2286 01ec 18       		.uleb128 0x18
+ 2287 01ed 00       		.byte	0
+ 2288 01ee 00       		.byte	0
+ 2289 01ef 24       		.uleb128 0x24
+ 2290 01f0 0B       		.uleb128 0xb
+ 2291 01f1 01       		.byte	0x1
+ 2292 01f2 11       		.uleb128 0x11
+ 2293 01f3 01       		.uleb128 0x1
+ 2294 01f4 12       		.uleb128 0x12
+ 2295 01f5 06       		.uleb128 0x6
+ 2296 01f6 01       		.uleb128 0x1
+ 2297 01f7 13       		.uleb128 0x13
+ 2298 01f8 00       		.byte	0
+ 2299 01f9 00       		.byte	0
+ 2300 01fa 25       		.uleb128 0x25
+ 2301 01fb 34       		.uleb128 0x34
+ 2302 01fc 00       		.byte	0
+ 2303 01fd 03       		.uleb128 0x3
+ 2304 01fe 08       		.uleb128 0x8
+ 2305 01ff 3A       		.uleb128 0x3a
+ 2306 0200 0B       		.uleb128 0xb
+ 2307 0201 3B       		.uleb128 0x3b
+ 2308 0202 05       		.uleb128 0x5
+ 2309 0203 49       		.uleb128 0x49
+ 2310 0204 13       		.uleb128 0x13
+ 2311 0205 02       		.uleb128 0x2
+ 2312 0206 17       		.uleb128 0x17
+ 2313 0207 00       		.byte	0
+ 2314 0208 00       		.byte	0
+ 2315 0209 26       		.uleb128 0x26
+ 2316 020a 898201   		.uleb128 0x4109
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 50
+
+
+ 2317 020d 00       		.byte	0
+ 2318 020e 11       		.uleb128 0x11
+ 2319 020f 01       		.uleb128 0x1
+ 2320 0210 31       		.uleb128 0x31
+ 2321 0211 13       		.uleb128 0x13
+ 2322 0212 00       		.byte	0
+ 2323 0213 00       		.byte	0
+ 2324 0214 27       		.uleb128 0x27
+ 2325 0215 34       		.uleb128 0x34
+ 2326 0216 00       		.byte	0
+ 2327 0217 03       		.uleb128 0x3
+ 2328 0218 0E       		.uleb128 0xe
+ 2329 0219 3A       		.uleb128 0x3a
+ 2330 021a 0B       		.uleb128 0xb
+ 2331 021b 3B       		.uleb128 0x3b
+ 2332 021c 05       		.uleb128 0x5
+ 2333 021d 49       		.uleb128 0x49
+ 2334 021e 13       		.uleb128 0x13
+ 2335 021f 3F       		.uleb128 0x3f
+ 2336 0220 19       		.uleb128 0x19
+ 2337 0221 3C       		.uleb128 0x3c
+ 2338 0222 19       		.uleb128 0x19
+ 2339 0223 00       		.byte	0
+ 2340 0224 00       		.byte	0
+ 2341 0225 28       		.uleb128 0x28
+ 2342 0226 2E       		.uleb128 0x2e
+ 2343 0227 00       		.byte	0
+ 2344 0228 3F       		.uleb128 0x3f
+ 2345 0229 19       		.uleb128 0x19
+ 2346 022a 3C       		.uleb128 0x3c
+ 2347 022b 19       		.uleb128 0x19
+ 2348 022c 6E       		.uleb128 0x6e
+ 2349 022d 0E       		.uleb128 0xe
+ 2350 022e 03       		.uleb128 0x3
+ 2351 022f 0E       		.uleb128 0xe
+ 2352 0230 3A       		.uleb128 0x3a
+ 2353 0231 0B       		.uleb128 0xb
+ 2354 0232 3B       		.uleb128 0x3b
+ 2355 0233 0B       		.uleb128 0xb
+ 2356 0234 00       		.byte	0
+ 2357 0235 00       		.byte	0
+ 2358 0236 29       		.uleb128 0x29
+ 2359 0237 2E       		.uleb128 0x2e
+ 2360 0238 00       		.byte	0
+ 2361 0239 3F       		.uleb128 0x3f
+ 2362 023a 19       		.uleb128 0x19
+ 2363 023b 3C       		.uleb128 0x3c
+ 2364 023c 19       		.uleb128 0x19
+ 2365 023d 6E       		.uleb128 0x6e
+ 2366 023e 0E       		.uleb128 0xe
+ 2367 023f 03       		.uleb128 0x3
+ 2368 0240 0E       		.uleb128 0xe
+ 2369 0241 00       		.byte	0
+ 2370 0242 00       		.byte	0
+ 2371 0243 00       		.byte	0
+ 2372              		.section	.debug_loc,"",%progbits
+ 2373              	.Ldebug_loc0:
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 51
+
+
+ 2374              	.LLST0:
+ 2375 0000 00000000 		.4byte	.LVL3
+ 2376 0004 0A000000 		.4byte	.LVL4
+ 2377 0008 0100     		.2byte	0x1
+ 2378 000a 50       		.byte	0x50
+ 2379 000b 0A000000 		.4byte	.LVL4
+ 2380 000f 64000000 		.4byte	.LVL8
+ 2381 0013 0100     		.2byte	0x1
+ 2382 0015 54       		.byte	0x54
+ 2383 0016 64000000 		.4byte	.LVL8
+ 2384 001a 68000000 		.4byte	.LVL9
+ 2385 001e 0100     		.2byte	0x1
+ 2386 0020 50       		.byte	0x50
+ 2387 0021 68000000 		.4byte	.LVL9
+ 2388 0025 70000000 		.4byte	.LFE65
+ 2389 0029 0400     		.2byte	0x4
+ 2390 002b F3       		.byte	0xf3
+ 2391 002c 01       		.uleb128 0x1
+ 2392 002d 50       		.byte	0x50
+ 2393 002e 9F       		.byte	0x9f
+ 2394 002f 00000000 		.4byte	0
+ 2395 0033 00000000 		.4byte	0
+ 2396              	.LLST1:
+ 2397 0037 00000000 		.4byte	.LVL3
+ 2398 003b 26000000 		.4byte	.LVL6
+ 2399 003f 0100     		.2byte	0x1
+ 2400 0041 51       		.byte	0x51
+ 2401 0042 26000000 		.4byte	.LVL6
+ 2402 0046 64000000 		.4byte	.LVL8
+ 2403 004a 0400     		.2byte	0x4
+ 2404 004c F3       		.byte	0xf3
+ 2405 004d 01       		.uleb128 0x1
+ 2406 004e 51       		.byte	0x51
+ 2407 004f 9F       		.byte	0x9f
+ 2408 0050 64000000 		.4byte	.LVL8
+ 2409 0054 70000000 		.4byte	.LFE65
+ 2410 0058 0100     		.2byte	0x1
+ 2411 005a 51       		.byte	0x51
+ 2412 005b 00000000 		.4byte	0
+ 2413 005f 00000000 		.4byte	0
+ 2414              	.LLST2:
+ 2415 0063 00000000 		.4byte	.LVL3
+ 2416 0067 24000000 		.4byte	.LVL5
+ 2417 006b 0100     		.2byte	0x1
+ 2418 006d 52       		.byte	0x52
+ 2419 006e 24000000 		.4byte	.LVL5
+ 2420 0072 64000000 		.4byte	.LVL8
+ 2421 0076 0400     		.2byte	0x4
+ 2422 0078 F3       		.byte	0xf3
+ 2423 0079 01       		.uleb128 0x1
+ 2424 007a 52       		.byte	0x52
+ 2425 007b 9F       		.byte	0x9f
+ 2426 007c 64000000 		.4byte	.LVL8
+ 2427 0080 70000000 		.4byte	.LFE65
+ 2428 0084 0100     		.2byte	0x1
+ 2429 0086 52       		.byte	0x52
+ 2430 0087 00000000 		.4byte	0
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 52
+
+
+ 2431 008b 00000000 		.4byte	0
+ 2432              	.LLST3:
+ 2433 008f 00000000 		.4byte	.LVL3
+ 2434 0093 2B000000 		.4byte	.LVL7-1
+ 2435 0097 0100     		.2byte	0x1
+ 2436 0099 53       		.byte	0x53
+ 2437 009a 2B000000 		.4byte	.LVL7-1
+ 2438 009e 64000000 		.4byte	.LVL8
+ 2439 00a2 0100     		.2byte	0x1
+ 2440 00a4 56       		.byte	0x56
+ 2441 00a5 64000000 		.4byte	.LVL8
+ 2442 00a9 70000000 		.4byte	.LFE65
+ 2443 00ad 0100     		.2byte	0x1
+ 2444 00af 53       		.byte	0x53
+ 2445 00b0 00000000 		.4byte	0
+ 2446 00b4 00000000 		.4byte	0
+ 2447              	.LLST4:
+ 2448 00b8 00000000 		.4byte	.LVL10
+ 2449 00bc 46000000 		.4byte	.LVL11
+ 2450 00c0 0100     		.2byte	0x1
+ 2451 00c2 50       		.byte	0x50
+ 2452 00c3 46000000 		.4byte	.LVL11
+ 2453 00c7 48000000 		.4byte	.LVL12
+ 2454 00cb 0100     		.2byte	0x1
+ 2455 00cd 53       		.byte	0x53
+ 2456 00ce 48000000 		.4byte	.LVL12
+ 2457 00d2 4C000000 		.4byte	.LVL13
+ 2458 00d6 0100     		.2byte	0x1
+ 2459 00d8 50       		.byte	0x50
+ 2460 00d9 4C000000 		.4byte	.LVL13
+ 2461 00dd 4E000000 		.4byte	.LVL14
+ 2462 00e1 0100     		.2byte	0x1
+ 2463 00e3 53       		.byte	0x53
+ 2464 00e4 4E000000 		.4byte	.LVL14
+ 2465 00e8 52000000 		.4byte	.LVL15
+ 2466 00ec 0100     		.2byte	0x1
+ 2467 00ee 50       		.byte	0x50
+ 2468 00ef 52000000 		.4byte	.LVL15
+ 2469 00f3 54000000 		.4byte	.LVL16
+ 2470 00f7 0100     		.2byte	0x1
+ 2471 00f9 53       		.byte	0x53
+ 2472 00fa 54000000 		.4byte	.LVL16
+ 2473 00fe 58000000 		.4byte	.LVL17
+ 2474 0102 0100     		.2byte	0x1
+ 2475 0104 50       		.byte	0x50
+ 2476 0105 58000000 		.4byte	.LVL17
+ 2477 0109 60000000 		.4byte	.LFE66
+ 2478 010d 0100     		.2byte	0x1
+ 2479 010f 53       		.byte	0x53
+ 2480 0110 00000000 		.4byte	0
+ 2481 0114 00000000 		.4byte	0
+ 2482              	.LLST5:
+ 2483 0118 00000000 		.4byte	.LVL18
+ 2484 011c 3E000000 		.4byte	.LVL21
+ 2485 0120 0100     		.2byte	0x1
+ 2486 0122 50       		.byte	0x50
+ 2487 0123 3E000000 		.4byte	.LVL21
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 53
+
+
+ 2488 0127 54000000 		.4byte	.LVL24
+ 2489 012b 0100     		.2byte	0x1
+ 2490 012d 54       		.byte	0x54
+ 2491 012e 54000000 		.4byte	.LVL24
+ 2492 0132 58000000 		.4byte	.LVL25
+ 2493 0136 0100     		.2byte	0x1
+ 2494 0138 50       		.byte	0x50
+ 2495 0139 58000000 		.4byte	.LVL25
+ 2496 013d 5A000000 		.4byte	.LVL26
+ 2497 0141 0400     		.2byte	0x4
+ 2498 0143 F3       		.byte	0xf3
+ 2499 0144 01       		.uleb128 0x1
+ 2500 0145 50       		.byte	0x50
+ 2501 0146 9F       		.byte	0x9f
+ 2502 0147 5A000000 		.4byte	.LVL26
+ 2503 014b 5E000000 		.4byte	.LVL27
+ 2504 014f 0100     		.2byte	0x1
+ 2505 0151 50       		.byte	0x50
+ 2506 0152 5E000000 		.4byte	.LVL27
+ 2507 0156 62000000 		.4byte	.LVL28
+ 2508 015a 0100     		.2byte	0x1
+ 2509 015c 54       		.byte	0x54
+ 2510 015d 62000000 		.4byte	.LVL28
+ 2511 0161 70000000 		.4byte	.LFE67
+ 2512 0165 0400     		.2byte	0x4
+ 2513 0167 F3       		.byte	0xf3
+ 2514 0168 01       		.uleb128 0x1
+ 2515 0169 50       		.byte	0x50
+ 2516 016a 9F       		.byte	0x9f
+ 2517 016b 00000000 		.4byte	0
+ 2518 016f 00000000 		.4byte	0
+ 2519              	.LLST6:
+ 2520 0173 2A000000 		.4byte	.LVL19
+ 2521 0177 2E000000 		.4byte	.LVL20
+ 2522 017b 0100     		.2byte	0x1
+ 2523 017d 53       		.byte	0x53
+ 2524 017e 2E000000 		.4byte	.LVL20
+ 2525 0182 3E000000 		.4byte	.LVL21
+ 2526 0186 0800     		.2byte	0x8
+ 2527 0188 70       		.byte	0x70
+ 2528 0189 14       		.sleb128 20
+ 2529 018a 06       		.byte	0x6
+ 2530 018b 70       		.byte	0x70
+ 2531 018c 10       		.sleb128 16
+ 2532 018d 06       		.byte	0x6
+ 2533 018e 1C       		.byte	0x1c
+ 2534 018f 9F       		.byte	0x9f
+ 2535 0190 3E000000 		.4byte	.LVL21
+ 2536 0194 41000000 		.4byte	.LVL22-1
+ 2537 0198 0800     		.2byte	0x8
+ 2538 019a 74       		.byte	0x74
+ 2539 019b 14       		.sleb128 20
+ 2540 019c 06       		.byte	0x6
+ 2541 019d 74       		.byte	0x74
+ 2542 019e 10       		.sleb128 16
+ 2543 019f 06       		.byte	0x6
+ 2544 01a0 1C       		.byte	0x1c
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 54
+
+
+ 2545 01a1 9F       		.byte	0x9f
+ 2546 01a2 00000000 		.4byte	0
+ 2547 01a6 00000000 		.4byte	0
+ 2548              	.LLST7:
+ 2549 01aa 00000000 		.4byte	.LVL29
+ 2550 01ae 2E000000 		.4byte	.LVL33
+ 2551 01b2 0100     		.2byte	0x1
+ 2552 01b4 50       		.byte	0x50
+ 2553 01b5 2E000000 		.4byte	.LVL33
+ 2554 01b9 30000000 		.4byte	.LVL34
+ 2555 01bd 0100     		.2byte	0x1
+ 2556 01bf 53       		.byte	0x53
+ 2557 01c0 30000000 		.4byte	.LVL34
+ 2558 01c4 34000000 		.4byte	.LVL35
+ 2559 01c8 0100     		.2byte	0x1
+ 2560 01ca 50       		.byte	0x50
+ 2561 01cb 34000000 		.4byte	.LVL35
+ 2562 01cf 36000000 		.4byte	.LVL36
+ 2563 01d3 0100     		.2byte	0x1
+ 2564 01d5 53       		.byte	0x53
+ 2565 01d6 36000000 		.4byte	.LVL36
+ 2566 01da 3A000000 		.4byte	.LVL37
+ 2567 01de 0100     		.2byte	0x1
+ 2568 01e0 50       		.byte	0x50
+ 2569 01e1 3A000000 		.4byte	.LVL37
+ 2570 01e5 40000000 		.4byte	.LFE68
+ 2571 01e9 0100     		.2byte	0x1
+ 2572 01eb 53       		.byte	0x53
+ 2573 01ec 00000000 		.4byte	0
+ 2574 01f0 00000000 		.4byte	0
+ 2575              	.LLST8:
+ 2576 01f4 22000000 		.4byte	.LVL30
+ 2577 01f8 26000000 		.4byte	.LVL31
+ 2578 01fc 0100     		.2byte	0x1
+ 2579 01fe 52       		.byte	0x52
+ 2580 01ff 26000000 		.4byte	.LVL31
+ 2581 0203 28000000 		.4byte	.LVL32
+ 2582 0207 0800     		.2byte	0x8
+ 2583 0209 70       		.byte	0x70
+ 2584 020a 14       		.sleb128 20
+ 2585 020b 06       		.byte	0x6
+ 2586 020c 70       		.byte	0x70
+ 2587 020d 10       		.sleb128 16
+ 2588 020e 06       		.byte	0x6
+ 2589 020f 1C       		.byte	0x1c
+ 2590 0210 9F       		.byte	0x9f
+ 2591 0211 00000000 		.4byte	0
+ 2592 0215 00000000 		.4byte	0
+ 2593              	.LLST9:
+ 2594 0219 00000000 		.4byte	.LVL38
+ 2595 021d 24000000 		.4byte	.LVL39
+ 2596 0221 0100     		.2byte	0x1
+ 2597 0223 50       		.byte	0x50
+ 2598 0224 24000000 		.4byte	.LVL39
+ 2599 0228 26000000 		.4byte	.LVL40
+ 2600 022c 0100     		.2byte	0x1
+ 2601 022e 53       		.byte	0x53
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 55
+
+
+ 2602 022f 26000000 		.4byte	.LVL40
+ 2603 0233 2A000000 		.4byte	.LVL41
+ 2604 0237 0100     		.2byte	0x1
+ 2605 0239 50       		.byte	0x50
+ 2606 023a 2A000000 		.4byte	.LVL41
+ 2607 023e 2C000000 		.4byte	.LVL42
+ 2608 0242 0100     		.2byte	0x1
+ 2609 0244 53       		.byte	0x53
+ 2610 0245 2C000000 		.4byte	.LVL42
+ 2611 0249 30000000 		.4byte	.LVL43
+ 2612 024d 0100     		.2byte	0x1
+ 2613 024f 50       		.byte	0x50
+ 2614 0250 30000000 		.4byte	.LVL43
+ 2615 0254 38000000 		.4byte	.LFE69
+ 2616 0258 0100     		.2byte	0x1
+ 2617 025a 53       		.byte	0x53
+ 2618 025b 00000000 		.4byte	0
+ 2619 025f 00000000 		.4byte	0
+ 2620              	.LLST10:
+ 2621 0263 00000000 		.4byte	.LVL44
+ 2622 0267 2A000000 		.4byte	.LVL51
+ 2623 026b 0100     		.2byte	0x1
+ 2624 026d 50       		.byte	0x50
+ 2625 026e 2A000000 		.4byte	.LVL51
+ 2626 0272 2E000000 		.4byte	.LVL52
+ 2627 0276 0100     		.2byte	0x1
+ 2628 0278 53       		.byte	0x53
+ 2629 0279 2E000000 		.4byte	.LVL52
+ 2630 027d 50000000 		.4byte	.LVL56
+ 2631 0281 0400     		.2byte	0x4
+ 2632 0283 F3       		.byte	0xf3
+ 2633 0284 01       		.uleb128 0x1
+ 2634 0285 50       		.byte	0x50
+ 2635 0286 9F       		.byte	0x9f
+ 2636 0287 50000000 		.4byte	.LVL56
+ 2637 028b 54000000 		.4byte	.LVL57
+ 2638 028f 0100     		.2byte	0x1
+ 2639 0291 50       		.byte	0x50
+ 2640 0292 54000000 		.4byte	.LVL57
+ 2641 0296 74000000 		.4byte	.LFE70
+ 2642 029a 0400     		.2byte	0x4
+ 2643 029c F3       		.byte	0xf3
+ 2644 029d 01       		.uleb128 0x1
+ 2645 029e 50       		.byte	0x50
+ 2646 029f 9F       		.byte	0x9f
+ 2647 02a0 00000000 		.4byte	0
+ 2648 02a4 00000000 		.4byte	0
+ 2649              	.LLST11:
+ 2650 02a8 08000000 		.4byte	.LVL45
+ 2651 02ac 1A000000 		.4byte	.LVL46
+ 2652 02b0 0600     		.2byte	0x6
+ 2653 02b2 03       		.byte	0x3
+ 2654 02b3 18000000 		.4byte	.LC1
+ 2655 02b7 9F       		.byte	0x9f
+ 2656 02b8 1A000000 		.4byte	.LVL46
+ 2657 02bc 1E000000 		.4byte	.LVL47
+ 2658 02c0 0600     		.2byte	0x6
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 56
+
+
+ 2659 02c2 03       		.byte	0x3
+ 2660 02c3 2C000000 		.4byte	.LC3
+ 2661 02c7 9F       		.byte	0x9f
+ 2662 02c8 1E000000 		.4byte	.LVL47
+ 2663 02cc 22000000 		.4byte	.LVL48
+ 2664 02d0 0600     		.2byte	0x6
+ 2665 02d2 03       		.byte	0x3
+ 2666 02d3 34000000 		.4byte	.LC4
+ 2667 02d7 9F       		.byte	0x9f
+ 2668 02d8 22000000 		.4byte	.LVL48
+ 2669 02dc 26000000 		.4byte	.LVL49
+ 2670 02e0 0600     		.2byte	0x6
+ 2671 02e2 03       		.byte	0x3
+ 2672 02e3 3C000000 		.4byte	.LC5
+ 2673 02e7 9F       		.byte	0x9f
+ 2674 02e8 26000000 		.4byte	.LVL49
+ 2675 02ec 28000000 		.4byte	.LVL50
+ 2676 02f0 0600     		.2byte	0x6
+ 2677 02f2 03       		.byte	0x3
+ 2678 02f3 18000000 		.4byte	.LC1
+ 2679 02f7 9F       		.byte	0x9f
+ 2680 02f8 28000000 		.4byte	.LVL50
+ 2681 02fc 50000000 		.4byte	.LVL56
+ 2682 0300 0100     		.2byte	0x1
+ 2683 0302 54       		.byte	0x54
+ 2684 0303 56000000 		.4byte	.LVL58
+ 2685 0307 5A000000 		.4byte	.LVL59
+ 2686 030b 0100     		.2byte	0x1
+ 2687 030d 54       		.byte	0x54
+ 2688 030e 00000000 		.4byte	0
+ 2689 0312 00000000 		.4byte	0
+ 2690              	.LLST12:
+ 2691 0316 18000000 		.4byte	.LVL62
+ 2692 031a 28000000 		.4byte	.LVL65
+ 2693 031e 0100     		.2byte	0x1
+ 2694 0320 54       		.byte	0x54
+ 2695 0321 2A000000 		.4byte	.LVL66
+ 2696 0325 36000000 		.4byte	.LVL67
+ 2697 0329 0100     		.2byte	0x1
+ 2698 032b 54       		.byte	0x54
+ 2699 032c 00000000 		.4byte	0
+ 2700 0330 00000000 		.4byte	0
+ 2701              	.LLST13:
+ 2702 0334 20000000 		.4byte	.LVL63
+ 2703 0338 25000000 		.4byte	.LVL64-1
+ 2704 033c 0100     		.2byte	0x1
+ 2705 033e 50       		.byte	0x50
+ 2706 033f 00000000 		.4byte	0
+ 2707 0343 00000000 		.4byte	0
+ 2708              		.section	.debug_aranges,"",%progbits
+ 2709 0000 54000000 		.4byte	0x54
+ 2710 0004 0200     		.2byte	0x2
+ 2711 0006 00000000 		.4byte	.Ldebug_info0
+ 2712 000a 04       		.byte	0x4
+ 2713 000b 00       		.byte	0
+ 2714 000c 0000     		.2byte	0
+ 2715 000e 0000     		.2byte	0
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 57
+
+
+ 2716 0010 00000000 		.4byte	.LFB64
+ 2717 0014 54000000 		.4byte	.LFE64-.LFB64
+ 2718 0018 00000000 		.4byte	.LFB65
+ 2719 001c 70000000 		.4byte	.LFE65-.LFB65
+ 2720 0020 00000000 		.4byte	.LFB66
+ 2721 0024 60000000 		.4byte	.LFE66-.LFB66
+ 2722 0028 00000000 		.4byte	.LFB67
+ 2723 002c 70000000 		.4byte	.LFE67-.LFB67
+ 2724 0030 00000000 		.4byte	.LFB68
+ 2725 0034 40000000 		.4byte	.LFE68-.LFB68
+ 2726 0038 00000000 		.4byte	.LFB69
+ 2727 003c 38000000 		.4byte	.LFE69-.LFB69
+ 2728 0040 00000000 		.4byte	.LFB70
+ 2729 0044 74000000 		.4byte	.LFE70-.LFB70
+ 2730 0048 00000000 		.4byte	.LFB71
+ 2731 004c 40000000 		.4byte	.LFE71-.LFB71
+ 2732 0050 00000000 		.4byte	0
+ 2733 0054 00000000 		.4byte	0
+ 2734              		.section	.debug_ranges,"",%progbits
+ 2735              	.Ldebug_ranges0:
+ 2736 0000 00000000 		.4byte	.LFB64
+ 2737 0004 54000000 		.4byte	.LFE64
+ 2738 0008 00000000 		.4byte	.LFB65
+ 2739 000c 70000000 		.4byte	.LFE65
+ 2740 0010 00000000 		.4byte	.LFB66
+ 2741 0014 60000000 		.4byte	.LFE66
+ 2742 0018 00000000 		.4byte	.LFB67
+ 2743 001c 70000000 		.4byte	.LFE67
+ 2744 0020 00000000 		.4byte	.LFB68
+ 2745 0024 40000000 		.4byte	.LFE68
+ 2746 0028 00000000 		.4byte	.LFB69
+ 2747 002c 38000000 		.4byte	.LFE69
+ 2748 0030 00000000 		.4byte	.LFB70
+ 2749 0034 74000000 		.4byte	.LFE70
+ 2750 0038 00000000 		.4byte	.LFB71
+ 2751 003c 40000000 		.4byte	.LFE71
+ 2752 0040 00000000 		.4byte	0
+ 2753 0044 00000000 		.4byte	0
+ 2754              		.section	.debug_line,"",%progbits
+ 2755              	.Ldebug_line0:
+ 2756 0000 5C030000 		.section	.debug_str,"MS",%progbits,1
+ 2756      02001D02 
+ 2756      00000201 
+ 2756      FB0E0D00 
+ 2756      01010101 
+ 2757              	.LASF81:
+ 2758 0000 4D4F4445 		.ascii	"MODE_PIN\000"
+ 2758      5F50494E 
+ 2758      00
+ 2759              	.LASF92:
+ 2760 0009 50494E5F 		.ascii	"PIN_RED\000"
+ 2760      52454400 
+ 2761              	.LASF28:
+ 2762 0011 434F4D50 		.ascii	"COMP0\000"
+ 2762      3000
+ 2763              	.LASF32:
+ 2764 0017 434F4D50 		.ascii	"COMP1\000"
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 58
+
+
+ 2764      3100
+ 2765              	.LASF36:
+ 2766 001d 434F4D50 		.ascii	"COMP2\000"
+ 2766      3200
+ 2767              	.LASF40:
+ 2768 0023 434F4D50 		.ascii	"COMP3\000"
+ 2768      3300
+ 2769              	.LASF68:
+ 2770 0029 52435F45 		.ascii	"RC_ERROR_NOT_MATCH\000"
+ 2770      52524F52 
+ 2770      5F4E4F54 
+ 2770      5F4D4154 
+ 2770      434800
+ 2771              	.LASF111:
+ 2772 003c 54696D69 		.ascii	"TimingAnalyzer_stop\000"
+ 2772      6E67416E 
+ 2772      616C797A 
+ 2772      65725F73 
+ 2772      746F7000 
+ 2773              	.LASF64:
+ 2774 0050 52435F45 		.ascii	"RC_ERROR_WRITE_ONLY\000"
+ 2774      52524F52 
+ 2774      5F575249 
+ 2774      54455F4F 
+ 2774      4E4C5900 
+ 2775              	.LASF94:
+ 2776 0064 50494E5F 		.ascii	"PIN_GREEN\000"
+ 2776      47524545 
+ 2776      4E00
+ 2777              	.LASF117:
+ 2778 006e 62756666 		.ascii	"buffer\000"
+ 2778      657200
+ 2779              	.LASF122:
+ 2780 0075 5245445F 		.ascii	"RED_LED_Write\000"
+ 2780      4C45445F 
+ 2780      57726974 
+ 2780      6500
+ 2781              	.LASF22:
+ 2782 0083 43504943 		.ascii	"CPICNT\000"
+ 2782      4E5400
+ 2783              	.LASF11:
+ 2784 008a 756E7369 		.ascii	"unsigned int\000"
+ 2784      676E6564 
+ 2784      20696E74 
+ 2784      00
+ 2785              	.LASF52:
+ 2786 0097 52435F45 		.ascii	"RC_ERROR_ZERO\000"
+ 2786      52524F52 
+ 2786      5F5A4552 
+ 2786      4F00
+ 2787              	.LASF86:
+ 2788 00a5 53544154 		.ascii	"STATE_RUNNING\000"
+ 2788      455F5255 
+ 2788      4E4E494E 
+ 2788      4700
+ 2789              	.LASF47:
+ 2790 00b3 44454D43 		.ascii	"DEMCR\000"
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 59
+
+
+ 2790      5200
+ 2791              	.LASF5:
+ 2792 00b9 5F5F696E 		.ascii	"__int32_t\000"
+ 2792      7433325F 
+ 2792      7400
+ 2793              	.LASF51:
+ 2794 00c3 52435F45 		.ascii	"RC_ERROR_NULL\000"
+ 2794      52524F52 
+ 2794      5F4E554C 
+ 2794      4C00
+ 2795              	.LASF60:
+ 2796 00d1 52435F45 		.ascii	"RC_ERROR_TIME_OUT\000"
+ 2796      52524F52 
+ 2796      5F54494D 
+ 2796      455F4F55 
+ 2796      5400
+ 2797              	.LASF72:
+ 2798 00e3 52435F45 		.ascii	"RC_ERROR_INVALID_STATE\000"
+ 2798      52524F52 
+ 2798      5F494E56 
+ 2798      414C4944 
+ 2798      5F535441 
+ 2799              	.LASF118:
+ 2800 00fa 73747253 		.ascii	"strState\000"
+ 2800      74617465 
+ 2800      00
+ 2801              	.LASF97:
+ 2802 0103 6D6F6465 		.ascii	"mode\000"
+ 2802      00
+ 2803              	.LASF103:
+ 2804 0108 656C6170 		.ascii	"elapsed_time_ms\000"
+ 2804      7365645F 
+ 2804      74696D65 
+ 2804      5F6D7300 
+ 2805              	.LASF79:
+ 2806 0118 4D4F4445 		.ascii	"MODE_SYSTICK\000"
+ 2806      5F535953 
+ 2806      5449434B 
+ 2806      00
+ 2807              	.LASF77:
+ 2808 0125 4D4F4445 		.ascii	"MODE_DWT\000"
+ 2808      5F445754 
+ 2808      00
+ 2809              	.LASF17:
+ 2810 012e 75696E74 		.ascii	"uint32_t\000"
+ 2810      33325F74 
+ 2810      00
+ 2811              	.LASF50:
+ 2812 0137 52435F45 		.ascii	"RC_ERROR\000"
+ 2812      52524F52 
+ 2812      00
+ 2813              	.LASF67:
+ 2814 0140 52435F45 		.ascii	"RC_ERROR_WRITE_FAILS\000"
+ 2814      52524F52 
+ 2814      5F575249 
+ 2814      54455F46 
+ 2814      41494C53 
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 60
+
+
+ 2815              	.LASF18:
+ 2816 0155 666C6F61 		.ascii	"float\000"
+ 2816      7400
+ 2817              	.LASF109:
+ 2818 015b 54696D69 		.ascii	"TimingAnalyzer_create\000"
+ 2818      6E67416E 
+ 2818      616C797A 
+ 2818      65725F63 
+ 2818      72656174 
+ 2819              	.LASF61:
+ 2820 0171 52435F45 		.ascii	"RC_ERROR_OPEN\000"
+ 2820      52524F52 
+ 2820      5F4F5045 
+ 2820      4E00
+ 2821              	.LASF129:
+ 2822 017f 54696D69 		.ascii	"TimingAnalyzer.c\000"
+ 2822      6E67416E 
+ 2822      616C797A 
+ 2822      65722E63 
+ 2822      00
+ 2823              	.LASF89:
+ 2824 0190 416E616C 		.ascii	"AnalyzerState_t\000"
+ 2824      797A6572 
+ 2824      53746174 
+ 2824      655F7400 
+ 2825              	.LASF10:
+ 2826 01a0 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2826      206C6F6E 
+ 2826      6720756E 
+ 2826      7369676E 
+ 2826      65642069 
+ 2827              	.LASF75:
+ 2828 01b7 52435F45 		.ascii	"RC_ERROR_NOT_INITIALIZERD\000"
+ 2828      52524F52 
+ 2828      5F4E4F54 
+ 2828      5F494E49 
+ 2828      5449414C 
+ 2829              	.LASF112:
+ 2830 01d1 696E7465 		.ascii	"interval_cycles\000"
+ 2830      7276616C 
+ 2830      5F637963 
+ 2830      6C657300 
+ 2831              	.LASF131:
+ 2832 01e1 73416E61 		.ascii	"sAnalyzer\000"
+ 2832      6C797A65 
+ 2832      7200
+ 2833              	.LASF128:
+ 2834 01eb 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2834      43313120 
+ 2834      352E342E 
+ 2834      31203230 
+ 2834      31363036 
+ 2835 021e 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2835      20726576 
+ 2835      6973696F 
+ 2835      6E203233 
+ 2835      37373135 
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 61
+
+
+ 2836 0251 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2836      66756E63 
+ 2836      74696F6E 
+ 2836      2D736563 
+ 2836      74696F6E 
+ 2837              	.LASF62:
+ 2838 0279 52435F45 		.ascii	"RC_ERROR_CHECKSUM\000"
+ 2838      52524F52 
+ 2838      5F434845 
+ 2838      434B5355 
+ 2838      4D00
+ 2839              	.LASF102:
+ 2840 028b 73746F70 		.ascii	"stop_cycles\000"
+ 2840      5F637963 
+ 2840      6C657300 
+ 2841              	.LASF115:
+ 2842 0297 54696D69 		.ascii	"TimingAnalyzer_resume\000"
+ 2842      6E67416E 
+ 2842      616C797A 
+ 2842      65725F72 
+ 2842      6573756D 
+ 2843              	.LASF85:
+ 2844 02ad 53544154 		.ascii	"STATE_CONFIGURED\000"
+ 2844      455F434F 
+ 2844      4E464947 
+ 2844      55524544 
+ 2844      00
+ 2845              	.LASF43:
+ 2846 02be 4457545F 		.ascii	"DWT_Type\000"
+ 2846      54797065 
+ 2846      00
+ 2847              	.LASF25:
+ 2848 02c7 4C535543 		.ascii	"LSUCNT\000"
+ 2848      4E5400
+ 2849              	.LASF14:
+ 2850 02ce 63686172 		.ascii	"char\000"
+ 2850      00
+ 2851              	.LASF49:
+ 2852 02d3 52435F53 		.ascii	"RC_SUCCESS\000"
+ 2852      55434345 
+ 2852      535300
+ 2853              	.LASF80:
+ 2854 02de 4D4F4445 		.ascii	"MODE_SYSTICK_PIN\000"
+ 2854      5F535953 
+ 2854      5449434B 
+ 2854      5F50494E 
+ 2854      00
+ 2855              	.LASF30:
+ 2856 02ef 46554E43 		.ascii	"FUNCTION0\000"
+ 2856      54494F4E 
+ 2856      3000
+ 2857              	.LASF34:
+ 2858 02f9 46554E43 		.ascii	"FUNCTION1\000"
+ 2858      54494F4E 
+ 2858      3100
+ 2859              	.LASF38:
+ 2860 0303 46554E43 		.ascii	"FUNCTION2\000"
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 62
+
+
+ 2860      54494F4E 
+ 2860      3200
+ 2861              	.LASF42:
+ 2862 030d 46554E43 		.ascii	"FUNCTION3\000"
+ 2862      54494F4E 
+ 2862      3300
+ 2863              	.LASF15:
+ 2864 0317 75696E74 		.ascii	"uint8_t\000"
+ 2864      385F7400 
+ 2865              	.LASF116:
+ 2866 031f 54696D69 		.ascii	"TimingAnalyzer_printStatus\000"
+ 2866      6E67416E 
+ 2866      616C797A 
+ 2866      65725F70 
+ 2866      72696E74 
+ 2867              	.LASF21:
+ 2868 033a 43594343 		.ascii	"CYCCNT\000"
+ 2868      4E5400
+ 2869              	.LASF107:
+ 2870 0341 54696D69 		.ascii	"TimingAnalyzer_t\000"
+ 2870      6E67416E 
+ 2870      616C797A 
+ 2870      65725F74 
+ 2870      00
+ 2871              	.LASF70:
+ 2872 0352 52435F45 		.ascii	"RC_ERROR_BAD_DATA\000"
+ 2872      52524F52 
+ 2872      5F424144 
+ 2872      5F444154 
+ 2872      4100
+ 2873              	.LASF126:
+ 2874 0364 55415254 		.ascii	"UART_LOG_PutString\000"
+ 2874      5F4C4F47 
+ 2874      5F507574 
+ 2874      53747269 
+ 2874      6E6700
+ 2875              	.LASF113:
+ 2876 0377 7374724D 		.ascii	"strMessageA\000"
+ 2876      65737361 
+ 2876      67654100 
+ 2877              	.LASF9:
+ 2878 0383 6C6F6E67 		.ascii	"long long int\000"
+ 2878      206C6F6E 
+ 2878      6720696E 
+ 2878      7400
+ 2879              	.LASF106:
+ 2880 0391 61636375 		.ascii	"accumulated_cycles\000"
+ 2880      6D756C61 
+ 2880      7465645F 
+ 2880      6379636C 
+ 2880      657300
+ 2881              	.LASF104:
+ 2882 03a4 656C6170 		.ascii	"elapsed_cycles\000"
+ 2882      7365645F 
+ 2882      6379636C 
+ 2882      657300
+ 2883              	.LASF71:
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 63
+
+
+ 2884 03b3 52435F45 		.ascii	"RC_ERROR_CANCELED\000"
+ 2884      52524F52 
+ 2884      5F43414E 
+ 2884      43454C45 
+ 2884      4400
+ 2885              	.LASF29:
+ 2886 03c5 4D41534B 		.ascii	"MASK0\000"
+ 2886      3000
+ 2887              	.LASF33:
+ 2888 03cb 4D41534B 		.ascii	"MASK1\000"
+ 2888      3100
+ 2889              	.LASF37:
+ 2890 03d1 4D41534B 		.ascii	"MASK2\000"
+ 2890      3200
+ 2891              	.LASF41:
+ 2892 03d7 4D41534B 		.ascii	"MASK3\000"
+ 2892      3300
+ 2893              	.LASF120:
+ 2894 03dd 675F616E 		.ascii	"g_analyzers\000"
+ 2894      616C797A 
+ 2894      65727300 
+ 2895              	.LASF133:
+ 2896 03e9 6D656D73 		.ascii	"memset\000"
+ 2896      657400
+ 2897              	.LASF88:
+ 2898 03f0 53544154 		.ascii	"STATE_STOPPED\000"
+ 2898      455F5354 
+ 2898      4F505045 
+ 2898      4400
+ 2899              	.LASF121:
+ 2900 03fe 675F616E 		.ascii	"g_analyzer_count\000"
+ 2900      616C797A 
+ 2900      65725F63 
+ 2900      6F756E74 
+ 2900      00
+ 2901              	.LASF119:
+ 2902 040f 54696D69 		.ascii	"TimingAnalyzer_printAll\000"
+ 2902      6E67416E 
+ 2902      616C797A 
+ 2902      65725F70 
+ 2902      72696E74 
+ 2903              	.LASF56:
+ 2904 0427 52435F45 		.ascii	"RC_ERROR_UNDERRUN\000"
+ 2904      52524F52 
+ 2904      5F554E44 
+ 2904      45525255 
+ 2904      4E00
+ 2905              	.LASF53:
+ 2906 0439 52435F45 		.ascii	"RC_ERROR_MEMORY\000"
+ 2906      52524F52 
+ 2906      5F4D454D 
+ 2906      4F525900 
+ 2907              	.LASF90:
+ 2908 0449 6550696E 		.ascii	"ePin\000"
+ 2908      00
+ 2909              	.LASF123:
+ 2910 044e 59454C4C 		.ascii	"YELLOW_LED_Write\000"
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 64
+
+
+ 2910      4F575F4C 
+ 2910      45445F57 
+ 2910      72697465 
+ 2910      00
+ 2911              	.LASF48:
+ 2912 045f 436F7265 		.ascii	"CoreDebug_Type\000"
+ 2912      44656275 
+ 2912      675F5479 
+ 2912      706500
+ 2913              	.LASF57:
+ 2914 046e 52435F45 		.ascii	"RC_ERROR_BUFFER_FULL\000"
+ 2914      52524F52 
+ 2914      5F425546 
+ 2914      4645525F 
+ 2914      46554C4C 
+ 2915              	.LASF24:
+ 2916 0483 534C4545 		.ascii	"SLEEPCNT\000"
+ 2916      50434E54 
+ 2916      00
+ 2917              	.LASF12:
+ 2918 048c 6C6F6E67 		.ascii	"long double\000"
+ 2918      20646F75 
+ 2918      626C6500 
+ 2919              	.LASF125:
+ 2920 0498 73707269 		.ascii	"sprintf\000"
+ 2920      6E746600 
+ 2921              	.LASF93:
+ 2922 04a0 50494E5F 		.ascii	"PIN_YELLOW\000"
+ 2922      59454C4C 
+ 2922      4F5700
+ 2923              	.LASF63:
+ 2924 04ab 52435F45 		.ascii	"RC_ERROR_READ_ONLY\000"
+ 2924      52524F52 
+ 2924      5F524541 
+ 2924      445F4F4E 
+ 2924      4C5900
+ 2925              	.LASF59:
+ 2926 04be 52435F45 		.ascii	"RC_ERROR_BUSY\000"
+ 2926      52524F52 
+ 2926      5F425553 
+ 2926      5900
+ 2927              	.LASF1:
+ 2928 04cc 756E7369 		.ascii	"unsigned char\000"
+ 2928      676E6564 
+ 2928      20636861 
+ 2928      7200
+ 2929              	.LASF69:
+ 2930 04da 52435F45 		.ascii	"RC_ERROR_BAD_PARAM\000"
+ 2930      52524F52 
+ 2930      5F424144 
+ 2930      5F504152 
+ 2930      414D00
+ 2931              	.LASF110:
+ 2932 04ed 54696D69 		.ascii	"TimingAnalyzer_start\000"
+ 2932      6E67416E 
+ 2932      616C797A 
+ 2932      65725F73 
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 65
+
+
+ 2932      74617274 
+ 2933              	.LASF31:
+ 2934 0502 52455345 		.ascii	"RESERVED0\000"
+ 2934      52564544 
+ 2934      3000
+ 2935              	.LASF35:
+ 2936 050c 52455345 		.ascii	"RESERVED1\000"
+ 2936      52564544 
+ 2936      3100
+ 2937              	.LASF39:
+ 2938 0516 52455345 		.ascii	"RESERVED2\000"
+ 2938      52564544 
+ 2938      3200
+ 2939              	.LASF2:
+ 2940 0520 73686F72 		.ascii	"short int\000"
+ 2940      7420696E 
+ 2940      7400
+ 2941              	.LASF6:
+ 2942 052a 6C6F6E67 		.ascii	"long int\000"
+ 2942      20696E74 
+ 2942      00
+ 2943              	.LASF132:
+ 2944 0533 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2944      52784275 
+ 2944      66666572 
+ 2944      00
+ 2945              	.LASF87:
+ 2946 0540 53544154 		.ascii	"STATE_PAUSED\000"
+ 2946      455F5041 
+ 2946      55534544 
+ 2946      00
+ 2947              	.LASF101:
+ 2948 054d 73746172 		.ascii	"start_cycles\000"
+ 2948      745F6379 
+ 2948      636C6573 
+ 2948      00
+ 2949              	.LASF78:
+ 2950 055a 4D4F4445 		.ascii	"MODE_DWT_PIN\000"
+ 2950      5F445754 
+ 2950      5F50494E 
+ 2950      00
+ 2951              	.LASF74:
+ 2952 0567 52435F45 		.ascii	"RC_ERROR_NOT_IMPLEMENTED\000"
+ 2952      52524F52 
+ 2952      5F4E4F54 
+ 2952      5F494D50 
+ 2952      4C454D45 
+ 2953              	.LASF124:
+ 2954 0580 47524545 		.ascii	"GREEN_LED_Write\000"
+ 2954      4E5F4C45 
+ 2954      445F5772 
+ 2954      69746500 
+ 2955              	.LASF114:
+ 2956 0590 54696D69 		.ascii	"TimingAnalyzer_pause\000"
+ 2956      6E67416E 
+ 2956      616C797A 
+ 2956      65725F70 
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 66
+
+
+ 2956      61757365 
+ 2957              	.LASF65:
+ 2958 05a5 52435F45 		.ascii	"RC_ERROR_INVALID\000"
+ 2958      52524F52 
+ 2958      5F494E56 
+ 2958      414C4944 
+ 2958      00
+ 2959              	.LASF4:
+ 2960 05b6 5F5F7569 		.ascii	"__uint8_t\000"
+ 2960      6E74385F 
+ 2960      7400
+ 2961              	.LASF96:
+ 2962 05c0 6E616D65 		.ascii	"name\000"
+ 2962      00
+ 2963              	.LASF127:
+ 2964 05c5 736E7072 		.ascii	"snprintf\000"
+ 2964      696E7466 
+ 2964      00
+ 2965              	.LASF66:
+ 2966 05ce 52435F45 		.ascii	"RC_ERROR_READ_FAILS\000"
+ 2966      52524F52 
+ 2966      5F524541 
+ 2966      445F4641 
+ 2966      494C5300 
+ 2967              	.LASF13:
+ 2968 05e2 73697A65 		.ascii	"sizetype\000"
+ 2968      74797065 
+ 2968      00
+ 2969              	.LASF8:
+ 2970 05eb 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2970      20756E73 
+ 2970      69676E65 
+ 2970      6420696E 
+ 2970      7400
+ 2971              	.LASF84:
+ 2972 05fd 65537461 		.ascii	"eState\000"
+ 2972      746500
+ 2973              	.LASF82:
+ 2974 0604 416E616C 		.ascii	"AnalyzerMode_t\000"
+ 2974      797A6572 
+ 2974      4D6F6465 
+ 2974      5F7400
+ 2975              	.LASF76:
+ 2976 0613 52435F74 		.ascii	"RC_t\000"
+ 2976      00
+ 2977              	.LASF16:
+ 2978 0618 696E7433 		.ascii	"int32_t\000"
+ 2978      325F7400 
+ 2979              	.LASF27:
+ 2980 0620 50435352 		.ascii	"PCSR\000"
+ 2980      00
+ 2981              	.LASF55:
+ 2982 0625 52435F45 		.ascii	"RC_ERROR_OVERRUN\000"
+ 2982      52524F52 
+ 2982      5F4F5645 
+ 2982      5252554E 
+ 2982      00
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 67
+
+
+ 2983              	.LASF130:
+ 2984 0636 443A5C57 		.ascii	"D:\\WS25\\AMAEOS\\Lab\\Workspace01\\Timing Analyzer"
+ 2984      5332355C 
+ 2984      414D4145 
+ 2984      4F535C4C 
+ 2984      61625C57 
+ 2985 0664 2E637964 		.ascii	".cydsn\000"
+ 2985      736E00
+ 2986              	.LASF7:
+ 2987 066b 5F5F7569 		.ascii	"__uint32_t\000"
+ 2987      6E743332 
+ 2987      5F7400
+ 2988              	.LASF58:
+ 2989 0676 52435F45 		.ascii	"RC_ERROR_BUFFER_EMTPY\000"
+ 2989      52524F52 
+ 2989      5F425546 
+ 2989      4645525F 
+ 2989      454D5450 
+ 2990              	.LASF73:
+ 2991 068c 52435F45 		.ascii	"RC_ERROR_UNKNOWN\000"
+ 2991      52524F52 
+ 2991      5F554E4B 
+ 2991      4E4F574E 
+ 2991      00
+ 2992              	.LASF83:
+ 2993 069d 654D6F64 		.ascii	"eMode\000"
+ 2993      6500
+ 2994              	.LASF91:
+ 2995 06a3 50494E5F 		.ascii	"PIN_NONE\000"
+ 2995      4E4F4E45 
+ 2995      00
+ 2996              	.LASF98:
+ 2997 06ac 73746174 		.ascii	"state\000"
+ 2997      6500
+ 2998              	.LASF26:
+ 2999 06b2 464F4C44 		.ascii	"FOLDCNT\000"
+ 2999      434E5400 
+ 3000              	.LASF44:
+ 3001 06ba 44484353 		.ascii	"DHCSR\000"
+ 3001      5200
+ 3002              	.LASF0:
+ 3003 06c0 7369676E 		.ascii	"signed char\000"
+ 3003      65642063 
+ 3003      68617200 
+ 3004              	.LASF99:
+ 3005 06cc 73746172 		.ascii	"start_tick\000"
+ 3005      745F7469 
+ 3005      636B00
+ 3006              	.LASF3:
+ 3007 06d7 73686F72 		.ascii	"short unsigned int\000"
+ 3007      7420756E 
+ 3007      7369676E 
+ 3007      65642069 
+ 3007      6E7400
+ 3008              	.LASF108:
+ 3009 06ea 54696D69 		.ascii	"TimingAnalyzer_initialize\000"
+ 3009      6E67416E 
+ARM GAS  C:\Users\agila\AppData\Local\Temp\ccZamUIM.s 			page 68
+
+
+ 3009      616C797A 
+ 3009      65725F69 
+ 3009      6E697469 
+ 3010              	.LASF19:
+ 3011 0704 646F7562 		.ascii	"double\000"
+ 3011      6C6500
+ 3012              	.LASF105:
+ 3013 070b 61636375 		.ascii	"accumulated_time_ms\000"
+ 3013      6D756C61 
+ 3013      7465645F 
+ 3013      74696D65 
+ 3013      5F6D7300 
+ 3014              	.LASF100:
+ 3015 071f 73746F70 		.ascii	"stop_tick\000"
+ 3015      5F746963 
+ 3015      6B00
+ 3016              	.LASF45:
+ 3017 0729 44435253 		.ascii	"DCRSR\000"
+ 3017      5200
+ 3018              	.LASF46:
+ 3019 072f 44435244 		.ascii	"DCRDR\000"
+ 3019      5200
+ 3020              	.LASF95:
+ 3021 0735 416E616C 		.ascii	"AnalyzerPin_t\000"
+ 3021      797A6572 
+ 3021      50696E5F 
+ 3021      7400
+ 3022              	.LASF23:
+ 3023 0743 45584343 		.ascii	"EXCCNT\000"
+ 3023      4E5400
+ 3024              	.LASF54:
+ 3025 074a 52435F45 		.ascii	"RC_ERROR_RANGE\000"
+ 3025      52524F52 
+ 3025      5F52414E 
+ 3025      474500
+ 3026              	.LASF20:
+ 3027 0759 4354524C 		.ascii	"CTRL\000"
+ 3027      00
+ 3028              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
