@@ -37,7 +37,7 @@ extern uint8 Timer_1ms_initVar;
 **************************************/
 
 #define Timer_1ms_Resolution                 16u
-#define Timer_1ms_UsingFixedFunction         0u
+#define Timer_1ms_UsingFixedFunction         1u
 #define Timer_1ms_UsingHWCaptureCounter      0u
 #define Timer_1ms_SoftwareCaptureMode        0u
 #define Timer_1ms_SoftwareTriggerMode        0u
@@ -168,7 +168,7 @@ void Timer_1ms_Wakeup(void)        ;
 *    Initialial Parameter Constants
 ***************************************/
 
-#define Timer_1ms_INIT_PERIOD             99u
+#define Timer_1ms_INIT_PERIOD             999u
 #define Timer_1ms_INIT_CAPTURE_MODE       ((uint8)((uint8)1u << Timer_1ms_CTRL_CAP_MODE_SHIFT))
 #define Timer_1ms_INIT_TRIGGER_MODE       ((uint8)((uint8)0u << Timer_1ms_CTRL_TRIG_MODE_SHIFT))
 #if (Timer_1ms_UsingFixedFunction)

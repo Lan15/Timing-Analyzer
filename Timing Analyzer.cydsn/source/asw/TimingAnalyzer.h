@@ -69,8 +69,6 @@
 * The user represents and warrants that it will NOT use or redistribute the Software for such purposes.
 * This prototype is for research purposes only. This software is provided "AS IS," without a warranty of any kind.
 **/
-
-
  
 #ifndef TIMINGANALYZER_H
 #define TIMINGANALYZER_H
@@ -82,13 +80,7 @@
 /*****************************************************************************/
 
 //####################### Defines/Macros
-/** 
- * \brief a brief description of what the define is representing
-*
-* If needed, a more detailed description can be given below */
-#define TOP_DOCUMENTED_DEFINE                    0x1
-#define AFTER_DOCUMENTED_DEFINE                  0x2         /**< \brief by putting a < next to the comment-start. The documentation referes to the left instead to the next line. */
-
+    
 //####################### Enumerations
 /**
 * \Analyzer configurations enum
@@ -96,11 +88,11 @@
 * Enum to hold different configuration modes possible with the analyzer
 */
  enum eMode{
-  MODE_DWT,             /**< \DWT Cycle Counter. */
-  MODE_DWT_PIN,         /**< \DWT Cycle Counter + Output pin. */
-  MODE_SYSTICK,         /**< \SYSTICK timer (1ms tick). */
-  MODE_SYSTICK_PIN,     /**< \SYSTICK + Output pin config. */
-  MODE_PIN              /**< \Output pin only (external measurement). */
+  TA_MODE_DWT,             /**< \DWT Cycle Counter. */
+  TA_MODE_DWT_PIN,         /**< \DWT Cycle Counter + Output pin. */
+  TA_MODE_SYSTICK,         /**< \SYSTICK timer (1ms tick). */
+  TA_MODE_SYSTICK_PIN,     /**< \SYSTICK + Output pin config. */
+  TA_MODE_PIN              /**< \Output pin only (external measurement). */
 } ;
 typedef enum eMode TA_Mode_t;
 
@@ -110,13 +102,13 @@ typedef enum eMode TA_Mode_t;
 * Enum to hold different states that the analyzer could take
 */
  typedef enum {
-  STATE_IDLE,           /**< \Analyser in Idle state. */
-  STATE_RUNNING,        /**< \Analyser in Running state. */
-  STATE_PAUSED,         /**< \Analyser in Paused state. */
-  STATE_STOPPED         /**< \Analyser in Paused state. */
+  TA_STATE_IDLE,           /**< \Analyser in Idle state. */
+  TA_STATE_RUNNING,        /**< \Analyser in Running state. */
+  TA_STATE_PAUSED,         /**< \Analyser in Paused state. */
+  TA_STATE_STOPPED         /**< \Analyser in Paused state. */
 } TA_State_t;
 
-typedef void (*PinFunc_t)(uint8_t state);  /* Function ptr to pins */ /* MISRA-C:2004 Rule 8.3 — explicit typedef */
+typedef void (*TA_PinFunc_t)(uint8_t state);  /* Function ptr to pins */
 
 //####################### Structures
 /**
@@ -126,24 +118,15 @@ typedef void (*PinFunc_t)(uint8_t state);  /* Function ptr to pins */ /* MISRA-C
 */
 typedef struct {
     /* Configuration Data */
-    const char *name;               // String name for print/log
+    const char *name;               // String name for print/log    // warning ta_name?
     TA_Mode_t mode;                 // Selected measurement mode (SysTick, DWT, etc.)
     TA_State_t state;               // Current analyzer state
-    boolean_t active;               // Flag ensuring the analyzer exists
-
     /* Measurement Data */
-    uint32_t start_tick;            // Start tick (for SysTick mode)
-    uint32_t stop_tick;             // Stop tick (for SysTick mode)
-    uint32_t start_cycles;          // Start cycle count (for DWT mode)
-    uint32_t stop_cycles;           // Stop cycle count (for DWT mode)
-    float64_t elapsed_time_ms;      // Elapsed time in milliseconds
-    uint32_t elapsed_cycles;        // Elapsed CPU cycles (for DWT mode)
-    
-    /* Pause/Resume Support */
-    float64_t accumulated_time_ms;  // Total time across pauses
-    uint32_t accumulated_cycles;    // Total cycles across pauses
-    
-    PinFunc_t pin_control_func;     // Unified pin control function
+    uint32_t start_time;            // Start time (for SysTick/DWT mode)
+    uint32_t stop_time;             // Stop time (for SysTick/DWT mode)
+    uint32_t elapsed_time;          // duration between the start and stop times
+    /* Pin Function Link */
+    TA_PinFunc_t pin_control_func;  // Unified pin control function
 } TA_t;
 
 // Wrapper to allow representing the file in Together as class
@@ -159,56 +142,43 @@ public:
 /* Extern global variables                                                   */
 /*****************************************************************************/
 
-/**
- * <description>
- */
-//extern type FILE_variable;
-
 /*****************************************************************************/
 /* API functions                                                             */
 /*****************************************************************************/
 
 /**
- * Func to initialize of the necessary peripherals like Set up SysTick timer (1 ms), enable DWT counter, and configure GPIO pins.
+ * Func to initialize the necessary peripherals like Set up SysTick timer (1 ms), enable DWT counter, and configure GPIO pins.
  * \param None
- * \return RC_SUCCESS when success and RC_ERROR_INVALID_STATE when Hardware not properly initilized      // ???
+ * \return RC_SUCCESS when success and RC_ERROR_INVALID_STATE when Hardware not properly initilized
 */
-RC_t TA_initialize(void);
+RC_t TA_init(void);
 
 /**
  * Func to initializes an analyzer struct with configuration and assign function pointers for pin control.
- * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
- * \param TA_Mode_t const mode      : [IN] type of the configuration mode we need to run the analyzer
- * \param PinFunc_t const pin_ctrl  : [IN] func pointer to control a GPIO pin
- * \param const char const *name    : [IN] name of the Analyzer
+ * \param TA_t *const me                : [IN/OUT] struct of Analyzer related parameters
+ * \param TA_Mode_t const mode          : [IN] type of the configuration mode we need to run the analyzer
+ * \param TA_PinFunc_t const pin_ctrl   : [IN] func pointer to control a GPIO pin
+ * \param const char const *name        : [IN] name of the Analyzer
  * \return RC_SUCCESS when success, RC_ERROR_NULL when a pointer param is null
  *         RC_ERROR_BAD_PARAM when unexpected params are passed and 
  *         RC_ERROR_BUFFER_FULL when max analyzer count is reached
 */
-RC_t TA_create(TA_t *const me, TA_Mode_t const mode, PinFunc_t const pin_ctrl, const char *name);
+RC_t TA_create(TA_t *const me, TA_Mode_t const mode, TA_PinFunc_t const pin_ctrl, const char *name);
 
 /**
  * Func to start counting using SysTick or DWT and set pin HIGH if configured.
  * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null, 
- *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or when Hardware not properly initilized and 
+ *         RC_ERROR_INVALID_STATE when analyzer is not in any active state and/or when Hardware not properly initilized and 
  *         RC_ERROR_BUSY when an analyzer is already in running state
 */
 RC_t TA_start(TA_t *const me);
 
 /**
- * Func to stop counting, calculate total time, and set pin LOW.
- * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
- * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null and 
- *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or already stopped
-*/
-RC_t TA_stop(TA_t *const me);
-
-/**
  * Func to stop counting temporarily and add elapsed time since start to total time.
  * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null and 
- *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or not running
+ *         RC_ERROR_INVALID_STATE when analyzer is not in any active state and/or not running
 */
 RC_t TA_pause(TA_t *const me);
 
@@ -216,16 +186,31 @@ RC_t TA_pause(TA_t *const me);
  * Func to resume measurement from paused state.
  * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null, 
- *         RC_ERROR_INVALID_STATE when analyzer is not in active state and/or not paused
+ *         RC_ERROR_INVALID_STATE when analyzer is not in any active state and/or not paused
 */
 RC_t TA_resume(TA_t *const me);
+
+/**
+ * Func to stop counting, calculate total time, and set pin LOW.
+ * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
+ * \return RC_SUCCESS when success, RC_ERROR_NULL when the me pointer is null and 
+ *         RC_ERROR_INVALID_STATE when analyzer is not in any active state and/or already stopped
+*/
+RC_t TA_stop(TA_t *const me);
+
+/**
+ * Func to calculate the elapsed ticks/cycles between start and stop time.
+ * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
+ * \return RC_SUCCESS when success
+*/
+RC_t TA_calculateElapsedTime(TA_t *const me);
 
 /**
  * Func which returns elapsed time based on SysTick or DWT reading.
  * \param TA_t const *const me      : [IN] struct of Analyzer related parameters
  * \return RC_SUCCESS when success and RC_ERROR_NULL when the me pointer is null
 */
-RC_t TA_printStatus(TA_t const *const me);
+RC_t TA_printStatus(TA_t *const me);
 
 /**
  * Func to print all the available Analysers

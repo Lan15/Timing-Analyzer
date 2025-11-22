@@ -11,7 +11,7 @@
 <CyGuid_f44455c5-3770-4452-b988-0a7a7ff46256 type_name="CyDesigner.Common.ProjMgmt.Model.CyConfigDependencies" version="1">
 <dependency_info name="c9323d49-d323-40b8-9b59-cc008d68a989@Debug@CortexM3" xml_contents_version="2">
 <CyGuid_1173175f-1b9b-4ad4-a065-754a48a27021 type_name="CyDesigner.Common.Base.CyFileDeps" version="1">
-<file name=".\CortexM3\ARM_GCC_541\Debug\main.o">
+<file name=".\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o">
 <dep name=".\Generated_Source\PSoC5\CyDmac.h" />
 <dep name=".\Generated_Source\PSoC5\CyFlash.h" />
 <dep name=".\Generated_Source\PSoC5\CyLib.h" />
@@ -48,8 +48,8 @@
 <dep name=".\source\bsw\Pins.h" />
 <dep name=".\source\bsw\derivate.h" />
 <dep name=".\source\bsw\global.h" />
-<dep name=".\TimingAnalyzer.h" />
-<dep name=".\source\asw\main.c" />
+<dep name=".\source\asw\TimingAnalyzer.c" />
+<dep name=".\source\asw\TimingAnalyzer.h" />
 </file>
 <file name=".\Generated_Source\PSoC5\CyDmac.h" />
 <file name=".\Generated_Source\PSoC5\CyFlash.h" />
@@ -87,8 +87,51 @@
 <file name=".\source\bsw\Pins.h" />
 <file name=".\source\bsw\derivate.h" />
 <file name=".\source\bsw\global.h" />
-<file name=".\TimingAnalyzer.h" />
+<file name=".\source\asw\TimingAnalyzer.c" />
+<file name=".\source\asw\TimingAnalyzer.h" />
+<file name=".\CortexM3\ARM_GCC_541\Debug\main.o">
+<dep name=".\Generated_Source\PSoC5\CyDmac.h" />
+<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
+<dep name=".\Generated_Source\PSoC5\CyLib.h" />
+<dep name=".\Generated_Source\PSoC5\CySpc.h" />
+<dep name=".\Generated_Source\PSoC5\GREEN_LED.h" />
+<dep name=".\Generated_Source\PSoC5\GREEN_LED_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\RED_LED.h" />
+<dep name=".\Generated_Source\PSoC5\RED_LED_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Timer_1ms.h" />
+<dep name=".\Generated_Source\PSoC5\Timer_2secs.h" />
+<dep name=".\Generated_Source\PSoC5\UART_LOG.h" />
+<dep name=".\Generated_Source\PSoC5\UART_LOG_IntClock.h" />
+<dep name=".\Generated_Source\PSoC5\YELLOW_LED.h" />
+<dep name=".\Generated_Source\PSoC5\YELLOW_LED_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\cmsis_armcc.h" />
+<dep name=".\Generated_Source\PSoC5\cmsis_compiler.h" />
+<dep name=".\Generated_Source\PSoC5\cmsis_gcc.h" />
+<dep name=".\Generated_Source\PSoC5\core_cm3.h" />
+<dep name=".\Generated_Source\PSoC5\core_cm3_psoc5.h" />
+<dep name=".\Generated_Source\PSoC5\cyPm.h" />
+<dep name=".\Generated_Source\PSoC5\cy_em_eeprom.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
+<dep name=".\Generated_Source\PSoC5\cydisabledsheets.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter_cfg.h" />
+<dep name=".\Generated_Source\PSoC5\cypins.h" />
+<dep name=".\Generated_Source\PSoC5\cytypes.h" />
+<dep name=".\Generated_Source\PSoC5\isr_1ms.h" />
+<dep name=".\Generated_Source\PSoC5\isr_2secs.h" />
+<dep name=".\Generated_Source\PSoC5\project.h" />
+<dep name=".\Generated_Source\PSoC5\timer1_clock.h" />
+<dep name=".\Generated_Source\PSoC5\timer2_clock.h" />
+<dep name=".\source\bsw\Pins.h" />
+<dep name=".\source\bsw\derivate.h" />
+<dep name=".\source\bsw\global.h" />
+<dep name=".\source\asw\TimingAnalyzer.h" />
+<dep name=".\source\asw\main.c" />
+</file>
 <file name=".\source\asw\main.c" />
+<file name=".\TimingAnalyzer.c" />
+<file name=".\TimingAnalyzer.h" />
 <file name=".\CortexM3\ARM_GCC_541\Debug\Cm3Start.o">
 <dep name=".\Generated_Source\PSoC5\Cm3Start.c" />
 <dep name=".\Generated_Source\PSoC5\CyDmac.h" />
@@ -389,47 +432,6 @@
 <dep name=".\Generated_Source\PSoC5\timer2_clock.h" />
 </file>
 <file name=".\Generated_Source\PSoC5\timer2_clock.c" />
-<file name=".\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o">
-<dep name=".\Generated_Source\PSoC5\cmsis_armcc.h" />
-<dep name=".\Generated_Source\PSoC5\cmsis_compiler.h" />
-<dep name=".\Generated_Source\PSoC5\cmsis_gcc.h" />
-<dep name=".\Generated_Source\PSoC5\core_cm3.h" />
-<dep name=".\Generated_Source\PSoC5\core_cm3_psoc5.h" />
-<dep name=".\Generated_Source\PSoC5\cydisabledsheets.h" />
-<dep name=".\Generated_Source\PSoC5\project.h" />
-<dep name=".\source\bsw\Pins.h" />
-<dep name=".\source\bsw\derivate.h" />
-<dep name=".\source\bsw\global.h" />
-<dep name=".\Generated_Source\PSoC5\CyDmac.h" />
-<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
-<dep name=".\Generated_Source\PSoC5\CyLib.h" />
-<dep name=".\Generated_Source\PSoC5\CySpc.h" />
-<dep name=".\Generated_Source\PSoC5\GREEN_LED.h" />
-<dep name=".\Generated_Source\PSoC5\GREEN_LED_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\RED_LED.h" />
-<dep name=".\Generated_Source\PSoC5\RED_LED_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Timer_1ms.h" />
-<dep name=".\Generated_Source\PSoC5\Timer_2secs.h" />
-<dep name=".\Generated_Source\PSoC5\UART_LOG.h" />
-<dep name=".\Generated_Source\PSoC5\UART_LOG_IntClock.h" />
-<dep name=".\Generated_Source\PSoC5\YELLOW_LED.h" />
-<dep name=".\Generated_Source\PSoC5\YELLOW_LED_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\cyPm.h" />
-<dep name=".\Generated_Source\PSoC5\cy_em_eeprom.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter_cfg.h" />
-<dep name=".\Generated_Source\PSoC5\cypins.h" />
-<dep name=".\Generated_Source\PSoC5\cytypes.h" />
-<dep name=".\Generated_Source\PSoC5\isr_1ms.h" />
-<dep name=".\Generated_Source\PSoC5\isr_2secs.h" />
-<dep name=".\Generated_Source\PSoC5\timer1_clock.h" />
-<dep name=".\Generated_Source\PSoC5\timer2_clock.h" />
-<dep name=".\TimingAnalyzer.c" />
-<dep name=".\TimingAnalyzer.h" />
-</file>
-<file name=".\TimingAnalyzer.c" />
 <file name=".\CortexM3\ARM_GCC_541\Debug\Pins.o">
 <dep name=".\Generated_Source\PSoC5\cmsis_armcc.h" />
 <dep name=".\Generated_Source\PSoC5\cmsis_compiler.h" />
@@ -610,6 +612,7 @@
 <name_val_pair name="Generated_Source\PSoC5\isr_2secs.c" v="-mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=${OutputDir}/${CompileFile}.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og" />
 <name_val_pair name="Generated_Source\PSoC5\Timer_2secs.c" v="-mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=${OutputDir}/${CompileFile}.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og" />
 <name_val_pair name="Generated_Source\PSoC5\Timer_2secs_PM.c" v="-mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=${OutputDir}/${CompileFile}.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og" />
+<name_val_pair name="source\asw\TimingAnalyzer.c" v="-mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=${OutputDir}/${CompileFile}.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og" />
 </name>
 </genericCmdLineData>
 <codeGenCmdLineTag v="-.appdatapath &quot;C:\Users\agila\AppData\Local\Cypress Semiconductor\PSoC Creator\4.4&quot; -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -.fdsreffile=referenced_files.txt -p &quot;D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\Timing Analyzer.cyprj&quot; -d CY8C5888LTI-LP097 -s &quot;D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\Generated_Source\PSoC5&quot; -- -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE" />
@@ -624,6 +627,7 @@
 <CyGuid_718b6b01-68ba-4a17-b632-d38dc61ebb3b type_name="CyDesigner.Gde.Schematic.Symbolcatalog.CyComponentCatalogControl+CyCompCatalogData" version="1" tab="Cypress">
 <tree_states_tab_names>
 <v>Cypress</v>
+<v>Default</v>
 <v>Off-Chip</v>
 </tree_states_tab_names>
 <tree_states>
@@ -664,6 +668,15 @@
 <v>Cypress Component Catalog\Thermal Management\Thermistor Calculator [v1.20]</v>
 <v>Cypress Component Catalog\Thermal Management\Thermocouple Calculator [v1.20]</v>
 <v>Cypress Component Catalog\Thermal Management\TMP05 Interface Macro [v1.10]</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Default Component Catalog</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Default Component Catalog</v>
+<v>Default Component Catalog\Components</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="Off-Chip Component Catalog">
@@ -791,8 +804,8 @@
 <v>${CyRoot}\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\Timer_v2_80\Custom\Tabs\cytimercontrol.resx</v>
 <v>${CyRoot}\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\Timer_v2_80\PSoC5\Timer_v2_80.cysch</v>
 <v>${CyRoot}\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\Timer_v2_80</v>
-<v>${CyRoot}\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\B_Timer_v2_80\B_Timer_v2_80.cysym</v>
-<v>${CyRoot}\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\B_Timer_v2_80\B_Timer_v2_80.v</v>
+<v>${CyRoot}\psoc\content\CyPrimitives\cyprimitives.cylib\cy_psoc3_timer_v1_0\cy_psoc3_timer_v1_0.cyprimitive</v>
+<v>${CyRoot}\psoc\content\CyPrimitives\cyprimitives.cylib\cy_psoc3_timer_v1_0\cy_psoc3_timer_v1_0.cysym</v>
 <v>${CyRoot}\psoc\content\CyPrimitives\cyprimitives.cylib\OneTerminal\OneTerminal.cysym</v>
 <v>${CyRoot}\psoc\content\CyPrimitives\cyprimitives.cylib\OneTerminal\OneTerminal.pdf</v>
 <v>${CyRoot}\psoc\content\CyPrimitives\cyprimitives.cylib\OneTerminal\OneTerminal.v</v>
@@ -805,6 +818,8 @@
 <v>C:\Users\agila\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\cy_isr_v1_71\Custom\custom.cs</v>
 <v>C:\Users\agila\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\cy_isr_v1_71\PSoC5\API\intc.c</v>
 <v>C:\Users\agila\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\cy_isr_v1_71\PSoC5\API\intc.h</v>
+<v>${CyRoot}\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\B_Timer_v2_80\B_Timer_v2_80.cysym</v>
+<v>${CyRoot}\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\B_Timer_v2_80\B_Timer_v2_80.v</v>
 <v>.\Timing Analyzer.cydwr</v>
 <v>C:\Users\agila\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\cy_boot_v6_10\PSoC5\API\cm3gcc.ld</v>
 <v>C:\Users\agila\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\cy_boot_v6_10\PSoC5\API\Cm3RealView.scat</v>
@@ -946,7 +961,7 @@
 <v>C:\H_Da Softwares &amp; Projects\PSoC Creator\4.4\PSoC Creator\warp\lib\common\stdlogic\rtlpkg.vif</v>
 <v>C:\H_Da Softwares &amp; Projects\PSoC Creator\4.4\PSoC Creator\warp\lib\common\stdlogic\cy_psoc3.vif</v>
 </warp_dep>
-<deps_time v="134071954607408756" />
+<deps_time v="134074408886022765" />
 <top_block v="TopDesign" />
 <last_generation v="1" />
 <pdl_path v="" />
@@ -961,7 +976,7 @@
 <dataGuid v="769d31ea-68b1-4f0c-b90a-7c10a43ee563">
 <CyGuid_769d31ea-68b1-4f0c-b90a-7c10a43ee563 type_name="CyDesigner.Common.ProjMgmt.Model.CyLinkCustomData" version="1">
 <link_deps_times>
-<name_val_pair name="c9323d49-d323-40b8-9b59-cc008d68a989@Debug@CortexM3" v="134071956544179189" />
+<name_val_pair name="c9323d49-d323-40b8-9b59-cc008d68a989@Debug@CortexM3" v="134078779660614260" />
 </link_deps_times>
 </CyGuid_769d31ea-68b1-4f0c-b90a-7c10a43ee563>
 </dataGuid>
@@ -969,6 +984,11 @@
 <CyGuid_d442b0b8-dd66-4eee-b5be-1cb213792b31 type_name="CyDesigner.Device.FitterPSoC.Common.DesignWideResources.DeviceEditor.CyCustomAnalogDevData" version="1" ZoomToPage="True" ZoomScale="0.412437171" ScrollX="-268" ScrollY="2">
 <ComponentStates />
 </CyGuid_d442b0b8-dd66-4eee-b5be-1cb213792b31>
+</dataGuid>
+<dataGuid v="2a4578c1-6f5e-41bc-81e4-e5d0befc4490">
+<CyGuid_2a4578c1-6f5e-41bc-81e4-e5d0befc4490 type_name="CyDesigner.Gde.Schematic.CyComponentCatalog+CyCompCatalogData" version="1" display_mode="LATEST">
+<NOOP />
+</CyGuid_2a4578c1-6f5e-41bc-81e4-e5d0befc4490>
 </dataGuid>
 </userData>
 </CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>

@@ -34,9 +34,9 @@ CY_ISR(ISR_1ms_handler);
 CY_ISR(ISR_2secs_handler);
 
 // Change this define to activate the different Snippets
-//#define CodeSnippetMain
+#define CodeSnippetMain
 //#define CodeSnippetMath
-#define CodeSnippetIsr
+//#define CodeSnippetIsr
 
 
 int main(void)
@@ -46,7 +46,7 @@ int main(void)
     RC_t res = RC_SUCCESS;
     
     // Initialize timing system
-    res = TA_initialize();     
+    res = TA_init();     
     
     char strMessage[100];
     
@@ -59,10 +59,13 @@ int main(void)
     CyDelay(100);       // Wating for UART to complete  
     
     #ifdef CodeSnippetIsr
-    //res = TA_create((TA_t *)&analyzerIsr1msDWT, MODE_DWT_PIN, Pin_3_Control, "ISR 1ms DWT Test");
-    res = TA_create((TA_t *)&analyzerIsr1msSYS, MODE_SYSTICK_PIN, Pin_3_Control, "ISR 1ms SYS Test");
-    //res = TA_create((TA_t *)&analyzerIsr2secsDWT, MODE_DWT_PIN, Pin_2_Control, "ISR 2secs DWT Test");
-    res = TA_create((TA_t *)&analyzerIsr2secsSYS, MODE_SYSTICK_PIN, Pin_2_Control, "ISR 2secs SYS Test");
+    //res = TA_create((TA_t *)&analyzerIsr1msDWT, TA_MODE_DWT_PIN, Pin_3_Control, "ISR 1ms DWT Test");
+    //res = TA_create((TA_t *)&analyzerIsr1msSYS, TA_TA_MODE_SYSTICK_PIN, Pin_3_Control, "ISR 1ms SYS Test");
+    //res = TA_create((TA_t *)&analyzerIsr2secsDWT, TA_MODE_DWT_PIN, Pin_2_Control, "ISR 2secs DWT Test");
+    //res = TA_create((TA_t *)&analyzerIsr2secsSYS, TA_TA_MODE_SYSTICK_PIN, Pin_2_Control, "ISR 2secs SYS Test");
+    
+    res = TA_create((TA_t *)&analyzerIsr1msDWT, TA_MODE_DWT_PIN, YELLOW_LED_Write, "ISR 1ms DWT Func Test");
+    res = TA_create((TA_t *)&analyzerIsr2secsDWT, TA_MODE_DWT_PIN, GREEN_LED_Write, "ISR 2secs DWT Func Test");
     
     Timer_1ms_Start();                      // Start timer hardware
     Timer_2secs_Start();
@@ -77,41 +80,41 @@ int main(void)
     // Code Main
         
     // Analyzer's creation
-    res = TA_create((TA_t *)&analyzerDwt, MODE_DWT_PIN, Pin_1_Control, "DWT Task");
-    res = TA_create((TA_t *)&analyzerSystick, MODE_SYSTICK_PIN, Pin_2_Control, "SYSTICK Task");
-    res = TA_create((TA_t *)&analyzerPin, MODE_PIN, Pin_3_Control, "PIN Task");
-    
-    res = TA_create((TA_t *)&analyzerMath, MODE_DWT_PIN, Pin_1_Control, "Math Task");
+    res = TA_create((TA_t *)&analyzerDwt, TA_MODE_DWT_PIN, Pin_3_Control, "DWT Task");
+    //res = TA_create((TA_t *)&analyzerSystick, TA_MODE_SYSTICK_PIN, Pin_2_Control, "SYSTICK Task");
+    //res = TA_create((TA_t *)&analyzerPin, TA_MODE_PIN, Pin_3_Control, "PIN Task");
     
     res = TA_start((TA_t *)&analyzerDwt);
-    res = TA_start((TA_t *)&analyzerSystick);
-    res = TA_start((TA_t *)&analyzerPin);
+    //res = TA_start((TA_t *)&analyzerSystick);
+    //res = TA_start((TA_t *)&analyzerPin);
     // Code region you want to measure
     // do something
     CyDelay(1000);
     
-    res = TA_pause((TA_t *)&analyzerDwt);
+    //res = TA_pause((TA_t *)&analyzerDwt);
     
-    CyDelay(100);   // Should NOT be counted
+    //CyDelay(1000);   // Should NOT be counted
     
-    res = TA_resume((TA_t *)&analyzerDwt);
+    //res = TA_resume((TA_t *)&analyzerDwt);
 
     CyDelay(1000);
     
     res = TA_stop((TA_t *)&analyzerDwt);
-    res = TA_stop((TA_t *)&analyzerSystick);
+    //res = TA_stop((TA_t *)&analyzerSystick);
     //CyDelay(5000);
-    res = TA_stop((TA_t *)&analyzerPin);
+    //res = TA_stop((TA_t *)&analyzerPin);
     
     // Printing
     res = TA_printStatus((TA_t *)&analyzerDwt);
-    res = TA_printStatus((TA_t *)&analyzerSystick);
+    //res = TA_printStatus((TA_t *)&analyzerSystick);
     #endif
     
     #ifdef CodeSnippetMath
+    res = TA_create((TA_t *)&analyzerMath, TA_MODE_DWT_PIN, Pin_3_Control, "Math Task");
+        
     res = TA_start((TA_t *)&analyzerMath);
     
-    int add = 1;
+    volatile int add = 1;   // ???
     int mul = 2;
     int div = 10000;
     float addf = 1.2;
@@ -123,7 +126,7 @@ int main(void)
     
     for (int i = 0; i <= 1000; i++)
     {
-        //++add;
+        add = i + 1;
         //mul = mul * mul;  
         //div = div / 2;
         //++addf;
@@ -132,7 +135,7 @@ int main(void)
 
         //root = sqrt(1000);
         //sine = sin(sine);
-        sinefunc = sinf(sinefunc);
+        //sinefunc = sinf(sinefunc);
     }
     //CyDelay(100);
     res = TA_stop((TA_t *)&analyzerMath);
@@ -162,7 +165,7 @@ CY_ISR(ISR_1ms_handler)
 {
     // Starting time measurement
     TA_start((TA_t *)&analyzerIsr1msDWT);
-    TA_start((TA_t *)&analyzerIsr1msSYS);
+    //TA_start((TA_t *)&analyzerIsr1msSYS);
     
     // Clear interrupt flag
     (void)Timer_1ms_ReadStatusRegister();
@@ -172,7 +175,7 @@ CY_ISR(ISR_1ms_handler)
     
     // Stoping time measurement
     TA_stop((TA_t *)&analyzerIsr1msDWT);
-    TA_stop((TA_t *)&analyzerIsr1msSYS);
+    //TA_stop((TA_t *)&analyzerIsr1msSYS);
 }
 
 /**
@@ -182,7 +185,7 @@ CY_ISR(ISR_2secs_handler)
 {
     // Starting time measurement
     TA_start((TA_t *)&analyzerIsr2secsDWT);
-    TA_start((TA_t *)&analyzerIsr2secsSYS);
+    //TA_start((TA_t *)&analyzerIsr2secsSYS);
     
     // Clear interrupt flag
     (void)Timer_2secs_ReadStatusRegister();
@@ -193,7 +196,7 @@ CY_ISR(ISR_2secs_handler)
 
     // Stoping time measurement
     TA_stop((TA_t *)&analyzerIsr2secsDWT);
-    TA_stop((TA_t *)&analyzerIsr2secsSYS);
+    //TA_stop((TA_t *)&analyzerIsr2secsSYS);
     
     TA_printStatus((TA_t *)&analyzerIsr2secsDWT);
     TA_printStatus((TA_t *)&analyzerIsr2secsSYS);
