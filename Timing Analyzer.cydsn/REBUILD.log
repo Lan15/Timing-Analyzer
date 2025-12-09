@@ -1,4 +1,4 @@
---------------- Rebuild Started: 11/03/2025 18:31:05 Project: Timing Analyzer, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+--------------- Rebuild Started: 12/09/2025 08:14:56 Project: Timing Analyzer, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\main.o"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\Pins.o"
@@ -21,6 +21,14 @@ Deleting file ".\CortexM3\ARM_GCC_541\Debug\UART_LOG_PM.o"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\UART_LOG_INT.o"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\UART_LOG_BOOT.o"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\UART_LOG_IntClock.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\timer1_clock.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\Timer_1ms.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\Timer_1ms_PM.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\isr_1ms.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\timer2_clock.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\isr_2secs.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\Timer_2secs.o"
+Deleting file ".\CortexM3\ARM_GCC_541\Debug\Timer_2secs_PM.o"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.hex"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.elf"
 Deleting file ".\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.map"
@@ -47,12 +55,20 @@ API Generation...
 Dependency Generation...
 Cleanup...
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/main.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c source\asw\main.c -o .\CortexM3\ARM_GCC_541\Debug\main.o
-arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/TimingAnalyzer.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c TimingAnalyzer.c -o .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
-TimingAnalyzer.c: In function 'TimingAnalyzer_printStatus':
-TimingAnalyzer.c:527:13: warning: format '%u' expects argument of type 'unsigned int', but argument 7 has type 'uint32_t {aka const long unsigned int}' [-Wformat=]
-             "Name: %s | State: %s | Elapsed time: %.6fms | Cycles: %ul\r\n",
-             ^
-TimingAnalyzer.c:527:13: warning: format '%u' expects argument of type 'unsigned int', but argument 7 has type 'uint32_t {aka const long unsigned int}' [-Wformat=]
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/TimingAnalyzer.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c source\asw\TimingAnalyzer.c -o .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+source\asw\TimingAnalyzer.c: In function 'TA_getElapsedTimeInMs':
+source\asw\TimingAnalyzer.c:444:10: warning: unused variable 'res' [-Wunused-variable]
+     RC_t res = RC_SUCCESS;
+          ^
+source\asw\TimingAnalyzer.c: In function 'TA_printStatus':
+source\asw\TimingAnalyzer.c:499:42: warning: format '%u' expects argument of type 'unsigned int', but argument 6 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
+         snprintf(buffer, sizeof(buffer), "Name: %s | State: %s | Elapsed time: %u.%06ums | Cycles: %u\r\n",
+                                          ^
+source\asw\TimingAnalyzer.c:499:42: warning: format '%u' expects argument of type 'unsigned int', but argument 7 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
+source\asw\TimingAnalyzer.c:499:42: warning: format '%u' expects argument of type 'unsigned int', but argument 8 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
+source\asw\TimingAnalyzer.c:499:42: warning: format '%u' expects argument of type 'unsigned int', but argument 6 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
+source\asw\TimingAnalyzer.c:499:42: warning: format '%u' expects argument of type 'unsigned int', but argument 7 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
+source\asw\TimingAnalyzer.c:499:42: warning: format '%u' expects argument of type 'unsigned int', but argument 8 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/Pins.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c source\bsw\Pins.c -o .\CortexM3\ARM_GCC_541\Debug\Pins.o
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/cyfitter_cfg.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\cyfitter_cfg.c -o .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/cymetadata.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\cymetadata.c -o .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
@@ -72,8 +88,16 @@ arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\sour
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/UART_LOG_INT.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\UART_LOG_INT.c -o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_INT.o
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/UART_LOG_BOOT.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\UART_LOG_BOOT.c -o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_BOOT.o
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/UART_LOG_IntClock.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\UART_LOG_IntClock.c -o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_IntClock.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/timer1_clock.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\timer1_clock.c -o .\CortexM3\ARM_GCC_541\Debug\timer1_clock.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/Timer_1ms.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\Timer_1ms.c -o .\CortexM3\ARM_GCC_541\Debug\Timer_1ms.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/Timer_1ms_PM.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\Timer_1ms_PM.c -o .\CortexM3\ARM_GCC_541\Debug\Timer_1ms_PM.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_1ms.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\isr_1ms.c -o .\CortexM3\ARM_GCC_541\Debug\isr_1ms.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/timer2_clock.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\timer2_clock.c -o .\CortexM3\ARM_GCC_541\Debug\timer2_clock.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_2secs.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\isr_2secs.c -o .\CortexM3\ARM_GCC_541\Debug\isr_2secs.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/Timer_2secs.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\Timer_2secs.c -o .\CortexM3\ARM_GCC_541\Debug\Timer_2secs.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\source -I.\source\asw -I.\source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/Timer_2secs_PM.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\Timer_2secs_PM.c -o .\CortexM3\ARM_GCC_541\Debug\Timer_2secs_PM.o
 arm-none-eabi-as.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -alh=.\CortexM3\ARM_GCC_541\Debug/CyBootAsmGnu.lst -g -W -o .\CortexM3\ARM_GCC_541\Debug\CyBootAsmGnu.o Generated_Source\PSoC5\CyBootAsmGnu.s
-arm-none-eabi-ar.exe -rs ".\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a" .\CortexM3\ARM_GCC_541\Debug\CyDmac.o .\CortexM3\ARM_GCC_541\Debug\CyFlash.o .\CortexM3\ARM_GCC_541\Debug\CyLib.o .\CortexM3\ARM_GCC_541\Debug\cyPm.o .\CortexM3\ARM_GCC_541\Debug\CySpc.o .\CortexM3\ARM_GCC_541\Debug\cyutils.o .\CortexM3\ARM_GCC_541\Debug\cy_em_eeprom.o .\CortexM3\ARM_GCC_541\Debug\RED_LED.o .\CortexM3\ARM_GCC_541\Debug\YELLOW_LED.o .\CortexM3\ARM_GCC_541\Debug\GREEN_LED.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_PM.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_INT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_BOOT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_IntClock.o .\CortexM3\ARM_GCC_541\Debug\CyBootAsmGnu.o
+arm-none-eabi-ar.exe -rs ".\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a" .\CortexM3\ARM_GCC_541\Debug\CyDmac.o .\CortexM3\ARM_GCC_541\Debug\CyFlash.o .\CortexM3\ARM_GCC_541\Debug\CyLib.o .\CortexM3\ARM_GCC_541\Debug\cyPm.o .\CortexM3\ARM_GCC_541\Debug\CySpc.o .\CortexM3\ARM_GCC_541\Debug\cyutils.o .\CortexM3\ARM_GCC_541\Debug\cy_em_eeprom.o .\CortexM3\ARM_GCC_541\Debug\RED_LED.o .\CortexM3\ARM_GCC_541\Debug\YELLOW_LED.o .\CortexM3\ARM_GCC_541\Debug\GREEN_LED.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_PM.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_INT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_BOOT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_IntClock.o .\CortexM3\ARM_GCC_541\Debug\timer1_clock.o .\CortexM3\ARM_GCC_541\Debug\Timer_1ms.o .\CortexM3\ARM_GCC_541\Debug\Timer_1ms_PM.o .\CortexM3\ARM_GCC_541\Debug\isr_1ms.o .\CortexM3\ARM_GCC_541\Debug\timer2_clock.o .\CortexM3\ARM_GCC_541\Debug\isr_2secs.o .\CortexM3\ARM_GCC_541\Debug\Timer_2secs.o .\CortexM3\ARM_GCC_541\Debug\Timer_2secs_PM.o .\CortexM3\ARM_GCC_541\Debug\CyBootAsmGnu.o
 arm-none-eabi-ar.exe: creating .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a
 arm-none-eabi-gcc.exe -Wl,--start-group -o "D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.elf" .\CortexM3\ARM_GCC_541\Debug\main.o .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o .\CortexM3\ARM_GCC_541\Debug\Pins.o .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o .\CortexM3\ARM_GCC_541\Debug\cymetadata.o .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o ".\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a" "C:\H_Da Softwares & Projects\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CortexM3\ARM_GCC_541\Debug\CyComponentLibrary.a" -mcpu=cortex-m3 -mthumb -L Generated_Source\PSoC5 "-Wl,-Map,.\CortexM3\ARM_GCC_541\Debug/Timing Analyzer.map" -T Generated_Source\PSoC5\cm3gcc.ld -specs=nano.specs -Wl,--gc-sections -u _printf_float -g -ffunction-sections -Og -ffat-lto-objects -Wl,--end-group
 cyelftool.exe -C "D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.elf" --flash_row_size 256 --flash_size 262144 --flash_offset 0x00000000
@@ -81,6 +105,6 @@ No ELF section .cychecksum found, creating one
 Application checksum calculated and stored in ELF section .cychecksum
 Checksum calculated and stored in ELF section .cymeta
 cyelftool.exe -S "D:\WS25\AMAEOS\Lab\Workspace01\Timing Analyzer.cydsn\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.elf"
-Flash used: 16524 of 262144 bytes (6.3%).
-SRAM used: 4769 of 65536 bytes (7.3%). Stack: 2048 bytes. Heap: 2048 bytes.
---------------- Rebuild Succeeded: 11/03/2025 18:31:21 ---------------
+Flash used: 14380 of 262144 bytes (5.5%).
+SRAM used: 4793 of 65536 bytes (7.3%). Stack: 2048 bytes. Heap: 2048 bytes.
+--------------- Rebuild Succeeded: 12/09/2025 08:15:13 ---------------

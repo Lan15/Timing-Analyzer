@@ -22,7 +22,7 @@
 /*****************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "project.h"        // includes core_cm3.h   //  (N1)
+#include "project.h"
 #include "TimingAnalyzer.h"
 #include "Pins.h"
 #include "UART_LOG.h"
@@ -41,7 +41,7 @@
 #define TA_DWT_RESET_VALUE         (0UL)
 #define TA_MAX_32BIT_VALUE         (4294967295UL)   /* 0xFFFFFFFFUL */
 #define TA_COUNTER_INCREMENT       (1UL)
-#define TA_SCALE_FACTOR            (1000000UL)
+#define TA_SCALE_FACTOR            (1000000UL) /* 10^6 for 6 decimal places */
 
 /*****************************************************************************/
 /* Global variable definitions (declared in header file with 'extern')       */
@@ -67,7 +67,7 @@ volatile static uint32_t ta_g_system_ms = 0UL; // Global millisecond counter
 /*****************************************************************************/
 
 /**
- * Func to initialize the necessary peripherals like Set up SysTick timer (1 ms), enable DWT counter, and configure GPIO pins.
+ * Func to initialize of the necessary peripherals like Set up SysTick timer (1 ms), enable DWT counter, and configure GPIO pins.
  * \param None
  * \return RC_SUCCESS when success and RC_ERROR_INVALID_STATE when Hardware not properly initilized
 */
@@ -75,7 +75,7 @@ RC_t TA_init(void)
 {
     RC_t res = RC_SUCCESS;
     
-    // Initialize SysTick timer (1 ms)
+    // Initialize SysTick timer (1 ms) // Will cause issues with OS's cnt_systick - Use respective OS's handler if needed
     CySysTickInit();									// Activate Systick counter     // (N7)
 	CySysTickSetCallback(0, SysTick_Handler);           // Set ISR for Systick
 	CySysTickSetReload(BCLK__BUS_CLK__HZ / 1000 - 1);   // Set 1ms cycle Time
@@ -366,6 +366,55 @@ RC_t TA_stop(TA_t *const me)
 }
 
 /**
+ * Func to delete a previously created analyzer. Removes it from the global list and resets its content.
+ * \param TA_t *const me            : [IN] Analyzer instance to be deleted
+ * \return RC_SUCCESS when success,
+ *         RC_ERROR_NULL when pointer is NULL,
+ *         RC_ERROR_BAD_PARAM when analyzer not found
+ */
+RC_t TA_delete(TA_t *const me)
+{
+    RC_t res = RC_SUCCESS;
+    
+    uint8_t index = 0U;
+    boolean_t found = FALSE;
+
+    if (me == NULL_PTR)
+    {
+        return RC_ERROR_NULL;
+    }
+
+    // Search for analyzer in global list
+    for (index = 0U; index < ta_g_analyzer_count; index++)
+    {
+        if (ta_g_analyzers[index] == me)
+        {
+            found = TRUE;
+            break;
+        }
+    }
+
+    if (found == FALSE)
+    {
+        return RC_ERROR_BAD_PARAM;   // Analyzer not found
+    }
+
+    // Shift remaining analyzers left to keep array compact
+    for (uint8_t i = index; i < (ta_g_analyzer_count - 1U); i++)
+    {
+        ta_g_analyzers[i] = ta_g_analyzers[i + 1U];
+    }
+
+    ta_g_analyzers[ta_g_analyzer_count - 1U] = NULL_PTR;
+    ta_g_analyzer_count--;
+
+    // Reset the analyzer object itself
+    memset(me, 0, sizeof(TA_t));
+
+    return res;
+}
+
+/**
  * Func to calculate the elapsed ticks/cycles between start and stop time.
  * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success
@@ -383,6 +432,21 @@ RC_t TA_calculateElapsedTime(TA_t *const me)
         me->elapsed_time = me->elapsed_time + ((TA_MAX_32BIT_VALUE - me->start_time) + me->stop_time + TA_COUNTER_INCREMENT);
     }
     return res;
+}
+
+/**
+ * Func which returns elapsed time in ms based on SysTick or DWT reading.
+ * \param TA_t const *const me      : [IN] struct of Analyzer related parameters
+ * \return time_ms an uint32_t variable holding calculated time in ms
+*/
+uint32_t TA_getElapsedTimeInMs(TA_t *const me) // keep time_ms as global to keep the func with RC_t return type ???
+{
+    RC_t res = RC_SUCCESS;
+    
+    // Calculate the elapsed time in ms
+    uint32_t time_ms = me->elapsed_time / BCLK__BUS_CLK__KHZ; 
+
+    return time_ms;
 }
 
 /**

@@ -144,6 +144,8 @@ int main(void)
     res = TA_printStatus((TA_t *)&analyzerMath);
     #endif
     
+    //TA_delete((TA_t *)&analyzerSystick);
+    
     UART_LOG_PutString("\r\nPrinting All Analyzers\r\n"); 
     res = TA_printAll();
     

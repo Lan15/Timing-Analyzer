@@ -147,7 +147,7 @@ public:
 /*****************************************************************************/
 
 /**
- * Func to initialize the necessary peripherals like Set up SysTick timer (1 ms), enable DWT counter, and configure GPIO pins.
+ * Func to initialize of the necessary peripherals like Set up SysTick timer (1 ms), enable DWT counter, and configure GPIO pins.
  * \param None
  * \return RC_SUCCESS when success and RC_ERROR_INVALID_STATE when Hardware not properly initilized
 */
@@ -199,11 +199,27 @@ RC_t TA_resume(TA_t *const me);
 RC_t TA_stop(TA_t *const me);
 
 /**
+ * Func to delete a previously created analyzer. Removes it from the global list and resets its content.
+ * \param TA_t *const me            : [IN] Analyzer instance to be deleted
+ * \return RC_SUCCESS when success,
+ *         RC_ERROR_NULL when pointer is NULL,
+ *         RC_ERROR_BAD_PARAM when analyzer not found
+ */
+RC_t TA_delete(TA_t *const me);
+
+/**
  * Func to calculate the elapsed ticks/cycles between start and stop time.
  * \param TA_t *const me            : [IN/OUT] struct of Analyzer related parameters
  * \return RC_SUCCESS when success
 */
 RC_t TA_calculateElapsedTime(TA_t *const me);
+
+/**
+ * Func which returns elapsed time in ms based on SysTick or DWT reading.
+ * \param TA_t const *const me      : [IN] struct of Analyzer related parameters
+ * \return time_ms an uint32_t variable holding calculated time in ms
+*/
+uint32_t TA_getElapsedTimeInMs(TA_t *const me);
 
 /**
  * Func which returns elapsed time based on SysTick or DWT reading.

@@ -120,8 +120,12 @@ Discarded input sections
  .data          0x00000000        0x0 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
  .text.TA_resume
                 0x00000000       0x60 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .text.TA_delete
+                0x00000000       0x74 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
  .text.TA_pause
                 0x00000000       0x6c .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .text.TA_getElapsedTimeInMs
+                0x00000000       0x10 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
  .text          0x00000000        0x0 .\CortexM3\ARM_GCC_541\Debug\Pins.o
  .data          0x00000000        0x0 .\CortexM3\ARM_GCC_541\Debug\Pins.o
  .bss           0x00000000        0x0 .\CortexM3\ARM_GCC_541\Debug\Pins.o
@@ -1242,212 +1246,212 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x7e0
+.debug_aranges  0x00000000      0x7f0
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x20 .\CortexM3\ARM_GCC_541\Debug\main.o
  .debug_aranges
-                0x00000020       0x68 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+                0x00000020       0x78 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
  .debug_aranges
-                0x00000088       0x38 .\CortexM3\ARM_GCC_541\Debug\Pins.o
+                0x00000098       0x38 .\CortexM3\ARM_GCC_541\Debug\Pins.o
  .debug_aranges
-                0x000000c0       0x58 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+                0x000000d0       0x58 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
  .debug_aranges
-                0x00000118       0x18 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
+                0x00000128       0x18 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
  .debug_aranges
-                0x00000130       0x48 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+                0x00000140       0x48 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
  .debug_aranges
-                0x00000178      0x2a0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+                0x00000188      0x2a0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
  .debug_aranges
-                0x00000418       0x98 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+                0x00000428       0x98 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
  .debug_aranges
-                0x000004b0       0x38 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+                0x000004c0       0x38 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
  .debug_aranges
-                0x000004e8       0x38 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+                0x000004f8       0x38 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
  .debug_aranges
-                0x00000520       0x38 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+                0x00000530       0x38 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
  .debug_aranges
-                0x00000558       0xf0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+                0x00000568       0xf0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
  .debug_aranges
-                0x00000648       0x70 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+                0x00000658       0x70 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
  .debug_aranges
-                0x000006b8       0x20 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
+                0x000006c8       0x20 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
  .debug_aranges
-                0x000006d8       0x88 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+                0x000006e8       0x88 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
  .debug_aranges
-                0x00000760       0x80 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+                0x00000770       0x80 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x512e
+.debug_info     0x00000000     0x51d8
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x57f .\CortexM3\ARM_GCC_541\Debug\main.o
- .debug_info    0x0000057f      0x950 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
- .debug_info    0x00000ecf      0x1f8 .\CortexM3\ARM_GCC_541\Debug\Pins.o
- .debug_info    0x000010c7      0x5cd .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
- .debug_info    0x00001694      0x135 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
- .debug_info    0x000017c9      0x3bb .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
- .debug_info    0x00001b84     0x1374 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
- .debug_info    0x00002ef8      0xa2a .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
- .debug_info    0x00003922      0x11f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
- .debug_info    0x00003a41      0x11f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
- .debug_info    0x00003b60      0x11f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
- .debug_info    0x00003c7f      0x60c .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
- .debug_info    0x0000428b      0x283 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
- .debug_info    0x0000450e       0x83 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
- .debug_info    0x00004591      0x64d .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
- .debug_info    0x00004bde      0x550 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+ .debug_info    0x0000057f      0x9fa .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .debug_info    0x00000f79      0x1f8 .\CortexM3\ARM_GCC_541\Debug\Pins.o
+ .debug_info    0x00001171      0x5cd .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_info    0x0000173e      0x135 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
+ .debug_info    0x00001873      0x3bb .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_info    0x00001c2e     0x1374 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+ .debug_info    0x00002fa2      0xa2a .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+ .debug_info    0x000039cc      0x11f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+ .debug_info    0x00003aeb      0x11f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+ .debug_info    0x00003c0a      0x11f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+ .debug_info    0x00003d29      0x60c .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+ .debug_info    0x00004335      0x283 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+ .debug_info    0x000045b8       0x83 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
+ .debug_info    0x0000463b      0x64d .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+ .debug_info    0x00004c88      0x550 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
 
-.debug_abbrev   0x00000000     0x14b4
+.debug_abbrev   0x00000000     0x14b0
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x165 .\CortexM3\ARM_GCC_541\Debug\main.o
- .debug_abbrev  0x00000165      0x267 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
- .debug_abbrev  0x000003cc       0xe1 .\CortexM3\ARM_GCC_541\Debug\Pins.o
- .debug_abbrev  0x000004ad      0x20d .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
- .debug_abbrev  0x000006ba       0x66 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
- .debug_abbrev  0x00000720      0x1e8 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
- .debug_abbrev  0x00000908      0x254 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
- .debug_abbrev  0x00000b5c      0x1ab .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
- .debug_abbrev  0x00000d07       0x90 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
- .debug_abbrev  0x00000d97       0x90 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
- .debug_abbrev  0x00000e27       0x90 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
- .debug_abbrev  0x00000eb7      0x175 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
- .debug_abbrev  0x0000102c      0x139 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
- .debug_abbrev  0x00001165       0x14 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
- .debug_abbrev  0x00001179      0x1a7 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
- .debug_abbrev  0x00001320      0x194 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+ .debug_abbrev  0x00000165      0x263 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .debug_abbrev  0x000003c8       0xe1 .\CortexM3\ARM_GCC_541\Debug\Pins.o
+ .debug_abbrev  0x000004a9      0x20d .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_abbrev  0x000006b6       0x66 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
+ .debug_abbrev  0x0000071c      0x1e8 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_abbrev  0x00000904      0x254 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+ .debug_abbrev  0x00000b58      0x1ab .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+ .debug_abbrev  0x00000d03       0x90 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+ .debug_abbrev  0x00000d93       0x90 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+ .debug_abbrev  0x00000e23       0x90 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+ .debug_abbrev  0x00000eb3      0x175 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+ .debug_abbrev  0x00001028      0x139 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+ .debug_abbrev  0x00001161       0x14 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
+ .debug_abbrev  0x00001175      0x1a7 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+ .debug_abbrev  0x0000131c      0x194 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
 
-.debug_line     0x00000000     0x23c4
+.debug_line     0x00000000     0x2421
  *(.debug_line)
  .debug_line    0x00000000      0x23a .\CortexM3\ARM_GCC_541\Debug\main.o
- .debug_line    0x0000023a      0x3fd .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
- .debug_line    0x00000637      0x1c8 .\CortexM3\ARM_GCC_541\Debug\Pins.o
- .debug_line    0x000007ff      0x1f6 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
- .debug_line    0x000009f5      0x13d .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
- .debug_line    0x00000b32      0x230 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
- .debug_line    0x00000d62      0x816 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
- .debug_line    0x00001578      0x367 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
- .debug_line    0x000018df       0x94 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
- .debug_line    0x00001973       0x97 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
- .debug_line    0x00001a0a       0x96 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
- .debug_line    0x00001aa0      0x2c4 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
- .debug_line    0x00001d64      0x180 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
- .debug_line    0x00001ee4       0x66 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
- .debug_line    0x00001f4a      0x21a .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
- .debug_line    0x00002164      0x260 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+ .debug_line    0x0000023a      0x45a .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .debug_line    0x00000694      0x1c8 .\CortexM3\ARM_GCC_541\Debug\Pins.o
+ .debug_line    0x0000085c      0x1f6 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_line    0x00000a52      0x13d .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
+ .debug_line    0x00000b8f      0x230 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_line    0x00000dbf      0x816 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+ .debug_line    0x000015d5      0x367 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+ .debug_line    0x0000193c       0x94 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+ .debug_line    0x000019d0       0x97 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+ .debug_line    0x00001a67       0x96 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+ .debug_line    0x00001afd      0x2c4 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+ .debug_line    0x00001dc1      0x180 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+ .debug_line    0x00001f41       0x66 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyBootAsmGnu.o)
+ .debug_line    0x00001fa7      0x21a .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+ .debug_line    0x000021c1      0x260 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
 
-.debug_frame    0x00000000     0x1d00
+.debug_frame    0x00000000     0x1d40
  *(.debug_frame)
  .debug_frame   0x00000000       0x30 .\CortexM3\ARM_GCC_541\Debug\main.o
- .debug_frame   0x00000030      0x1b8 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
- .debug_frame   0x000001e8       0x80 .\CortexM3\ARM_GCC_541\Debug\Pins.o
- .debug_frame   0x00000268       0xe4 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
- .debug_frame   0x0000034c       0xb8 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
- .debug_frame   0x00000404      0x738 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
- .debug_frame   0x00000b3c      0x1f8 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
- .debug_frame   0x00000d34       0x50 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
- .debug_frame   0x00000d84       0x50 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
- .debug_frame   0x00000dd4       0x50 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
- .debug_frame   0x00000e24      0x250 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
- .debug_frame   0x00001074       0xe0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
- .debug_frame   0x00001154      0x194 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
- .debug_frame   0x000012e8      0x180 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
- .debug_frame   0x00001468       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-errno.o)
- .debug_frame   0x00001488       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-exit.o)
- .debug_frame   0x000014b0       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-init.o)
- .debug_frame   0x000014dc       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x00001504       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memset.o)
- .debug_frame   0x00001524       0x8c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-vfprintf_float.o)
- .debug_frame   0x000015b0       0x60 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_frame   0x00001610       0x74 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-snprintf.o)
- .debug_frame   0x00001684       0x70 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-sprintf.o)
- .debug_frame   0x000016f4       0x6c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-dtoa.o)
- .debug_frame   0x00001760       0x98 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-locale.o)
- .debug_frame   0x000017f8       0x30 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-malloc.o)
- .debug_frame   0x00001828       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memchr-stub.o)
- .debug_frame   0x00001850      0x234 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-mprec.o)
- .debug_frame   0x00001a84       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-callocr.o)
- .debug_frame   0x00001ab0       0x38 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x00001ae8       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x00001b14       0x90 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-svfprintf.o)
- .debug_frame   0x00001ba4       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x00001bd0       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-strcmp.o)
- .debug_frame   0x00001bf0       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memmove.o)
- .debug_frame   0x00001c18       0x30 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-mlock.o)
- .debug_frame   0x00001c48       0x3c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-reallocr.o)
- .debug_frame   0x00001c84       0x5c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-reent.o)
- .debug_frame   0x00001ce0       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-msizer.o)
+ .debug_frame   0x00000030      0x1f8 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .debug_frame   0x00000228       0x80 .\CortexM3\ARM_GCC_541\Debug\Pins.o
+ .debug_frame   0x000002a8       0xe4 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_frame   0x0000038c       0xb8 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_frame   0x00000444      0x738 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+ .debug_frame   0x00000b7c      0x1f8 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+ .debug_frame   0x00000d74       0x50 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+ .debug_frame   0x00000dc4       0x50 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+ .debug_frame   0x00000e14       0x50 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+ .debug_frame   0x00000e64      0x250 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+ .debug_frame   0x000010b4       0xe0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+ .debug_frame   0x00001194      0x194 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+ .debug_frame   0x00001328      0x180 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+ .debug_frame   0x000014a8       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-errno.o)
+ .debug_frame   0x000014c8       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-exit.o)
+ .debug_frame   0x000014f0       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-init.o)
+ .debug_frame   0x0000151c       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x00001544       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memset.o)
+ .debug_frame   0x00001564       0x8c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-vfprintf_float.o)
+ .debug_frame   0x000015f0       0x60 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_frame   0x00001650       0x74 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-snprintf.o)
+ .debug_frame   0x000016c4       0x70 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-sprintf.o)
+ .debug_frame   0x00001734       0x6c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-dtoa.o)
+ .debug_frame   0x000017a0       0x98 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-locale.o)
+ .debug_frame   0x00001838       0x30 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-malloc.o)
+ .debug_frame   0x00001868       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memchr-stub.o)
+ .debug_frame   0x00001890      0x234 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-mprec.o)
+ .debug_frame   0x00001ac4       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-callocr.o)
+ .debug_frame   0x00001af0       0x38 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x00001b28       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x00001b54       0x90 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-svfprintf.o)
+ .debug_frame   0x00001be4       0x2c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x00001c10       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-strcmp.o)
+ .debug_frame   0x00001c30       0x28 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-memmove.o)
+ .debug_frame   0x00001c58       0x30 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-mlock.o)
+ .debug_frame   0x00001c88       0x3c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-reallocr.o)
+ .debug_frame   0x00001cc4       0x5c c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-reent.o)
+ .debug_frame   0x00001d20       0x20 c:/h_da softwares & projects/psoc creator/4.4/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-msizer.o)
 
-.debug_str      0x00000000     0x1ee9
+.debug_str      0x00000000     0x1f0d
  *(.debug_str)
  .debug_str     0x00000000      0x566 .\CortexM3\ARM_GCC_541\Debug\main.o
                                 0x5c5 (size before relaxing)
- .debug_str     0x00000566      0x21e .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
-                                0x718 (size before relaxing)
- .debug_str     0x00000784       0x6b .\CortexM3\ARM_GCC_541\Debug\Pins.o
+ .debug_str     0x00000566      0x242 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+                                0x73c (size before relaxing)
+ .debug_str     0x000007a8       0x6b .\CortexM3\ARM_GCC_541\Debug\Pins.o
                                 0x246 (size before relaxing)
- .debug_str     0x000007ef      0x1b6 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_str     0x00000813      0x1b6 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
                                 0x337 (size before relaxing)
- .debug_str     0x000009a5       0x75 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
+ .debug_str     0x000009c9       0x75 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
                                 0x1d7 (size before relaxing)
- .debug_str     0x00000a1a      0x13f .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_str     0x00000a3e      0x13f .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
                                 0x2fd (size before relaxing)
- .debug_str     0x00000b59      0x7fb .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+ .debug_str     0x00000b7d      0x7fb .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
                                 0xa3a (size before relaxing)
- .debug_str     0x00001354      0x365 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+ .debug_str     0x00001378      0x365 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
                                 0x726 (size before relaxing)
- .debug_str     0x000016b9       0x62 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+ .debug_str     0x000016dd       0x62 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
                                 0x1df (size before relaxing)
- .debug_str     0x0000171b       0x63 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+ .debug_str     0x0000173f       0x63 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
                                 0x1ee (size before relaxing)
- .debug_str     0x0000177e       0x5f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+ .debug_str     0x000017a2       0x5f .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
                                 0x1e9 (size before relaxing)
- .debug_str     0x000017dd      0x301 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+ .debug_str     0x00001801      0x301 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
                                 0x4e4 (size before relaxing)
- .debug_str     0x00001ade      0x1ab .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+ .debug_str     0x00001b02      0x1ab .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
                                 0x359 (size before relaxing)
- .debug_str     0x00001c89      0x1b4 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+ .debug_str     0x00001cad      0x1b4 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
                                 0x3b3 (size before relaxing)
- .debug_str     0x00001e3d       0xac .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+ .debug_str     0x00001e61       0xac .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
                                 0x32b (size before relaxing)
 
-.debug_loc      0x00000000     0x2451
+.debug_loc      0x00000000     0x2584
  *(.debug_loc)
  .debug_loc     0x00000000       0x1f .\CortexM3\ARM_GCC_541\Debug\main.o
- .debug_loc     0x0000001f      0x510 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
- .debug_loc     0x0000052f       0x63 .\CortexM3\ARM_GCC_541\Debug\Pins.o
- .debug_loc     0x00000592      0x289 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
- .debug_loc     0x0000081b      0x144 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
- .debug_loc     0x0000095f      0xa11 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
- .debug_loc     0x00001370      0x1e4 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
- .debug_loc     0x00001554       0x42 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
- .debug_loc     0x00001596       0x42 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
- .debug_loc     0x000015d8       0x42 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
- .debug_loc     0x0000161a      0x258 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
- .debug_loc     0x00001872      0x128 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
- .debug_loc     0x0000199a      0x3b2 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
- .debug_loc     0x00001d4c      0x705 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+ .debug_loc     0x0000001f      0x643 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .debug_loc     0x00000662       0x63 .\CortexM3\ARM_GCC_541\Debug\Pins.o
+ .debug_loc     0x000006c5      0x289 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_loc     0x0000094e      0x144 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_loc     0x00000a92      0xa11 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+ .debug_loc     0x000014a3      0x1e4 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+ .debug_loc     0x00001687       0x42 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+ .debug_loc     0x000016c9       0x42 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+ .debug_loc     0x0000170b       0x42 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+ .debug_loc     0x0000174d      0x258 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+ .debug_loc     0x000019a5      0x128 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+ .debug_loc     0x00001acd      0x3b2 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+ .debug_loc     0x00001e7f      0x705 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
 
 .debug_macinfo
  *(.debug_macinfo)
 
-.debug_ranges   0x00000000      0x708
+.debug_ranges   0x00000000      0x718
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x10 .\CortexM3\ARM_GCC_541\Debug\main.o
- .debug_ranges  0x00000010       0x98 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
- .debug_ranges  0x000000a8       0x28 .\CortexM3\ARM_GCC_541\Debug\Pins.o
- .debug_ranges  0x000000d0       0x48 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
- .debug_ranges  0x00000118       0x38 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
- .debug_ranges  0x00000150      0x290 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
- .debug_ranges  0x000003e0       0x88 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
- .debug_ranges  0x00000468       0x28 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
- .debug_ranges  0x00000490       0x28 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
- .debug_ranges  0x000004b8       0x28 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
- .debug_ranges  0x000004e0       0xe0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
- .debug_ranges  0x000005c0       0x60 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
- .debug_ranges  0x00000620       0x78 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
- .debug_ranges  0x00000698       0x70 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
+ .debug_ranges  0x00000010       0xa8 .\CortexM3\ARM_GCC_541\Debug\TimingAnalyzer.o
+ .debug_ranges  0x000000b8       0x28 .\CortexM3\ARM_GCC_541\Debug\Pins.o
+ .debug_ranges  0x000000e0       0x48 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_ranges  0x00000128       0x38 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_ranges  0x00000160      0x290 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyLib.o)
+ .debug_ranges  0x000003f0       0x88 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(cyPm.o)
+ .debug_ranges  0x00000478       0x28 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(RED_LED.o)
+ .debug_ranges  0x000004a0       0x28 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(YELLOW_LED.o)
+ .debug_ranges  0x000004c8       0x28 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(GREEN_LED.o)
+ .debug_ranges  0x000004f0       0xe0 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG.o)
+ .debug_ranges  0x000005d0       0x60 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(UART_LOG_IntClock.o)
+ .debug_ranges  0x00000630       0x78 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CyFlash.o)
+ .debug_ranges  0x000006a8       0x70 .\CortexM3\ARM_GCC_541\Debug\Timing Analyzer.a(CySpc.o)
 
 .comment        0x00000000       0x6e
  .comment       0x00000000       0x6e .\CortexM3\ARM_GCC_541\Debug\main.o
